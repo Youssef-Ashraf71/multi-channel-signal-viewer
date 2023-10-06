@@ -144,7 +144,12 @@ class MainWindow(QtWidgets.QMainWindow):
          # dont forget to change the icon 
 
       # show / hide function  : Mask
-
+      def hideSignal(self,checked):
+             self.SignalChannelArr[modules.choosenChannel].hiddenFlag = checked
+             if self.SignalChannelArr[modules.choosenChannel].hiddenFlag == True:
+                   self.SignalChannelArr[modules.choosenChannel].graph.hide()
+             else:
+                   self.SignalChannelArr[modules.choosenChannel].graph.show()   
       # speed slider function 
 
       # scroll in x dir
