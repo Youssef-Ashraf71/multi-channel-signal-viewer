@@ -37,34 +37,34 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 
-      # browse function to open directory
+      # browse function to open directory : a+m
       
 
-      # open the file from directory
+      # open the file from directory : a+m
 
 
-      # initialize plotting
+      # initialize plotting: a+m
 
 
-      # draw plot
+      # draw plot: a+m
 
 
-      # plot state show/hide
+      # plot state show/hide : a+m
       
 
-      # Zoom in Func
+      # Zoom in Func  : Mask
 
 
-      # Zoom out Func
+      # Zoom out Func : Mask
 
-      # edit the signal color
+      # edit the signal color : Mask
 
-      # play / pause func 
+      # play / pause func   : ziad
          # dont forget to change the icon 
 
-      # show / hide function
+      # show / hide function  : Mask
 
-      # speed slider function
+      # speed slider function 
 
       # scroll in x dir
 
