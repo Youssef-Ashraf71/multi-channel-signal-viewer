@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets, uic
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QTextEdit, QFileDialog, QScrollBar, QComboBox, QColorDialog, QCheckBox, QSlider
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, QFile, QTextStream
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
@@ -34,6 +34,9 @@ class MainWindow(QtWidgets.QMainWindow):
           uic.loadUi('beta.ui', self)
           self.setWindowIcon(QtGui.QIcon('Images/MainIcon.png'))
           self.setWindowTitle("Realtime-signal-viewer")
+
+          self.apply_stylesheet("Aqua.qss")
+
           self.xAxis = [0,0,0]
           self.yAxis = [0,0,0]
           self.PlotterWindowProp = modules.PlotterWindow()
@@ -47,7 +50,15 @@ class MainWindow(QtWidgets.QMainWindow):
           # self.browseBtn1.clicked.connect(self.browse)
           connector.__init__connectors__(self)
           # 
-     
+      def apply_stylesheet(self, stylesheet_path):
+        # Read the QSS stylesheet from the file
+        stylesheet = QFile(stylesheet_path)
+        if stylesheet.open(QFile.ReadOnly | QFile.Text):
+            stream = QTextStream(stylesheet)
+            qss = stream.readAll()
+            self.setStyleSheet(qss)
+        else:
+            print(f"Failed to open stylesheet file: {stylesheet_path}")
 
       # browse function to open directory : a+m
       def browse(self):
