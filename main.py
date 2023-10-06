@@ -35,7 +35,6 @@ class MainWindow(QtWidgets.QMainWindow):
           self.setWindowTitle("Realtime-signal-viewer")
           self.xAxis = [0,0,0]
           self.yAxis = [0,0,0]
-          self.pointsToAppend = 0
           self.PlotterWindowProp = modules.PlotterWindow()
           self.PauseToggleVar = False
           self.HoldVarH = False
@@ -47,14 +46,7 @@ class MainWindow(QtWidgets.QMainWindow):
           # params
           self.pushButton_2.clicked.connect(self.browse)
           # 
-          self.channel1Signal = pg.PlotCurveItem()
-          self.channel1TimeReadings = [0,0]
-          self.channel1AmplitudeReadings = [0,0]
-          self.channel1PlottedXCoordinates = []
-          self.channel1PlottedYCoordinates = []
-          self.isChannel1Open, self.isChannel2Open, self.isChannel3Open = False, False, False
-          self.isChannel1Shown, self.isChannel2Shown, self.isChannel3Shown = False, False, False
-          
+     
 
       # browse function to open directory : a+m
       def browse(self):
@@ -74,18 +66,63 @@ class MainWindow(QtWidgets.QMainWindow):
                       timeArr.append(float(row[0]))
                       amplitudeArr.append(float(row[1]))
 
+            self.SignalChannelArr[modules.choosenChannel].path = path
             self.SignalChannelArr[modules.choosenChannel].time =  timeArr
             self.SignalChannelArr[modules.choosenChannel].amplitude = amplitudeArr
-            self.plotSignal()
+            self.Legend = self.plotGraph1.addLegend()
+            self.signalInitialization()
 
 
       # initialize plotting: a+m
+      def signalInitialization(self):
+            self.SignalChannelArr[modules.choosenChannel].graph = self.plotGraph1.plot(
+                 name="Channel" ,
+                 pen = self.SignalChannelArr[modules.choosenChannel].getColor(),
+            )
+            self.plotGraph1.showGrid(x= True, y= True)
+            maxTime,minTime,maxAmp,minAmp = 0,0,0,0
+            for i in range(3):
+                 if len(self.SignalChannelArr[i].time):
+                      if len(self.SignalChannelArr[i].time )> maxTime:
+                            maxTime = len(self.SignalChannelArr[i].time)
+                 if len(self.SignalChannelArr[i].time):
+                      if len(self.SignalChannelArr[i].time )< minTime:
+                            minTime = len(self.SignalChannelArr[i].time)
+                 if len(self.SignalChannelArr[i].amplitude):
+                      if len(self.SignalChannelArr[i].amplitude ) > maxAmp:
+                            maxAmp = len(self.SignalChannelArr[i].amplitude)           
 
-
+                 if len(self.SignalChannelArr[i].amplitude):
+                      if len(self.SignalChannelArr[i].amplitude )< minAmp:
+                            minAmp = len(self.SignalChannelArr[i].amplitude)               
+            self.plotGraph1.plotItem.setLimits(
+             xMin=minTime, xMax=maxTime, yMin=minAmp, yMax=maxAmp     
+            )   
+            self.minSignalAmp = len(self.SignalChannelArr[modules.choosenChannel].amplitude)
+            self.pointsPlotted = 0
+            self.startTime = QtCore.QTimer()
+            self.startTime.setInterval(50)
+            self.startTime.timeout.connect(self.signalPlotting)
+            self.startTime.start()
+  
 
 
       # draw plot: a+m
+      def  signalPlotting(self):
+           for channelIdx in range(3):
+                if self.SignalChannelArr[channelIdx].path !="null":
+                     self.xAxis[channelIdx] = self.SignalChannelArr[channelIdx].time[:self.pointsPlotted]
+                     self.yAxis[channelIdx] = self.SignalChannelArr[channelIdx].amplitude[:self.pointsPlotted]
+           
+           self.pointsPlotted += 5
+           if self.minSignalAmp < self.pointsPlotted:
+                self.startTime.stop()
 
+           for channelIdx in range(3):
+                  if self.SignalChannelArr[channelIdx].path != "null":
+                       if len(self.SignalChannelArr[channelIdx].time) > self.pointsPlotted:
+                               print(self.SignalChannelArr[channelIdx].getColor())
+                               self.SignalChannelArr[channelIdx].graph.setData(self.xAxis[0], self.yAxis[channelIdx], pen=self.SignalChannelArr[channelIdx].getColor(), name="name") 
 
       # plot state show/hide : a+m
       

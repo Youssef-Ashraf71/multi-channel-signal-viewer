@@ -28,8 +28,8 @@ def setChoosenChannel(index):
         choosenChannel = index    
 
 class SignalChannel:
-      def __init__(self,time = [] , amplitude = [] ,hiddenFlag = False , label="N/A", color=0xFFFF00 , path="null"):
-            self.PlotWidget = PlotWidget()
+      def __init__(self,time = [] , amplitude = [] ,hiddenFlag = False , label="N/A", color= 0xffff00 , path="null"):
+            self.graph = PlotWidget()
             self.time = time
             self.amplitude = amplitude
             self.hiddenFlag = hiddenFlag
@@ -37,8 +37,12 @@ class SignalChannel:
             self.label = label
             self.path = path
             
+            
              
-
+      def getColor(self):
+             return self.color
+      
+      
       def setColor(self,color):
             pass
 
