@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1051</width>
+    <width>1127</width>
     <height>777</height>
    </rect>
   </property>
@@ -14,20 +14,20 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <layout class="QVBoxLayout" name="channelLayout1">
+     <layout class="QVBoxLayout" name="GraphLayout1">
       <item>
        <layout class="QVBoxLayout" name="channelHeaderLayout1">
         <item>
-         <widget class="QLabel" name="channelLabel1">
+         <widget class="QLabel" name="graphLabel1">
           <property name="font">
            <font>
             <pointsize>22</pointsize>
            </font>
           </property>
           <property name="text">
-           <string>Channel 1</string>
+           <string>Graph 1</string>
           </property>
          </widget>
         </item>
@@ -36,7 +36,7 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QPushButton" name="playBtn1">
+          <widget class="QPushButton" name="playPauseBtn1">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -104,18 +104,165 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="PlotLayout1">
-        <item>
-         <widget class="PlotWidget" name="graphicsView"/>
-        </item>
-        <item>
-         <widget class="QScrollBar" name="verticalScrollBar">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>5</width>
+          <height>5</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="plotGridLayout1">
+        <item row="0" column="1">
+         <widget class="QScrollBar" name="yAxisScrollBar1">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
          </widget>
         </item>
+        <item row="0" column="0">
+         <widget class="PlotWidget" name="plotGraph1"/>
+        </item>
+        <item row="2" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QScrollBar" name="xAxisScrollBar1">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <family>MS Sans Serif</family>
+          <pointsize>15</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Graph 1 - Controls</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSplitter" name="graphControls1">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <widget class="QSplitter" name="splitter">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <widget class="QWidget" name="">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="selectChannelLabel1">
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Select Channel:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="channelList1"/>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QPushButton" name="selectColotBtn1">
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Select Color</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox">
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Hide </string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Edit channel name:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit"/>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QPushButton" name="pushButton_2">
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Browse file</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton">
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Export</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </widget>
       </item>
      </layout>
     </item>
@@ -126,7 +273,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1051</width>
+     <width>1127</width>
      <height>26</height>
     </rect>
    </property>
@@ -138,14 +285,36 @@
      <property name="title">
       <string>Open</string>
      </property>
-     <addaction name="actionChannel_1"/>
-     <addaction name="actionChannel_2"/>
+     <widget class="QMenu" name="menuGraph_1">
+      <property name="title">
+       <string>Graph 1</string>
+      </property>
+      <addaction name="actionChannel_3"/>
+      <addaction name="actionChannel_4"/>
+      <addaction name="actionChannel_5"/>
+     </widget>
+     <widget class="QMenu" name="menuGraph_2">
+      <property name="title">
+       <string>Graph 2</string>
+      </property>
+      <addaction name="actionChannel_6"/>
+      <addaction name="actionChannel_7"/>
+      <addaction name="actionChannel_8"/>
+     </widget>
+     <addaction name="menuGraph_1"/>
+     <addaction name="menuGraph_2"/>
     </widget>
     <addaction name="actionNew"/>
     <addaction name="menuOpen"/>
     <addaction name="actionSave_As"/>
    </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -167,22 +336,42 @@
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionChannel_1">
-   <property name="text">
-    <string>Channel 1</string>
-   </property>
-  </action>
-  <action name="actionChannel_2">
-   <property name="text">
-    <string>Channel 2</string>
-   </property>
-  </action>
   <action name="actionSave_As">
    <property name="text">
     <string>Exit</string>
    </property>
    <property name="shortcut">
     <string/>
+   </property>
+  </action>
+  <action name="actionChannel_3">
+   <property name="text">
+    <string>Channel 1</string>
+   </property>
+  </action>
+  <action name="actionChannel_4">
+   <property name="text">
+    <string>Channel 2</string>
+   </property>
+  </action>
+  <action name="actionChannel_5">
+   <property name="text">
+    <string>Channel 3</string>
+   </property>
+  </action>
+  <action name="actionChannel_6">
+   <property name="text">
+    <string>Channel 1</string>
+   </property>
+  </action>
+  <action name="actionChannel_7">
+   <property name="text">
+    <string>Channel 2</string>
+   </property>
+  </action>
+  <action name="actionChannel_8">
+   <property name="text">
+    <string>Channel 3</string>
    </property>
   </action>
  </widget>
