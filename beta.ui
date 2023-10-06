@@ -181,8 +181,24 @@
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QComboBox" name="channelList1"/>
+          <item>
+            <widget class="QComboBox" name="channelList1">
+             <item>
+              <property name="text">
+               <string>Channel 1</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Channel 2</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Channel 3</string>
+              </property>
+             </item>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -236,7 +252,7 @@
          <widget class="QWidget" name="">
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QPushButton" name="pushButton_2">
+            <widget class="QPushButton" name="browseBtn1">
              <property name="font">
               <font>
                <pointsize>14</pointsize>

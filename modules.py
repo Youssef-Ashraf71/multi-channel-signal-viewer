@@ -25,7 +25,9 @@ import wfdb
 
 choosenChannel = 0
 def setChoosenChannel(index):
-        choosenChannel = index    
+        global choosenChannel
+        choosenChannel = index
+        print(choosenChannel)    
 
 class SignalChannel:
       def __init__(self,time = [] , amplitude = [] ,hiddenFlag = False , label="N/A", color= 0xffff00 , path="null"):
@@ -38,7 +40,9 @@ class SignalChannel:
             self.path = path
             
             
-             
+            
+      def getChoosenSignal(self):
+             return choosenChannel       
       def getColor(self):
              return self.color
       

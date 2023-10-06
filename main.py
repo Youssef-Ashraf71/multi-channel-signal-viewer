@@ -24,6 +24,7 @@ from wfdb.io.record import rdrecord
 import wfdb
 
 import modules
+import connector
 
 class MainWindow(QtWidgets.QMainWindow):
 
@@ -42,9 +43,9 @@ class MainWindow(QtWidgets.QMainWindow):
           self.SignalChannelArr = []
           for i in range(3):
                self.SignalChannelArr.append(modules.SignalChannel())
-          4
           # params
-          self.pushButton_2.clicked.connect(self.browse)
+          # self.browseBtn1.clicked.connect(self.browse)
+          connector.__init__connectors__(self)
           # 
      
 
@@ -65,8 +66,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 for row in csv_data:
                       timeArr.append(float(row[0]))
                       amplitudeArr.append(float(row[1]))
-
             self.SignalChannelArr[modules.choosenChannel].path = path
+            if self.SignalChannelArr[0].path == "null":
+                    QtWidgets.QMessageBox.warning(self,"Channel 1 is Empty","Please use channel 1 first")
+                    return
             self.SignalChannelArr[modules.choosenChannel].time =  timeArr
             self.SignalChannelArr[modules.choosenChannel].amplitude = amplitudeArr
             self.Legend = self.plotGraph1.addLegend()
@@ -76,7 +79,7 @@ class MainWindow(QtWidgets.QMainWindow):
       # initialize plotting: a+m
       def signalInitialization(self):
             self.SignalChannelArr[modules.choosenChannel].graph = self.plotGraph1.plot(
-                 name="Channel" ,
+                 name="Channel "+str(modules.choosenChannel+1) ,
                  pen = self.SignalChannelArr[modules.choosenChannel].getColor(),
             )
             self.plotGraph1.showGrid(x= True, y= True)
@@ -89,15 +92,18 @@ class MainWindow(QtWidgets.QMainWindow):
                       if len(self.SignalChannelArr[i].time )< minTime:
                             minTime = len(self.SignalChannelArr[i].time)
                  if len(self.SignalChannelArr[i].amplitude):
-                      if len(self.SignalChannelArr[i].amplitude ) > maxAmp:
-                            maxAmp = len(self.SignalChannelArr[i].amplitude)           
+                      if max(self.SignalChannelArr[i].amplitude ) > maxAmp:
+                            maxAmp = max(self.SignalChannelArr[i].amplitude)           
 
                  if len(self.SignalChannelArr[i].amplitude):
-                      if len(self.SignalChannelArr[i].amplitude )< minAmp:
-                            minAmp = len(self.SignalChannelArr[i].amplitude)               
+                      if min(self.SignalChannelArr[i].amplitude )< minAmp:
+                            minAmp = min(self.SignalChannelArr[i].amplitude)           
+                            
             self.plotGraph1.plotItem.setLimits(
              xMin=minTime, xMax=maxTime, yMin=minAmp, yMax=maxAmp     
             )   
+            # self.minAmp = minAmp
+            # self.maxAmp = maxAmp
             self.minSignalAmp = len(self.SignalChannelArr[modules.choosenChannel].amplitude)
             self.pointsPlotted = 0
             self.startTime = QtCore.QTimer()
@@ -121,7 +127,7 @@ class MainWindow(QtWidgets.QMainWindow):
            for channelIdx in range(3):
                   if self.SignalChannelArr[channelIdx].path != "null":
                        if len(self.SignalChannelArr[channelIdx].time) > self.pointsPlotted:
-                               print(self.SignalChannelArr[channelIdx].getColor())
+                              # print(self.SignalChannelArr[channelIdx].getColor())
                                self.SignalChannelArr[channelIdx].graph.setData(self.xAxis[0], self.yAxis[channelIdx], pen=self.SignalChannelArr[channelIdx].getColor(), name="name") 
 
       # plot state show/hide : a+m
