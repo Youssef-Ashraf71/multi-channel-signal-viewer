@@ -160,10 +160,11 @@ class MainWindow(QtWidgets.QMainWindow):
            
 
       # Zoom in Func  : Mask
-
-
+      def zoomSignalIn(self):
+          self.plotGraph1.plotItem.getViewBox().scaleBy((0.5, 0.5))
       # Zoom out Func : Mask
-
+      def zoomSignalOut(self):
+          self.plotGraph1.plotItem.getViewBox().scaleBy((2, 2))
 
 
       # edit the signal color : Mask
