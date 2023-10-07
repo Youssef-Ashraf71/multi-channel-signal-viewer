@@ -48,11 +48,7 @@ class SignalChannel:
       
       
       def setColor(self,color):
-            old = self.color
-            if color == "#000000":
-                  self.color = old
-            else:
-                  self.color = color      
+            pass
 
 
             

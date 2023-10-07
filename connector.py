@@ -14,9 +14,3 @@ def __init__connectors__(self):
 
       self.checkbox1 = self.findChild(QCheckBox,"checkBox1")
       self.checkbox1.stateChanged.connect(lambda: main.MainWindow.hideSignal(self,self.checkbox1.isChecked()))
-
-      self.selectColorBtn1 = self.findChild(QPushButton,"selectColorBtn1")
-      self.selectColorBtn1.clicked.connect(lambda:main.MainWindow.setSignalChannelColor(self))
-
-      self.playPauseBtn1 = self.findChild(QPushButton,"playPauseBtn1")
-      self.playPauseBtn1.clicked.connect(lambda:main.MainWindow.pauseGraph(self))
