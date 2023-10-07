@@ -36,16 +36,15 @@ class MainWindow(QtWidgets.QMainWindow):
           uic.loadUi('beta.ui', self)
           self.setWindowIcon(QtGui.QIcon('Images/MainIcon.png'))
           self.setWindowTitle("Realtime-signal-viewer")
-
+         # Apply Aqya stylesheet
           self.apply_stylesheet("Aqua.qss")
 
           self.xAxis = [0,0,0]
           self.yAxis = [0,0,0]
-          self.PlotterWindowProp = modules.PlotterWindow()
-          self.PauseToggleVar = False
-          self.HoldVarH = False
-          self.HoldVarV = False
-          
+         # self.PlotterWindowProp = modules.PlotterWindow()
+          self.pauseFlag1 = False
+          self.holdHorizontalFlag1 = False
+          self.holdVerticalFlag1 = False
           self.SignalChannelArr = []
           for i in range(3):
                self.SignalChannelArr.append(modules.SignalChannel())
@@ -124,7 +123,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.minSignalAmp = len(self.SignalChannelArr[modules.choosenChannel].amplitude)
             self.pointsPlotted = 0
             self.startTime = QtCore.QTimer()
-            self.startTime.setInterval(50)
+            self.startTime.setInterval(250)
             self.startTime.timeout.connect(self.signalPlotting)
             self.startTime.start()
   
@@ -148,7 +147,17 @@ class MainWindow(QtWidgets.QMainWindow):
                                self.SignalChannelArr[channelIdx].graph.setData(self.xAxis[0], self.yAxis[channelIdx], pen=self.SignalChannelArr[channelIdx].getColor(), name="name") 
 
       # plot state show/hide : a+m
-      
+      def DynamicSignalUpdate(self):
+           for Index in range(3):
+               if self.SignalChannelArr[Index].path != "null" and len(self.SignalChannelArr[Index].time) > self.pointsPlotted:
+                    if self.SignalChannelArr[Index].hiddenFlag == True:
+                         self.SignalChannelArr[Index].graph.hide()
+                    else:
+                         self.SignalChannelArr[Index].graph.show()
+
+                    self.SignalChannelArr[Index].graph.setData(
+                         self.xAxis[0], self.yAxis[Index], pen=self.SignalChannelArr[Index].getColor(), name=self.SignalChannelArr[Index].label, skipFiniteCheck=True)
+           
 
       # Zoom in Func  : Mask
       def zoomSignalIn(self):
@@ -161,36 +170,21 @@ class MainWindow(QtWidgets.QMainWindow):
           self.Graph1.setScale(0.5) 
     
       # edit the signal color : Mask
-      def changeSignalColor(self):
-       
-       # opening the color picker and storing the selected color in 'selectedColor'
-       selectedColor = QColorDialog(self).getColor()
-       
-       #checking if the user picked a color from the color picker   
-       if selectedColor.isValid():
-           #changing the color of the plot
-           self.plot_color = selectedColor.name()
-           #updating the default color of the plot 
-           # which is going to be it's color untill the user changes it
-           self.default_plot_color = selectedColor.name()
-
-       else:
-           #in case of the user not choosing a color, the plot stays the same 
-           self.plot_color = self.default_plot_color
-              
-                       
-
+      def setSignalChannelColor(self):
+           self.SignalChannelArr[modules.choosenChannel].setColor(QColorDialog.getColor().name())
+           self.DynamicSignalUpdate()
       # play / pause func   : ziad
          # dont forget to change the icon 
-
+      def pauseGraph(self):
+           self.pauseFlag1 ^= True
+           if self.pauseFlag1 == True :
+                self.startTime.stop()
+           else: 
+                 self.startTime.start()     
       # show / hide function  : Mask
       def hideSignal(self,checked):
              self.SignalChannelArr[modules.choosenChannel].hiddenFlag = checked
-             if self.SignalChannelArr[modules.choosenChannel].hiddenFlag == True:
-                   self.SignalChannelArr[modules.choosenChannel].graph.hide()
-             else:
-                   self.SignalChannelArr[modules.choosenChannel].graph.show()   
-
+             self.DynamicSignalUpdate()
       # speed slider function 
 
       # scroll in x dir
