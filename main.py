@@ -86,6 +86,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.SignalChannelArr[modules.choosenChannel].time =  timeArr
             self.SignalChannelArr[modules.choosenChannel].amplitude = amplitudeArr
             self.Legend = self.plotGraph1.addLegend()
+            icon = QtGui.QIcon()
+            icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.playPauseBtn1.setIcon(icon)
             self.signalInitialization()
 
 
@@ -161,18 +164,33 @@ class MainWindow(QtWidgets.QMainWindow):
 
       # Zoom out Func : Mask
 
+
+
       # edit the signal color : Mask
       def setSignalChannelColor(self):
            self.SignalChannelArr[modules.choosenChannel].setColor(QColorDialog.getColor().name())
            self.DynamicSignalUpdate()
+
+
+
+
       # play / pause func   : ziad
          # dont forget to change the icon 
       def pauseGraph(self):
            self.pauseFlag1 ^= True
+           icon = QtGui.QIcon()
            if self.pauseFlag1 == True :
+                icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                self.playPauseBtn1.setIcon(icon)
                 self.startTime.stop()
            else: 
-                 self.startTime.start()     
+                 icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                 self.playPauseBtn1.setIcon(icon)
+                 self.startTime.start() 
+
+
+
+
       # show / hide function  : Mask
       def hideSignal(self,checked):
              self.SignalChannelArr[modules.choosenChannel].hiddenFlag = checked
