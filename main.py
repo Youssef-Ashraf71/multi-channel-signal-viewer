@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QTimer, QFile, QTextStream
 
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
 
@@ -36,11 +37,12 @@ class MainWindow(QtWidgets.QMainWindow):
           uic.loadUi('beta.ui', self)
           self.setWindowIcon(QtGui.QIcon('Images/MainIcon.png'))
           self.setWindowTitle("Realtime-signal-viewer")
-         # Apply Aqya stylesheet
-          self.apply_stylesheet("Aqua.qss")
 
+         # Apply Aqua stylesheet
+          self.apply_stylesheet("Aqua.qss")
           self.xAxis = [0,0,0]
           self.yAxis = [0,0,0]
+
          # self.PlotterWindowProp = modules.PlotterWindow()
           self.pauseFlag1 = False
           self.holdHorizontalFlag1 = False
@@ -96,7 +98,7 @@ class MainWindow(QtWidgets.QMainWindow):
       def signalInitialization(self):
             self.SignalChannelArr[modules.choosenChannel].graph = self.plotGraph1.plot(
                  name="Channel "+str(modules.choosenChannel+1) ,
-                 pen = self.SignalChannelArr[modules.choosenChannel].getColor(),
+                 pen = pg.mkPen(color= self.colorMap(float(modules.choosenChannel))),
             )
             self.plotGraph1.showGrid(x= True, y= True)
             maxTime,minTime,maxAmp,minAmp = 0,0,0,0
@@ -131,6 +133,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
       # draw plot: a+m
       def  signalPlotting(self):
+           
            for channelIdx in range(3):
                 if self.SignalChannelArr[channelIdx].path !="null":
                      self.xAxis[channelIdx] = self.SignalChannelArr[channelIdx].time[:self.pointsPlotted]
@@ -140,11 +143,12 @@ class MainWindow(QtWidgets.QMainWindow):
            if self.minSignalAmp < self.pointsPlotted:
                 self.startTime.stop()
 
+
            for channelIdx in range(3):
                   if self.SignalChannelArr[channelIdx].path != "null":
                        if len(self.SignalChannelArr[channelIdx].time) > self.pointsPlotted:
                               # print(self.SignalChannelArr[channelIdx].getColor())
-                               self.SignalChannelArr[channelIdx].graph.setData(self.xAxis[0], self.yAxis[channelIdx], pen=self.SignalChannelArr[channelIdx].getColor(), name="name") 
+                               self.SignalChannelArr[channelIdx].graph.setData(self.xAxis[0], self.yAxis[channelIdx],  pen = pg.mkPen(color= self.colorMap(float(modules.choosenChannel)))) 
 
       # plot state show/hide : a+m
       def DynamicSignalUpdate(self):
@@ -156,7 +160,7 @@ class MainWindow(QtWidgets.QMainWindow):
                          self.SignalChannelArr[Index].graph.show()
 
                     self.SignalChannelArr[Index].graph.setData(
-                         self.xAxis[0], self.yAxis[Index], pen=self.SignalChannelArr[Index].getColor(), name=self.SignalChannelArr[Index].label, skipFiniteCheck=True)
+                         self.xAxis[0], self.yAxis[Index],  pen = pg.mkPen(color= self.colorMap(self.SignalChannelArr[Index])), name=self.SignalChannelArr[Index].label, skipFiniteCheck=True)
            
 
       # Zoom in Func  : Mask
@@ -173,6 +177,18 @@ class MainWindow(QtWidgets.QMainWindow):
       def setSignalChannelColor(self):
            self.SignalChannelArr[modules.choosenChannel].setColor(QColorDialog.getColor().name())
            self.DynamicSignalUpdate()
+
+      def colorMap(self,float):
+           # making up a set of different colors, so that each new graph will be assigned a color
+            numberOfColors = 50
+            #creating a color map (rainbow) with 50 colors
+            colorsMap = cm.rainbow(np.linspace(0, 1, numberOfColors))
+            #get a color based on the channel of the signal
+            colorOfSignal = colorsMap[modules.choosenChannel % numberOfColors]
+            return colorOfSignal   
+
+
+      
       # play / pause func   : ziad
          # dont forget to change the icon 
       def pauseGraph(self):
