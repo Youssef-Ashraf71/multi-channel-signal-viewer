@@ -20,3 +20,6 @@ def __init__connectors__(self):
 
       self.playPauseBtn1 = self.findChild(QPushButton,"playPauseBtn1")
       self.playPauseBtn1.clicked.connect(lambda:main.MainWindow.pauseGraph(self))
+
+      self.pushButton = self.findChild(QPushButton,"pushButton")
+      self.pushButton.clicked.connect(lambda: main.MainWindow.exportReportPdf(self))
