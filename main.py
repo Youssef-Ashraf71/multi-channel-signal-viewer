@@ -38,16 +38,17 @@ class MainWindow(QtWidgets.QMainWindow):
          # Apply Aqya stylesheet
           self.apply_stylesheet("Aqua.qss")
 
-          self.xAxis = [0,0,0]
-          self.yAxis = [0,0,0]
+          self.xAxis = [0,0,0,0,0,0,0,0,0,0]
+          self.yAxis = [0,0,0,0,0,0,0,0,0,0]
          # self.PlotterWindowProp = modules.PlotterWindow()
           self.pauseFlag1 = False
           self.holdHorizontalFlag1 = False
           self.holdVerticalFlag1 = False
 
           self.SignalChannelArr = []
-          for i in range(3):
-               self.SignalChannelArr.append(modules.SignalChannel())
+          self.SignalChannelArr.append(modules.SignalChannel())
+         # for i in range(3):
+           #    self.SignalChannelArr.append(modules.SignalChannel())
           # params
           # self.browseBtn1.clicked.connect(self.browse)
           connector.__init__connectors__(self)
@@ -96,11 +97,11 @@ class MainWindow(QtWidgets.QMainWindow):
       def signalInitialization(self):
             self.SignalChannelArr[modules.choosenChannel].graph = self.plotGraph1.plot(
                  name="Channel "+str(modules.choosenChannel+1) ,
-                 pen = self.SignalChannelArr[modules.choosenChannel].getColor(),
+                 pen={'color': self.SignalChannelArr[modules.choosenChannel].getColor(), 'width': 1005}
             )
             self.plotGraph1.showGrid(x= True, y= True)
             maxTime,minTime,maxAmp,minAmp = 0,0,0,0
-            for i in range(3):
+            for i in range(len(self.SignalChannelArr)):
                  if len(self.SignalChannelArr[i].time):
                       if len(self.SignalChannelArr[i].time )> maxTime:
                             maxTime = len(self.SignalChannelArr[i].time)
@@ -131,7 +132,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
       # draw plot: a+m
       def  signalPlotting(self):
-           for channelIdx in range(3):
+           for channelIdx in range(len(self.SignalChannelArr)):
                 if self.SignalChannelArr[channelIdx].path !="null":
                      self.xAxis[channelIdx] = self.SignalChannelArr[channelIdx].time[:self.pointsPlotted]
                      self.yAxis[channelIdx] = self.SignalChannelArr[channelIdx].amplitude[:self.pointsPlotted]
@@ -140,7 +141,7 @@ class MainWindow(QtWidgets.QMainWindow):
            if self.minSignalAmp < self.pointsPlotted:
                 self.startTime.stop()
 
-           for channelIdx in range(3):
+           for channelIdx in range(len(self.SignalChannelArr)):
                   if self.SignalChannelArr[channelIdx].path != "null":
                        if len(self.SignalChannelArr[channelIdx].time) > self.pointsPlotted:
                               # print(self.SignalChannelArr[channelIdx].getColor())
@@ -148,7 +149,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
       # plot state show/hide : a+m
       def DynamicSignalUpdate(self):
-           for Index in range(3):
+           for Index in range(len(self.SignalChannelArr)):
                if self.SignalChannelArr[Index].path != "null" and len(self.SignalChannelArr[Index].time) > self.pointsPlotted:
                     if self.SignalChannelArr[Index].hiddenFlag == True:
                          self.SignalChannelArr[Index].graph.hide()
@@ -171,7 +172,12 @@ class MainWindow(QtWidgets.QMainWindow):
       def setSignalChannelColor(self):
            self.SignalChannelArr[modules.choosenChannel].setColor(QColorDialog.getColor().name())
            self.DynamicSignalUpdate()
-
+      def addNewChannel(self):
+            _translate = QtCore.QCoreApplication.translate
+           # self.channelList1.setItemText(modules.choosenChannel+1, )
+            self.channelList1.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr)+1)))
+            modules.choosenChannel+=1
+            self.SignalChannelArr.append(modules.SignalChannel())
 
 
 
@@ -191,7 +197,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 
-
+      # rewind 
+      def rewindSignal(self):
+           print("ana morad",self.SignalChannelArr[modules.choosenChannel].path)
+           self.plotGraph1.clear()
+           print("ana ashf",self.SignalChannelArr[modules.choosenChannel].path)
+          # icon = QtGui.QIcon()
+           #icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+           #self.playPauseBtn1.setIcon(icon)
+           for i in range(2):
+                modules.choosenChannel = i
+                print(self.SignalChannelArr[modules.choosenChannel].path,"iter:",i)
+                self.signalInitialization()
+  
+      
       # show / hide function  : Mask
       def hideSignal(self,checked):
              self.SignalChannelArr[modules.choosenChannel].hiddenFlag = checked
@@ -203,13 +222,17 @@ class MainWindow(QtWidgets.QMainWindow):
       # scroll in y dir 
 
       # naming the channel
+      def editChannelName(self,name):
+             # self.SignalChannelArr[modules.choosenChannel].label = name
+             # self.Legend.getLabel(self.SignalChannelArr[modules.choosenChannel].graph).setText(name)
+               channel_index = modules.choosenChannel
+               self.SignalChannelArr[channel_index].label = name
+               self.Legend.removeItem(self.SignalChannelArr[channel_index].graph)
+               self.Legend.addItem(self.SignalChannelArr[channel_index].graph, name)
 
 
       # Link 2 channles sim
 
-
-      # rewind 
-      
 
 
       # export the report to pdf

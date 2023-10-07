@@ -21,7 +21,16 @@ def __init__connectors__(self):
       self.playPauseBtn1 = self.findChild(QPushButton,"playPauseBtn1")
       self.playPauseBtn1.clicked.connect(lambda:main.MainWindow.pauseGraph(self))
 
+      self.rewindBtn1 = self.findChild(QPushButton,"rewindBtn1")
+      self.rewindBtn1.clicked.connect(lambda:main.MainWindow.rewindSignal(self))
+
       self.zoomInBtn1 = self.findChild(QPushButton,"zoomInBtn1")
       self.zoomInBtn1.clicked.connect(lambda:main.MainWindow.zoomSignalIn(self))
       self.zoomOutBtn1 = self.findChild(QPushButton,"zoomOutBtn1")
       self.zoomOutBtn1.clicked.connect(lambda:main.MainWindow.zoomSignalOut(self))
+
+      self.lineEdit = self.findChild(QLineEdit,"lineEdit")
+      self.lineEdit.returnPressed.connect(lambda:main.MainWindow.editChannelName(self,self.lineEdit.text()))
+# temp using export btn to add more channels
+      self.pushButton = self.findChild(QPushButton,"pushButton")
+      self.pushButton.clicked.connect(lambda:main.MainWindow.addNewChannel(self))

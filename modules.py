@@ -30,6 +30,7 @@ def setChoosenChannel(index,self):
         global choosenChannel
         choosenChannel = index
         self.checkBox1.setChecked(self.SignalChannelArr[choosenChannel].hiddenFlag)
+        self.lineEdit.clear()
         print(choosenChannel)    
 
 class SignalChannel:
@@ -41,6 +42,7 @@ class SignalChannel:
             self.color = color
             self.label = label
             self.path = path
+            
             
             
             

@@ -188,16 +188,6 @@
                <string>Channel 1</string>
               </property>
              </item>
-             <item>
-              <property name="text">
-               <string>Channel 2</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Channel 3</string>
-              </property>
-             </item>
             </widget>
            </item>
           </layout>
