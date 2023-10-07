@@ -4,6 +4,7 @@ from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QTextEdit, QFileDialog, QScrollBar, QComboBox, QColorDialog, QCheckBox, QSlider
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QTimer, QFile, QTextStream
+
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
@@ -26,6 +27,7 @@ import wfdb
 import modules
 import connector
 
+
 class MainWindow(QtWidgets.QMainWindow):
 
         # Mainwindow constructor
@@ -43,6 +45,7 @@ class MainWindow(QtWidgets.QMainWindow):
           self.PauseToggleVar = False
           self.HoldVarH = False
           self.HoldVarV = False
+          
           self.SignalChannelArr = []
           for i in range(3):
                self.SignalChannelArr.append(modules.SignalChannel())
@@ -59,6 +62,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.setStyleSheet(qss)
         else:
             print(f"Failed to open stylesheet file: {stylesheet_path}")
+
+
+
 
       # browse function to open directory : a+m
       def browse(self):
@@ -145,11 +151,34 @@ class MainWindow(QtWidgets.QMainWindow):
       
 
       # Zoom in Func  : Mask
+      def zoomSignalIn(self):
+          self.Graph1.setScale(2) 
+    
 
 
       # Zoom out Func : Mask
-
+      def zoomSignalOut(self):
+          self.Graph1.setScale(0.5) 
+    
       # edit the signal color : Mask
+      def changeSignalColor(self):
+       
+       # opening the color picker and storing the selected color in 'selectedColor'
+       selectedColor = QColorDialog(self).getColor()
+       
+       #checking if the user picked a color from the color picker   
+       if selectedColor.isValid():
+           #changing the color of the plot
+           self.plot_color = selectedColor.name()
+           #updating the default color of the plot 
+           # which is going to be it's color untill the user changes it
+           self.default_plot_color = selectedColor.name()
+
+       else:
+           #in case of the user not choosing a color, the plot stays the same 
+           self.plot_color = self.default_plot_color
+              
+                       
 
       # play / pause func   : ziad
          # dont forget to change the icon 
@@ -161,6 +190,7 @@ class MainWindow(QtWidgets.QMainWindow):
                    self.SignalChannelArr[modules.choosenChannel].graph.hide()
              else:
                    self.SignalChannelArr[modules.choosenChannel].graph.show()   
+
       # speed slider function 
 
       # scroll in x dir

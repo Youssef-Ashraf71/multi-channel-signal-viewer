@@ -219,6 +219,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -248,6 +249,8 @@ class Ui_MainWindow(object):
         self.actionChannel_6.setText(_translate("MainWindow", "Channel 1"))
         self.actionChannel_7.setText(_translate("MainWindow", "Channel 2"))
         self.actionChannel_8.setText(_translate("MainWindow", "Channel 3"))
+
+
 from pyqtgraph import PlotWidget
 
 
