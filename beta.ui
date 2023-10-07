@@ -205,7 +205,7 @@
          <widget class="QWidget" name="">
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QPushButton" name="selectColotBtn1">
+            <widget class="QPushButton" name="selectColorBtn1">
              <property name="font">
               <font>
                <pointsize>14</pointsize>
