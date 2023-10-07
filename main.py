@@ -205,7 +205,7 @@ class MainWindow(QtWidgets.QMainWindow):
           # icon = QtGui.QIcon()
            #icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
            #self.playPauseBtn1.setIcon(icon)
-           for i in range(2):
+           for i in range(len(self.SignalChannelArr)):
                 modules.choosenChannel = i
                 print(self.SignalChannelArr[modules.choosenChannel].path,"iter:",i)
                 self.signalInitialization()
