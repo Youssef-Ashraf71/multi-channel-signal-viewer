@@ -36,6 +36,12 @@ def __init__connectors__(self):
 
       self.pushButton.clicked.connect(lambda:main.MainWindow.addNewChannel(self))
 
-      self.horizontalSlider= self.findChild(QSlider,"horizontalSlider")
+      self.horizontalSlider = self.findChild(QSlider,"horizontalSlider")
       self.horizontalSlider.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self))
 
+      self.xAxisScrollBar1 = self.findChild(QScrollBar, "xAxisScrollBar1")
+      self.xAxisScrollBar1.sliderMoved.connect(lambda: main.MainWindow.xScrollMove(self))
+
+      self.yAxisScrollBar1 = self.findChild(QScrollBar, "yAxisScrollBar1")
+      self.yAxisScrollBar1.sliderMoved.connect(lambda: main.MainWindow.yScrollMove(self))
+      
