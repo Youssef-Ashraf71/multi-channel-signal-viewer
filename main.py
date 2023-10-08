@@ -138,30 +138,42 @@ class MainWindow(QtWidgets.QMainWindow):
                      self.yAxis[channelIdx] = self.SignalChannelArr[channelIdx].amplitude[:self.pointsPlotted]
            
            self.pointsPlotted += 5
-           if self.minSignalAmp < self.pointsPlotted:
-                self.startTime.stop()
+           #if self.minSignalAmp < self.pointsPlotted:
+           #     self.startTime.stop()
 
            for channelIdx in range(len(self.SignalChannelArr)):
                   if self.SignalChannelArr[channelIdx].path != "null":
                        if len(self.SignalChannelArr[channelIdx].time) > self.pointsPlotted:
                               # print(self.SignalChannelArr[channelIdx].getColor())
-                               self.SignalChannelArr[channelIdx].graph.setData(self.xAxis[0], self.yAxis[channelIdx], pen=self.SignalChannelArr[channelIdx].getColor(), name="name") 
+                               self.SignalChannelArr[channelIdx].graph.setData(self.xAxis[self.getLongestSignal()], self.yAxis[channelIdx], pen=self.SignalChannelArr[channelIdx].getColor(), name=self.SignalChannelArr[channelIdx].label) 
 
       # plot state show/hide : a+m
-      def DynamicSignalUpdate(self):
+      def DynamicSignalUpdate(self, isChangingColor = False):
            for Index in range(len(self.SignalChannelArr)):
                
              # if self.SignalChannelArr[Index].path != "null" and len(self.SignalChannelArr[Index].time) > self.pointsPlotted:
-               if self.SignalChannelArr[Index].pasth != "null" :
+               if self.SignalChannelArr[Index].path != "null" :
                     if self.SignalChannelArr[Index].hiddenFlag == True:
                          self.SignalChannelArr[Index].graph.hide()
                     else:
                          self.SignalChannelArr[Index].graph.show()
+                    if len(self.SignalChannelArr[Index].time) > self.pointsPlotted and isChangingColor == False:
+                         self.SignalChannelArr[Index].graph.setData(
+                              self.xAxis[self.getLongestSignal()], self.yAxis[Index], pen=self.SignalChannelArr[Index].getColor(), name=self.SignalChannelArr[Index].label, skipFiniteCheck=True)
+                    elif len(self.SignalChannelArr[Index].time) <= self.pointsPlotted  and isChangingColor == True:
+                         self.SignalChannelArr[Index].graph.setData(
+                              self.xAxis[Index], self.yAxis[Index], pen=self.SignalChannelArr[Index].getColor(), name=self.SignalChannelArr[Index].label, skipFiniteCheck=True)
+                    elif len(self.SignalChannelArr[Index].time) > self.pointsPlotted  and isChangingColor == True:
+                         self.SignalChannelArr[Index].graph.setData(
+                              self.xAxis[self.getLongestSignal()], self.yAxis[Index], pen=self.SignalChannelArr[Index].getColor(), name=self.SignalChannelArr[Index].label, skipFiniteCheck=True)     
 
-                    self.SignalChannelArr[Index].graph.setData(
-                         self.xAxis[0], self.yAxis[Index], pen=self.SignalChannelArr[Index].getColor(), name=self.SignalChannelArr[Index].label, skipFiniteCheck=True)
-           
-
+      def getLongestSignal(self):
+           ans, index = 0,0
+           for channelIndex in range(len(self.SignalChannelArr)):
+                if len(self.SignalChannelArr[channelIndex].time) > ans and self.SignalChannelArr[channelIndex].path != "null":
+                     index = channelIndex
+                     ans = len(self.SignalChannelArr[channelIndex].time)
+           return index     
       # Zoom in Func  : Mask
       def zoomSignalIn(self):
           self.plotGraph1.plotItem.getViewBox().scaleBy((0.5, 0.5))
@@ -173,12 +185,12 @@ class MainWindow(QtWidgets.QMainWindow):
       # edit the signal color : Mask
       def setSignalChannelColor(self):
            self.SignalChannelArr[modules.choosenChannel].setColor(QColorDialog.getColor().name())
-           self.DynamicSignalUpdate()
+           self.DynamicSignalUpdate(True)
       def addNewChannel(self):
             _translate = QtCore.QCoreApplication.translate
            # self.channelList1.setItemText(modules.choosenChannel+1, )
             self.channelList1.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr)+1)))
-            modules.choosenChannel+=1
+         #   modules.choosenChannel+=1
             self.SignalChannelArr.append(modules.SignalChannel())
 
 
@@ -201,22 +213,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
       # rewind 
       def rewindSignal(self):
-           print("ana morad",self.SignalChannelArr[modules.choosenChannel].path)
+          # print("ana morad",self.SignalChannelArr[modules.choosenChannel].path)
            self.plotGraph1.clear()
-           print("ana ashf",self.SignalChannelArr[modules.choosenChannel].path)
+          # print("ana ashf",self.SignalChannelArr[modules.choosenChannel].path)
           # icon = QtGui.QIcon()
            #icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
            #self.playPauseBtn1.setIcon(icon)
            for i in range(len(self.SignalChannelArr)):
                 modules.choosenChannel = i
-                print(self.SignalChannelArr[modules.choosenChannel].path,"iter:",i)
+            #    print(self.SignalChannelArr[modules.choosenChannel].path,"iter:",i)
                 self.signalInitialization()
   
       
       # show / hide function  : Mask
       def hideSignal(self,checked):
              self.SignalChannelArr[modules.choosenChannel].hiddenFlag = checked
-             self.DynamicSignalUpdate()
+             self.DynamicSignalUpdate(False)
       # speed slider function 
 
       def speedSlider(self):
@@ -225,17 +237,24 @@ class MainWindow(QtWidgets.QMainWindow):
            self.startTime.setInterval(200-self.cineSpeed)
 
       # scroll in x dir
-
+      def xScrollMove(self):
+           val = self.xAxisScrollBar1.value()
+           xmax = np.ceil(self.data[0][-1+self.vsize-self.psize+val])-1
+           xmin = xmax-self.vsize
+           self.plot_widget.setXRange(xmin, xmax)
+     
       # scroll in y dir 
-
+      def yScrollMove(self):
+           pass
       # naming the channel
       def editChannelName(self,name):
              # self.SignalChannelArr[modules.choosenChannel].label = name
              # self.Legend.getLabel(self.SignalChannelArr[modules.choosenChannel].graph).setText(name)
                channel_index = modules.choosenChannel
                self.SignalChannelArr[channel_index].label = name
-               self.Legend.removeItem(self.SignalChannelArr[channel_index].graph)
-               self.Legend.addItem(self.SignalChannelArr[channel_index].graph, name)
+               if self.SignalChannelArr[channel_index].path !="null":
+                    self.Legend.removeItem(self.SignalChannelArr[channel_index].graph)
+                    self.Legend.addItem(self.SignalChannelArr[channel_index].graph, name)
 
 
       # Link 2 channles sim
