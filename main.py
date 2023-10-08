@@ -44,7 +44,7 @@ class MainWindow(QtWidgets.QMainWindow):
           self.pauseFlag1 = False
           self.holdHorizontalFlag1 = False
           self.holdVerticalFlag1 = False
-
+          self.cineSpeed = 0
           self.SignalChannelArr = []
           self.SignalChannelArr.append(modules.SignalChannel())
          # for i in range(3):
@@ -124,7 +124,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.minSignalAmp = len(self.SignalChannelArr[modules.choosenChannel].amplitude)
             self.pointsPlotted = 0
             self.startTime = QtCore.QTimer()
-            self.startTime.setInterval(250)
+            self.startTime.setInterval(200-self.cineSpeed)
             self.startTime.timeout.connect(self.signalPlotting)
             self.startTime.start()
   
@@ -216,6 +216,11 @@ class MainWindow(QtWidgets.QMainWindow):
              self.SignalChannelArr[modules.choosenChannel].hiddenFlag = checked
              self.DynamicSignalUpdate()
       # speed slider function 
+
+      def speedSlider(self):
+           
+           self.cineSpeed= self.horizontalSlider.value()
+           self.startTime.setInterval(200-self.cineSpeed)
 
       # scroll in x dir
 

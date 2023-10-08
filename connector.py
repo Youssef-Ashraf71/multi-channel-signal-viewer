@@ -33,4 +33,9 @@ def __init__connectors__(self):
       self.lineEdit.returnPressed.connect(lambda:main.MainWindow.editChannelName(self,self.lineEdit.text()))
 # temp using export btn to add more channels
       self.pushButton = self.findChild(QPushButton,"pushButton")
+
       self.pushButton.clicked.connect(lambda:main.MainWindow.addNewChannel(self))
+
+      self.horizontalSlider= self.findChild(QSlider,"horizontalSlider")
+      self.horizontalSlider.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self))
+
