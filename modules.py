@@ -22,11 +22,15 @@ import os
 from fpdf import FPDF
 from wfdb.io.record import rdrecord
 import wfdb
+import main
+
 
 choosenChannel = 0
-def setChoosenChannel(index):
+def setChoosenChannel(index,self):
         global choosenChannel
         choosenChannel = index
+        self.checkBox1.setChecked(self.SignalChannelArr[choosenChannel].hiddenFlag)
+        self.lineEdit.clear()
         print(choosenChannel)    
 
 class SignalChannel:
@@ -38,6 +42,7 @@ class SignalChannel:
             self.color = color
             self.label = label
             self.path = path
+            
             
             
             

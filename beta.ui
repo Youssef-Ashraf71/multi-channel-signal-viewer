@@ -291,6 +291,7 @@
                </item>
               </layout>
              </item>
+
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_2">
                <item>
@@ -406,6 +407,7 @@
             </layout>
            </widget>
           </widget>
+
          </widget>
         </item>
        </layout>
