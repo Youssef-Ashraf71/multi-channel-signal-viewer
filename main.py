@@ -150,7 +150,9 @@ class MainWindow(QtWidgets.QMainWindow):
       # plot state show/hide : a+m
       def DynamicSignalUpdate(self):
            for Index in range(len(self.SignalChannelArr)):
-               if self.SignalChannelArr[Index].path != "null" and len(self.SignalChannelArr[Index].time) > self.pointsPlotted:
+               
+             # if self.SignalChannelArr[Index].path != "null" and len(self.SignalChannelArr[Index].time) > self.pointsPlotted:
+               if self.SignalChannelArr[Index].pasth != "null" :
                     if self.SignalChannelArr[Index].hiddenFlag == True:
                          self.SignalChannelArr[Index].graph.hide()
                     else:
