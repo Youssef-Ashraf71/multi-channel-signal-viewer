@@ -37,9 +37,8 @@ import statistics
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, PageBreak, Image as PlatypusImage
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
-import reportlab
-# print("ReportLab version:", reportlab.__version__)
-
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfgen import canvas
 
 class MainWindow(QtWidgets.QMainWindow):
 
@@ -247,8 +246,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
       # Link 2 channles sim
 
-
-
       def captureGraphImage(self):
       # Create an exporter to capture the graph
        exporter = exporters.ImageExporter(self.plotGraph1.scene())
@@ -259,204 +256,109 @@ class MainWindow(QtWidgets.QMainWindow):
       # Set the filename
        export_filename = 'graph_capture.png'
 
-#----------------------old stuff------------------
-      # Export the graph to the specified filename
-      #  exporter.export(export_filename)
-
-#---------------new stuff-------------------------
-       try:
           # Export the graph to the specified filename
-          exporter.export(export_filename)
-       except Exception as e:
-          print(f"Error exporting graph image: {e}")
-          # Handle the error here (e.g., show an error message)
+       exporter.export(export_filename)
+
 
 
       def calculatePlotStatistics(self):
           
           #data
-          statisticalData = []
+          amplitudes = []
           meanValues = []
           medianValues = []
           modeValues = []
           standardDeviations = []
           channelsNumbers = []
+          channelLabels = []
 
           for Index in range(len(self.SignalChannelArr)):
                if (self.SignalChannelArr[Index].path != "null"):
-                    statisticalData.append(self.SignalChannelArr[Index].amplitude)
+                    amplitudes.append(self.SignalChannelArr[Index].amplitude)
                     channelsNumbers.append(Index)
-          try: 
+                    channelLabels.append(self.SignalChannelArr[Index].label)
 
-               for index, dataset in enumerate(statisticalData):
-                    if dataset:
-                         meanValues.append(statistics.mean(dataset))
-                         medianValues.append(statistics.median(dataset))
-                         modeValues.append(statistics.mode(dataset))
-                         standardDeviations.append(statistics.stdev(dataset))
-                    else:
-                         meanValues.append("N/A")
-                         medianValues.append("N/A")
-                         modeValues.append("N/A")
-                         standardDeviations.append("N/A")
+          for index, dataset in enumerate(amplitudes):
+               if dataset:
+                    meanValues.append(statistics.mean(dataset))
+                    medianValues.append(statistics.median(dataset))
+                    modeValues.append(statistics.mode(dataset))
+                    standardDeviations.append(statistics.stdev(dataset))
+               else:
+                    meanValues.append("N/A")
+                    medianValues.append("N/A")
+                    modeValues.append("N/A")
+                    standardDeviations.append("N/A")
 
                     # Create a table to display statistics
-               tableData = [["Statistic", channelsNumbers],
-                                        ["Mean", meanValues],
-                                        ["Median", medianValues],
-                                        ["Mode", modeValues],
-                                        ["Standard Deviation", standardDeviations]]               
+          tableData = []
+          tableData.append(["signal", "Channel number", "Mean", "Median", "Mode", "Standard Deviation"])
 
-               #TABLE STYLE    
-               style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), (0, 0, 0)),
-                                                       ('TEXTCOLOR', (0, 0), (-1, 0), (255, 255, 255)),
-                                                       ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                                                       ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                                                       ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                                                       ('BACKGROUND', (0, 1), (-1, -1), (215, 215, 215)),
-                                                       ('GRID', (0, 0), (-1, -1), 1, (0, 0, 0))
-                                                       ])
-               
-               table = Table(tableData)
-               table.setStyle(style)
+          for label, channel, mean, median, mode, std_dev in zip(
+               channelLabels, channelsNumbers, meanValues, medianValues, modeValues, standardDeviations
+          ):
+               tableData.append([ label, channel+1, mean, median, mode, std_dev])
 
-               # pdf.build(elements)
-               return table
-          except Exception as e:
-               print(f"Error calculating plot statistics: {e}")
-               # Handle the error here (e.g., show an error message)     
 
+               # TABLE STYLE    
+          style = TableStyle([
+          ('BACKGROUND', (0, 0), (-1, 0), colors.Color(0.8, 0.8, 0.8)),  # Light gray background for the header row
+          ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),      # Black text color for the header row
+          ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+          ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+          ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+          ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+          ('GRID', (0, 0), (-1, -1), 1, colors.black)
+          ])
+          table = Table(tableData)
+          table.setStyle(style)
+
+          return table
+          
   
      # export the report to pdf
       def exportReportPdf(self):
 
-          channelsNumber = []
-          channelsLabel = []
-          pdfElements = []
-
-          for Index in range(len(self.SignalChannelArr)):
-               if (self.SignalChannelArr[Index].path != "null"):
-                    channelsNumber.append(Index+1)
-                    channelsLabel.append(self.SignalChannelArr[Index].label)
-                    
-
-          # setting up the pdf           
           fileName = 'Report.pdf'
-          documentTitle = 'Report'
-          title = 'Signals Insights'
-
-          pdf = SimpleDocTemplate(
-               fileName,
-               pagesize = letter, 
-               title= documentTitle
-          )
-#..................NEW STUFF..............................
-          majorLogoPath = './Images/logo-major.png'
-          collegeLogoPath = './Images/collegeLogo.jpg'
-
-          major_logo = PlatypusImage(majorLogoPath, width=112, height=45)
-          college_logo = PlatypusImage(collegeLogoPath, width=70, height=70)
-
-          # majorLogo = ImageReader(majorLogoPath)
-          # collegeLogo = ImageReader(collegeLogoPath)
-
-          pdfElements.append(PlatypusImage(majorLogoPath, 10, 725, 112, 45))
-          pdfElements.append(PlatypusImage(collegeLogoPath, 525, 705, 70, 70))
-   
-     #     # Add an logos to the PDF
-     #      majorLogo = ImageReader('./Images/logo-major.png')
-     #      collegeLogo = ImageReader('./Images/collegeLogo.jpg')
-     #      pdfElements.append(PlatypusImage(majorLogo, 10, 725, 112, 45))
-     #      pdfElements.append(PlatypusImage(collegeLogo, 525, 705, 70, 70))
-
-          # pdf.drawImage(majorLogo, 10, 725, 112, 45 )
-          # pdf.drawImage(collegeLogo, 525, 705, 70, 70 )
- 
-
-
-
-#..............................OLD STUFF........................
-          # pdf =  SimpleDocTemplate(fileName, pagesize=letter, title=documentTitle)
-          # pdf = canvas.Canvas(fileName, pagesize=letter)
-          # pdf.setTitle(documentTitle)
-          # pdf.setFont("Helvetica", 24)
-          # pdf.drawCentredString(290, 720, title)
-
-          # # creating a frame using platypus
-          # padding = dict(
-          # leftPadding=72,
-          # rightPadding=72,
-          # topPadding=72,
-          # bottomPadding=18)
-
-     #  Add logos to the PDF
-
-#.....................NEW STUFF....................
-
+          documentTitle = 'Signal Insights Report'
+          title = 'Signals Insights'          
+          
           # Capture the plot and get the file path
           self.captureGraphImage()
+          
+          pdf = canvas.Canvas(fileName, pagesize=letter )
+          
+          pdf.setFont("Helvetica", 24)
 
+          pdf.drawCentredString(290, 720, title)
+          
+          majorLogoPath = './Images/logo-major.png'
+          collegeLogoPath = './Images/collegeLogo.jpg'
+          
+          major_logo = ImageReader(majorLogoPath)
+          college_logo = ImageReader(collegeLogoPath)
+          
+          # Add logos to the PDF
+          pdf.drawImage(major_logo, 10, 725, width=112, height=45)
+          pdf.drawImage(college_logo, 525, 705, width=70, height=70)
+          
+          
           # Open the image file
           image = Image.open('graph_capture.png')
-
           # Get the size (width and height) of the image
           image_width, image_height = image.size
-
           aspect_ratio = image_width / image_height
-
           # Close the image file
           image.close()
-
-          pdfElements.append(PlatypusImage('graph_capture.png', 35, 500, 550, 550 / aspect_ratio))
-
-          # pdf.drawImage('graph_capture.png', 35, 500 , 550, 550/aspect_ratio )
-          # signalsLabels = []
-          # for label in channelsLabel:
-          #      signalsLabels.append([label])
-
-          # SignalsPlottedTable = [["signal plotted",signalsLabels]]     
-          # # Create the table
-          # plottedSignalstable = Table(SignalsPlottedTable)
-
-          # # Define table style
-          # style = TableStyle([
-          #      ('BACKGROUND', (0, 0), (-1, 0), (0.2, 0.2, 0.2)),
-          #      ('TEXTCOLOR', (0, 0), (-1, 0), (1, 1, 1)),
-          #      ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-          #      ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-          #      ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-          #      ('BACKGROUND', (0, 1), (-1, -1), (0.9, 0.9, 0.9)),
-          #      ('GRID', (0, 0), (-1, -1), 1, (0, 0, 0))
-          # ])
-
-          # # Apply the style to the table
-          # plottedSignalstable.setStyle(style)
-
-          # # Add the table to pdfElements
-          # pdfElements.append(plottedSignalstable)
-
-          # # Add a page break
-          # pdfElements.append(PageBreak())
-
-
-          statisticsTable = self.calculatePlotStatistics()
-          pdfElements.append(statisticsTable)
-          pdfElements.append(PageBreak())
-
-          # if tableElements is not None:  # Check if tableElements is not None
-          #   pdfElements.extend(tableElements)
-          # else:
-          #   print("Error: Failed to calculate plot statistics")
-
-          # for element in tableElements:
-          #      pdf.build([element])
- 
- 
-          pdf.build(pdfElements)
-
-          # pdf.save()
-
-
+          
+          plotImg = ImageReader('graph_capture.png')
+          pdf.drawImage(plotImg, 35, 500, width=550, height=550 / aspect_ratio)
+          
+          statistics_table = self.calculatePlotStatistics()
+          statistics_table.wrapOn(pdf, 0, 0)
+          statistics_table.drawOn(pdf, 60, 400)  # Adjust the position as needed
+          
+          pdf.save()
 
 
 
