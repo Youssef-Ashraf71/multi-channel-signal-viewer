@@ -38,13 +38,13 @@ class MainWindow(QtWidgets.QMainWindow):
          # Apply Aqya stylesheet
           self.apply_stylesheet("Aqua.qss")
 
-          self.xAxis1 = [0,0,0,0,0,0,0,0,0,0]
-          self.yAxis1 = [0,0,0,0,0,0,0,0,0,0]
-          self.xAxis2 = [0,0,0,0,0,0,0,0,0,0]
-          self.yAxis2 = [0,0,0,0,0,0,0,0,0,0]
+          self.xAxis1 = [0]
+          self.yAxis1 = [0]
+          self.xAxis2 = [0]
+          self.yAxis2 = [0]
          # self.PlotterWindowProp = modules.PlotterWindow()
           self.pauseFlag1 = False
-          self.pauseFlag2=False
+          self.pauseFlag2 = False
           self.holdHorizontalFlag1 = False
           self.holdVerticalFlag1 = False
           self.cineSpeed1 = 0
@@ -128,10 +128,11 @@ class MainWindow(QtWidgets.QMainWindow):
                )
             else:
                  for channelIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
-                           self.SignalChannelArr[choosenGraphIndex][channelIndex].graph = choosenGraph.plot(
-                    name="Channel "+str(channelIndex+1) ,
-                    pen={'color': self.SignalChannelArr[choosenGraphIndex][channelIndex].getColor(), 'width': 1}
-               )
+                      if self.SignalChannelArr[choosenGraphIndex][channelIndex].path !="null":     
+                              self.SignalChannelArr[choosenGraphIndex][channelIndex].graph = choosenGraph.plot(
+                         name="Channel "+str(channelIndex+1) ,
+                         pen={'color': self.SignalChannelArr[choosenGraphIndex][channelIndex].getColor(), 'width': 1}
+                    )
             choosenGraph.showGrid(x= True, y= True)
             maxTime,minTime,maxAmp,minAmp = 0,0,0,0
             for i in range(len(self.SignalChannelArr[choosenGraphIndex])):
@@ -154,6 +155,9 @@ class MainWindow(QtWidgets.QMainWindow):
             )   
             # self.minAmp = minAmp
             # self.maxAmp = maxAmp
+            self.pauseFlag1 = False
+            self.pauseFlag2 = False
+
             if choosenGraphIndex == 0:
                    self.minSignalAmp1 = len(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].amplitude)
                    self.pointsPlotted1 = 0
@@ -268,6 +272,12 @@ class MainWindow(QtWidgets.QMainWindow):
            # self.channelList1.setItemText(modules.choosenChannel+1, )
             choosenChannelList.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr[choosenGraphIndex])+1)))
          #   modules.choosenChannel+=1
+            if choosenGraphIndex == 0:
+                  self.xAxis1.append(0)
+                  self.yAxis1.append(0)
+            elif choosenGraphIndex == 1:
+                  self.xAxis2.append(0)
+                  self.yAxis2.append(0)   
             self.SignalChannelArr[choosenGraphIndex].append(modules.SignalChannel())
 
 
@@ -303,12 +313,17 @@ class MainWindow(QtWidgets.QMainWindow):
       # rewind 
       def rewindSignal(self,choosengraph,choosenGraphIndex):
              selectedChannelIndex = 0
+             icon = QtGui.QIcon()
              if choosenGraphIndex == 0:
                       selectedChannelIndex = modules.choosenChannelGraph1
-                      self.startTime1.stop()
+                      icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                      self.playPauseBtn1.setIcon(icon)
+                    #  self.startTime1.stop()
              elif choosenGraphIndex == 1:
                       selectedChannelIndex = modules.choosenChannelGraph2
-                      self.startTime2.stop()
+                      icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                      self.playPauseBtn2.setIcon(icon)
+                    #  self.startTime2.stop()
              choosengraph.clear()
              #for channelIndex in range(len(self.SignalChannelArr[choosengraph])):
              self.signalInitialization(choosengraph,choosenGraphIndex,True)
@@ -336,6 +351,8 @@ class MainWindow(QtWidgets.QMainWindow):
                self.startTime2.setInterval(200-self.cineSpeed2)    
 
       # scroll in x dir
+
+
       def xScrollMove(self):
            val = self.xAxisScrollBar1.value()
            xmax = np.ceil(self.data[0][-1+self.vsize-self.psize+val])-1
@@ -346,6 +363,9 @@ class MainWindow(QtWidgets.QMainWindow):
       def yScrollMove(self):
            pass
       # naming the channel
+
+
+
       def editChannelName(self,label,choosenGraphIndex):
              # self.SignalChannelArr[modules.choosenChannel].label = name
              # self.Legend.getLabel(self.SignalChannelArr[modules.choosenChannel].graph).setText(name)
