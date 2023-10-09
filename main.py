@@ -42,6 +42,7 @@ class MainWindow(QtWidgets.QMainWindow):
           self.yAxis = [0,0,0,0,0,0,0,0,0,0]
          # self.PlotterWindowProp = modules.PlotterWindow()
           self.pauseFlag1 = False
+          self.pauseFlag2=False
           self.holdHorizontalFlag1 = False
           self.holdVerticalFlag1 = False
           self.cineSpeed = 0
@@ -64,13 +65,13 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f"Failed to open stylesheet file: {stylesheet_path}")
 
       # browse function to open directory : a+m
-      def browse(self):
+      def browse(self,choosengraph):
             self.fileName = QFileDialog.getOpenFileName(None,"Open a File","./",filter="Raw Data(*.txt *.csv *.xls *.hea *.dat)" )
             if self.fileName[0]:
-                 self.openFile(self.fileName[0])   
+                 self.openFile(self.fileName[0],choosengraph)   
 
       # open the file from directory : a+m
-      def openFile(self, path:str):
+      def openFile(self, path:str,choosengraph):
             timeArr, amplitudeArr = [],[]
             length = len(path)
             fileExtentsion = path[length-3:]
@@ -86,20 +87,24 @@ class MainWindow(QtWidgets.QMainWindow):
                     return
             self.SignalChannelArr[modules.choosenChannel].time =  timeArr
             self.SignalChannelArr[modules.choosenChannel].amplitude = amplitudeArr
-            self.Legend = self.plotGraph1.addLegend()
+            self.Legend = choosengraph.addLegend()
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+          #   if(choosengraph=="plotGraph1"):
             self.playPauseBtn1.setIcon(icon)
-            self.signalInitialization()
+          #   else:
+            self.playPauseBtn2.setIcon(icon)
+
+            self.signalInitialization(choosengraph)
 
 
       # initialize plotting: a+m
-      def signalInitialization(self):
-            self.SignalChannelArr[modules.choosenChannel].graph = self.plotGraph1.plot(
+      def signalInitialization(self,choosengraph):
+            self.SignalChannelArr[modules.choosenChannel].graph = choosengraph.plot(
                  name="Channel "+str(modules.choosenChannel+1) ,
-                 pen={'color': self.SignalChannelArr[modules.choosenChannel].getColor(), 'width': 1005}
+                 pen={'color': self.SignalChannelArr[modules.choosenChannel].getColor(), 'width': 1}
             )
-            self.plotGraph1.showGrid(x= True, y= True)
+            choosengraph.showGrid(x= True, y= True)
             maxTime,minTime,maxAmp,minAmp = 0,0,0,0
             for i in range(len(self.SignalChannelArr)):
                  if len(self.SignalChannelArr[i].time):
@@ -116,7 +121,7 @@ class MainWindow(QtWidgets.QMainWindow):
                       if min(self.SignalChannelArr[i].amplitude )< minAmp:
                             minAmp = min(self.SignalChannelArr[i].amplitude)           
                             
-            self.plotGraph1.plotItem.setLimits(
+            choosengraph.plotItem.setLimits(
              xMin=minTime, xMax=maxTime, yMin=minAmp, yMax=maxAmp     
             )   
             # self.minAmp = minAmp
@@ -175,21 +180,21 @@ class MainWindow(QtWidgets.QMainWindow):
                      ans = len(self.SignalChannelArr[channelIndex].time)
            return index     
       # Zoom in Func  : Mask
-      def zoomSignalIn(self):
-          self.plotGraph1.plotItem.getViewBox().scaleBy((0.5, 0.5))
+      def zoomSignalIn(self,choosengraph):
+          choosengraph.plotItem.getViewBox().scaleBy((0.5, 0.5))
       # Zoom out Func : Mask
-      def zoomSignalOut(self):
-          self.plotGraph1.plotItem.getViewBox().scaleBy((2, 2))
+      def zoomSignalOut(self,choosengraph):
+          choosengraph.plotItem.getViewBox().scaleBy((2, 2))
 
 
       # edit the signal color : Mask
       def setSignalChannelColor(self):
            self.SignalChannelArr[modules.choosenChannel].setColor(QColorDialog.getColor().name())
            self.DynamicSignalUpdate(True)
-      def addNewChannel(self):
+      def addNewChannel(self,choosenChannelList):
             _translate = QtCore.QCoreApplication.translate
            # self.channelList1.setItemText(modules.choosenChannel+1, )
-            self.channelList1.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr)+1)))
+            choosenChannelList.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr)+1)))
          #   modules.choosenChannel+=1
             self.SignalChannelArr.append(modules.SignalChannel())
 
@@ -197,24 +202,37 @@ class MainWindow(QtWidgets.QMainWindow):
 
       # play / pause func   : ziad
          # dont forget to change the icon 
-      def pauseGraph(self):
-           self.pauseFlag1 ^= True
-           icon = QtGui.QIcon()
-           if self.pauseFlag1 == True :
-                icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-                self.playPauseBtn1.setIcon(icon)
-                self.startTime.stop()
-           else: 
-                 icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-                 self.playPauseBtn1.setIcon(icon)
-                 self.startTime.start() 
+      def pauseGraph(self,playpauseButton,graph):
+           if graph=="graph1":
+               self.pauseFlag1 ^= True
+               icon = QtGui.QIcon()
+               if self.pauseFlag1 == True :
+                     icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                     playpauseButton.setIcon(icon)
+                     self.startTime.stop()
+               else: 
+                    icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                    playpauseButton.setIcon(icon)
+                    self.startTime.start() 
+           else:
+               self.pauseFlag2 ^= True
+               icon = QtGui.QIcon()
+               if self.pauseFlag2 == True :
+                     icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                     playpauseButton.setIcon(icon)
+                     self.startTime.stop()
+               else: 
+                    icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                    playpauseButton.setIcon(icon)
+                    self.startTime.start() 
+                
 
 
 
       # rewind 
-      def rewindSignal(self):
+      def rewindSignal(self,choosengraph):
           # print("ana morad",self.SignalChannelArr[modules.choosenChannel].path)
-           self.plotGraph1.clear()
+           choosengraph.clear()
           # print("ana ashf",self.SignalChannelArr[modules.choosenChannel].path)
           # icon = QtGui.QIcon()
            #icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
