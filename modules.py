@@ -22,12 +22,24 @@ import os
 from fpdf import FPDF
 from wfdb.io.record import rdrecord
 import wfdb
+import main
 
-choosenChannel = 0
-def setChoosenChannel(index):
-        global choosenChannel
-        choosenChannel = index
-        print(choosenChannel)    
+
+choosenChannelGraph1 = 0
+choosenChannelGraph2 = 0
+
+def setChoosenChannel(self,index,graphIndex):
+        global choosenChannelGraph1
+        global choosenChannelGraph2
+        if graphIndex == 0:
+            choosenChannelGraph1 = index
+            self.checkBox1.setChecked(self.SignalChannelArr[graphIndex][choosenChannelGraph1].hiddenFlag)
+            self.lineEdit.clear()
+        if graphIndex == 1:
+              choosenChannelGraph2 = index    
+              self.checkBox2.setChecked(self.SignalChannelArr[graphIndex][choosenChannelGraph2].hiddenFlag)
+              self.lineEdit2.clear() 
+       # print(choosenChannel)    
 
 class SignalChannel:
       def __init__(self,time = [] , amplitude = [] ,hiddenFlag = False , label="N/A", color= 0xffff00 , path="null"):
@@ -41,8 +53,10 @@ class SignalChannel:
             
             
             
-      def getChoosenSignal(self):
-             return choosenChannel       
+            
+   #   def getChoosenSignal(self):
+         #    return choosenChannel   
+             
       def getColor(self):
              return self.color
       
