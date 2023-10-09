@@ -12,7 +12,7 @@ def __init__connectors__(self):
       self.browseBtn1.clicked.connect(lambda:(self.browse(self.plotGraph1,0)))
 
       self.channelList1 = self.findChild(QComboBox, "channelList1")
-      self.channelList1.currentIndexChanged.connect(lambda:modules.setChoosenChannel(self.channelList1.currentIndex(), self))
+      self.channelList1.currentIndexChanged.connect(lambda:modules.setChoosenChannel(self,self.channelList1.currentIndex(),0, ))
 
       self.checkBox1 = self.findChild(QCheckBox,"checkBox1")
       self.checkBox1.stateChanged.connect(lambda: main.MainWindow.hideSignal(self,self.checkBox1.isChecked(),0))
@@ -36,7 +36,7 @@ def __init__connectors__(self):
 
       # temp using export btn to add more channels
       self.pushButton = self.findChild(QPushButton,"pushButton")
-      self.pushButton.clicked.connect(lambda:main.MainWindow.addNewChannel(self,self.channelList1))
+      self.pushButton.clicked.connect(lambda:main.MainWindow.addNewChannel(self,self.channelList1,0))
 
       self.horizontalSlider = self.findChild(QSlider,"horizontalSlider")
       self.horizontalSlider.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self))
@@ -52,9 +52,9 @@ def __init__connectors__(self):
       self.browseBtn2.clicked.connect(lambda:(self.browse(self.plotGraph2,1)))
 
       self.channelList2 = self.findChild(QComboBox, "channelList2")
-      self.channelList2.currentIndexChanged.connect(lambda:modules.setChoosenChannel(self.channelList2.currentIndex(), self))
+      self.channelList2.currentIndexChanged.connect(lambda:modules.setChoosenChannel(self,self.channelList2.currentIndex(),1))
 
-      self.checkBox2 = self.findChild(QCheckBox,"checkBox2")
+      self.graphIndex = self.findChild(QCheckBox,"checkBox2")
       self.checkBox2.stateChanged.connect(lambda: main.MainWindow.hideSignal(self,self.checkBox2.isChecked(),1))
 
       self.selectColorBtn2 = self.findChild(QPushButton,"selectColorBtn2")
@@ -75,7 +75,7 @@ def __init__connectors__(self):
       self.lineEdit2.returnPressed.connect(lambda:main.MainWindow.editChannelName(self,self.lineEdit2.text(),1))
 
       self.addNewChannel2 = self.findChild(QPushButton,"addNewChannel2")
-      self.addNewChannel2.clicked.connect(lambda:main.MainWindow.addNewChannel(self,self.channelList2))
+      self.addNewChannel2.clicked.connect(lambda:main.MainWindow.addNewChannel(self,self.channelList2,1))
 
       self.speedSlider2 = self.findChild(QSlider,"speedSlider2")
       self.speedSlider2.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self))

@@ -28,17 +28,17 @@ import main
 choosenChannelGraph1 = 0
 choosenChannelGraph2 = 0
 
-def setChoosenChannel(index,self,graphIndex):
+def setChoosenChannel(self,index,graphIndex):
         global choosenChannelGraph1
         global choosenChannelGraph2
         if graphIndex == 0:
             choosenChannelGraph1 = index
-            self.checkBox1.setChecked(self.SignalChannelArr[choosenChannelGraph1].hiddenFlag)
+            self.checkBox1.setChecked(self.SignalChannelArr[graphIndex][choosenChannelGraph1].hiddenFlag)
             self.lineEdit.clear()
         if graphIndex == 1:
               choosenChannelGraph2 = index    
-              self.checkBox1.setChecked(self.SignalChannelArr[choosenChannelGraph2].hiddenFlag)
-              self.lineEdit.clear() 
+              self.checkBox2.setChecked(self.SignalChannelArr[graphIndex][choosenChannelGraph2].hiddenFlag)
+              self.lineEdit2.clear() 
        # print(choosenChannel)    
 
 class SignalChannel:

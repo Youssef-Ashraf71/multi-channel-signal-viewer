@@ -256,12 +256,12 @@ class MainWindow(QtWidgets.QMainWindow):
            self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].setColor(QColorDialog.getColor().name())
            self.DynamicSignalUpdate(choosenGraphIndex,selectedChannelIndex,True)
 
-      def addNewChannel(self,choosenChannelList):
+      def addNewChannel(self,choosenChannelList,choosenGraphIndex):
             _translate = QtCore.QCoreApplication.translate
            # self.channelList1.setItemText(modules.choosenChannel+1, )
-            choosenChannelList.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr)+1)))
+            choosenChannelList.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr[choosenGraphIndex])+1)))
          #   modules.choosenChannel+=1
-            self.SignalChannelArr.append(modules.SignalChannel())
+            self.SignalChannelArr[choosenGraphIndex].append(modules.SignalChannel())
 
 
 
