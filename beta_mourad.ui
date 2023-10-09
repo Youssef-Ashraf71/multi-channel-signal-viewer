@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
       <x>12</x>
@@ -29,7 +29,7 @@
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QWidget" name="">
         <layout class="QGridLayout" name="gridLayout">
          <item row="1" column="0">
           <layout class="QGridLayout" name="plotGridLayout1">
@@ -238,7 +238,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QWidget" name="">
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="QLabel" name="label">
@@ -526,18 +526,6 @@
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_7">
-         <item>
-          <widget class="QCheckBox" name="linkGraphsCheckBox">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Link Graphs</string>
-           </property>
-          </widget>
-         </item>
          <item>
           <widget class="QPushButton" name="playPauseBtn1_5">
            <property name="enabled">

@@ -91,5 +91,18 @@ def __init__connectors__(self):
       self.linkGraphsCheckBox = self.findChild(QCheckBox,"linkGraphsCheckBox")
       self.linkGraphsCheckBox.stateChanged.connect(lambda: main.MainWindow.linkGraphs(self,self.linkGraphsCheckBox.isChecked()))
 
+      self.playPauseLinkBtn = self.findChild(QPushButton,"playPauseLinkBtn")
+      self.playPauseLinkBtn.clicked.connect(lambda:main.MainWindow.playPauseLink(self,self.playPauseLinkBtn,self.playPauseBtn1,self.playPauseBtn2))
+
+      self.zoomInLinkBtn = self.findChild(QPushButton,"zoomInLinkBtn")
+      self.zoomInLinkBtn.clicked.connect(lambda:main.MainWindow.zoomInLink(self,self.plotGraph1,self.plotGraph2))
+
+      self.zoomOutLinkBtn = self.findChild(QPushButton,"zoomOutLinkBtn")
+      self.zoomOutLinkBtn.clicked.connect(lambda:main.MainWindow.zoomOutLink(self,self.plotGraph1,self.plotGraph2))
+
+      self.rewindLinkBtn = self.findChild(QPushButton,"rewindLinkBtn")
+      self.rewindLinkBtn.clicked.connect(lambda:main.MainWindow.rewindLink(self,self.plotGraph1,self.plotGraph2))
+
+
 
      
