@@ -9,19 +9,19 @@ import modules
 def __init__connectors__(self):
 
       # Graph 1
-      self.browseBtn1.clicked.connect(lambda:(self.browse(self.plotGraph1)))
+      self.browseBtn1.clicked.connect(lambda:(self.browse(self.plotGraph1,0)))
 
       self.channelList1 = self.findChild(QComboBox, "channelList1")
       self.channelList1.currentIndexChanged.connect(lambda:modules.setChoosenChannel(self.channelList1.currentIndex(), self))
 
       self.checkBox1 = self.findChild(QCheckBox,"checkBox1")
-      self.checkBox1.stateChanged.connect(lambda: main.MainWindow.hideSignal(self,self.checkBox1.isChecked()))
+      self.checkBox1.stateChanged.connect(lambda: main.MainWindow.hideSignal(self,self.checkBox1.isChecked(),0))
 
       self.selectColorBtn1 = self.findChild(QPushButton,"selectColorBtn1")
-      self.selectColorBtn1.clicked.connect(lambda:main.MainWindow.setSignalChannelColor(self))
+      self.selectColorBtn1.clicked.connect(lambda:main.MainWindow.setSignalChannelColor(self,0))
 
       self.playPauseBtn1 = self.findChild(QPushButton,"playPauseBtn1")
-      self.playPauseBtn1.clicked.connect(lambda:main.MainWindow.pauseGraph(self,self.playPauseBtn1,"graph1"))
+      self.playPauseBtn1.clicked.connect(lambda:main.MainWindow.pauseGraph(self,self.playPauseBtn1,0))
 
       self.rewindBtn1 = self.findChild(QPushButton,"rewindBtn1")
       self.rewindBtn1.clicked.connect(lambda:main.MainWindow.rewindSignal(self,self.plotGraph1))
@@ -32,7 +32,7 @@ def __init__connectors__(self):
       self.zoomOutBtn1.clicked.connect(lambda:main.MainWindow.zoomSignalOut(self,self.plotGraph1))
 
       self.lineEdit = self.findChild(QLineEdit,"lineEdit")
-      self.lineEdit.returnPressed.connect(lambda:main.MainWindow.editChannelName(self,self.lineEdit.text()))
+      self.lineEdit.returnPressed.connect(lambda:main.MainWindow.editChannelName(self,self.lineEdit.text(),0))
 
       # temp using export btn to add more channels
       self.pushButton = self.findChild(QPushButton,"pushButton")
@@ -49,19 +49,19 @@ def __init__connectors__(self):
 
 # ------------------------------------------------------------------------------------------------------------
 # Graph2 
-      self.browseBtn2.clicked.connect(lambda:(self.browse(self.plotGraph2)))
+      self.browseBtn2.clicked.connect(lambda:(self.browse(self.plotGraph2,1)))
 
       self.channelList2 = self.findChild(QComboBox, "channelList2")
       self.channelList2.currentIndexChanged.connect(lambda:modules.setChoosenChannel(self.channelList2.currentIndex(), self))
 
       self.checkBox2 = self.findChild(QCheckBox,"checkBox2")
-      self.checkBox2.stateChanged.connect(lambda: main.MainWindow.hideSignal(self,self.checkBox2.isChecked()))
+      self.checkBox2.stateChanged.connect(lambda: main.MainWindow.hideSignal(self,self.checkBox2.isChecked(),1))
 
       self.selectColorBtn2 = self.findChild(QPushButton,"selectColorBtn2")
-      self.selectColorBtn2.clicked.connect(lambda:main.MainWindow.setSignalChannelColor(self))
+      self.selectColorBtn2.clicked.connect(lambda:main.MainWindow.setSignalChannelColor(self,1))
 
       self.playPauseBtn2 = self.findChild(QPushButton,"playPauseBtn2")
-      self.playPauseBtn2.clicked.connect(lambda:main.MainWindow.pauseGraph(self,self.playPauseBtn2,"graph2"))
+      self.playPauseBtn2.clicked.connect(lambda:main.MainWindow.pauseGraph(self,self.playPauseBtn2,1))
 
       self.rewindBtn2 = self.findChild(QPushButton,"rewindBtn2")
       self.rewindBtn2.clicked.connect(lambda:main.MainWindow.rewindSignal(self,self.plotGraph2))
@@ -72,7 +72,7 @@ def __init__connectors__(self):
       self.zoomOutBtn2.clicked.connect(lambda:main.MainWindow.zoomSignalOut(self,self.plotGraph2))
 
       self.lineEdit2 = self.findChild(QLineEdit,"lineEdit2")
-      self.lineEdit2.returnPressed.connect(lambda:main.MainWindow.editChannelName(self,self.lineEdit2.text()))
+      self.lineEdit2.returnPressed.connect(lambda:main.MainWindow.editChannelName(self,self.lineEdit2.text(),1))
 
       self.addNewChannel2 = self.findChild(QPushButton,"addNewChannel2")
       self.addNewChannel2.clicked.connect(lambda:main.MainWindow.addNewChannel(self,self.channelList2))
