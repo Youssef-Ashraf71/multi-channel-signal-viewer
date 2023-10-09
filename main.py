@@ -38,15 +38,28 @@ class MainWindow(QtWidgets.QMainWindow):
          # Apply Aqya stylesheet
           self.apply_stylesheet("Aqua.qss")
 
-          self.xAxis = [0,0,0,0,0,0,0,0,0,0]
-          self.yAxis = [0,0,0,0,0,0,0,0,0,0]
+          self.xAxis1 = [0]
+          self.yAxis1 = [0]
+          self.xAxis2 = [0]
+          self.yAxis2 = [0]
          # self.PlotterWindowProp = modules.PlotterWindow()
           self.pauseFlag1 = False
+          self.pauseFlag2 = False
+          self.pauseFlagLink=False
+          self.isLinked = False
           self.holdHorizontalFlag1 = False
           self.holdVerticalFlag1 = False
-          self.cineSpeed = 0
+          self.cineSpeed1 = 0
+          self.cineSpeed2 = 0
           self.SignalChannelArr = []
-          self.SignalChannelArr.append(modules.SignalChannel())
+          tmpList = [modules.SignalChannel()]
+          self.SignalChannelArr.append(tmpList)
+          tmpList = [modules.SignalChannel()]
+          self.SignalChannelArr.append(tmpList)
+          self.playPauseLinkBtn.setEnabled(False)
+          self.zoomInLinkBtn.setEnabled(False)
+          self.zoomOutLinkBtn.setEnabled(False)
+          self.rewindLinkBtn.setEnabled(False)
          # for i in range(3):
            #    self.SignalChannelArr.append(modules.SignalChannel())
           # params
@@ -64,13 +77,13 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f"Failed to open stylesheet file: {stylesheet_path}")
 
       # browse function to open directory : a+m
-      def browse(self):
+      def browse(self,choosenGraph,choosenGraphIndex):
             self.fileName = QFileDialog.getOpenFileName(None,"Open a File","./",filter="Raw Data(*.txt *.csv *.xls *.hea *.dat)" )
             if self.fileName[0]:
-                 self.openFile(self.fileName[0])   
+                 self.openFile(self.fileName[0],choosenGraph,choosenGraphIndex)   
 
       # open the file from directory : a+m
-      def openFile(self, path:str):
+      def openFile(self, path:str,choosenGraph, choosenGraphIndex):
             timeArr, amplitudeArr = [],[]
             length = len(path)
             fileExtentsion = path[length-3:]
@@ -80,92 +93,237 @@ class MainWindow(QtWidgets.QMainWindow):
                 for row in csv_data:
                       timeArr.append(float(row[0]))
                       amplitudeArr.append(float(row[1]))
-            self.SignalChannelArr[modules.choosenChannel].path = path
-            if self.SignalChannelArr[0].path == "null":
-                    QtWidgets.QMessageBox.warning(self,"Channel 1 is Empty","Please use channel 1 first")
-                    return
-            self.SignalChannelArr[modules.choosenChannel].time =  timeArr
-            self.SignalChannelArr[modules.choosenChannel].amplitude = amplitudeArr
-            self.Legend = self.plotGraph1.addLegend()
+
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-            self.playPauseBtn1.setIcon(icon)
-            self.signalInitialization()
+            icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)     
+
+            if choosenGraphIndex == 0:
+                       self.SignalChannelArr[0][modules.choosenChannelGraph1].path = path
+                       if self.SignalChannelArr[0][0].path == "null":
+                              QtWidgets.QMessageBox.warning(self,"Channel 1 in Graph 1 is Empty","Please use channel 1 first")
+                              return
+                       self.SignalChannelArr[0][modules.choosenChannelGraph1].time =  timeArr
+                       self.SignalChannelArr[0][modules.choosenChannelGraph1].amplitude = amplitudeArr
+                       self.Legend1 = choosenGraph.addLegend()
+                       self.playPauseBtn1.setIcon(icon)
+
+            elif choosenGraphIndex == 1:
+                       self.SignalChannelArr[1][modules.choosenChannelGraph2].path = path
+                       if self.SignalChannelArr[1][0].path == "null":
+                              QtWidgets.QMessageBox.warning(self,"Channel 1 in Graph 2 is Empty","Please use channel 1 first")
+                              return
+                       self.SignalChannelArr[1][modules.choosenChannelGraph2].time =  timeArr
+                       self.SignalChannelArr[1][modules.choosenChannelGraph2].amplitude = amplitudeArr
+                       self.Legend2 = choosenGraph.addLegend()
+                       self.playPauseBtn2.setIcon(icon)
+
+            self.signalInitialization(choosenGraph,choosenGraphIndex,False)
 
 
       # initialize plotting: a+m
-      def signalInitialization(self):
-            self.SignalChannelArr[modules.choosenChannel].graph = self.plotGraph1.plot(
-                 name="Channel "+str(modules.choosenChannel+1) ,
-                 pen={'color': self.SignalChannelArr[modules.choosenChannel].getColor(), 'width': 1005}
-            )
-            self.plotGraph1.showGrid(x= True, y= True)
+      def signalInitialization(self,choosenGraph,choosenGraphIndex,isRewinding):
+            selectedChannelIndex = 0
+            if choosenGraphIndex == 0:
+                 selectedChannelIndex = modules.choosenChannelGraph1
+            elif choosenGraphIndex == 1:
+                      selectedChannelIndex = modules.choosenChannelGraph2
+            if isRewinding == False:           
+               self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].graph = choosenGraph.plot(
+                    name="Channel "+str(selectedChannelIndex+1) ,
+                    pen={'color': self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].getColor(), 'width': 1}
+               )
+            else:
+                 for channelIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
+                      if self.SignalChannelArr[choosenGraphIndex][channelIndex].path !="null":     
+                              self.SignalChannelArr[choosenGraphIndex][channelIndex].graph = choosenGraph.plot(
+                         name="Channel "+str(channelIndex+1) ,
+                         pen={'color': self.SignalChannelArr[choosenGraphIndex][channelIndex].getColor(), 'width': 1}
+                    )
+            choosenGraph.showGrid(x= True, y= True)
             maxTime,minTime,maxAmp,minAmp = 0,0,0,0
-            for i in range(len(self.SignalChannelArr)):
-                 if len(self.SignalChannelArr[i].time):
-                      if len(self.SignalChannelArr[i].time )> maxTime:
-                            maxTime = len(self.SignalChannelArr[i].time)
-                 if len(self.SignalChannelArr[i].time):
-                      if len(self.SignalChannelArr[i].time )< minTime:
-                            minTime = len(self.SignalChannelArr[i].time)
-                 if len(self.SignalChannelArr[i].amplitude):
-                      if max(self.SignalChannelArr[i].amplitude ) > maxAmp:
-                            maxAmp = max(self.SignalChannelArr[i].amplitude)           
+            for i in range(len(self.SignalChannelArr[choosenGraphIndex])):
+                 if len(self.SignalChannelArr[choosenGraphIndex][i].time):
+                      if len(self.SignalChannelArr[choosenGraphIndex][i].time )> maxTime:
+                            maxTime = len(self.SignalChannelArr[choosenGraphIndex][i].time)
+                 if len(self.SignalChannelArr[choosenGraphIndex][i].time):
+                      if len(self.SignalChannelArr[choosenGraphIndex][i].time )< minTime:
+                            minTime = len(self.SignalChannelArr[choosenGraphIndex][i].time)
+                 if len(self.SignalChannelArr[choosenGraphIndex][i].amplitude):
+                      if max(self.SignalChannelArr[choosenGraphIndex][i].amplitude ) > maxAmp:
+                            maxAmp = max(self.SignalChannelArr[choosenGraphIndex][i].amplitude)           
 
-                 if len(self.SignalChannelArr[i].amplitude):
-                      if min(self.SignalChannelArr[i].amplitude )< minAmp:
-                            minAmp = min(self.SignalChannelArr[i].amplitude)           
+                 if len(self.SignalChannelArr[choosenGraphIndex][i].amplitude):
+                      if min(self.SignalChannelArr[choosenGraphIndex][i].amplitude ) < minAmp:
+                            minAmp = min(self.SignalChannelArr[choosenGraphIndex][i].amplitude)           
                             
-            self.plotGraph1.plotItem.setLimits(
+            choosenGraph.plotItem.setLimits(
              xMin=minTime, xMax=maxTime, yMin=minAmp, yMax=maxAmp     
             )   
             # self.minAmp = minAmp
             # self.maxAmp = maxAmp
-            self.minSignalAmp = len(self.SignalChannelArr[modules.choosenChannel].amplitude)
-            self.pointsPlotted = 0
-            self.startTime = QtCore.QTimer()
-            self.startTime.setInterval(200-self.cineSpeed)
-            self.startTime.timeout.connect(self.signalPlotting)
-            self.startTime.start()
+            self.pauseFlag1 = False
+            self.pauseFlag2 = False
+
+            if choosenGraphIndex == 0:
+                   self.minSignalAmp1 = len(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].amplitude)
+                   self.pointsPlotted1 = 0
+                   self.startTime1 = QtCore.QTimer()
+                   self.startTime1.setInterval(200-self.cineSpeed1)
+                   self.startTime1.timeout.connect(lambda:self.signalPlotting(choosenGraph,choosenGraphIndex))
+                   self.startTime1.start()
+            if choosenGraphIndex == 1:
+                   self.minSignalAmp2 = len(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].amplitude)    
+                   self.pointsPlotted2 = 0
+                   self.startTime2 = QtCore.QTimer()
+                   self.startTime2.setInterval(200-self.cineSpeed2)
+                   self.startTime2.timeout.connect(lambda:self.signalPlotting(choosenGraph,choosenGraphIndex))
+                   self.startTime2.start()
+         #   self.pointsPlotted = 0
+        #    self.startTime = QtCore.QTimer()
+           # self.startTime.setInterval(200-self.cineSpeed)
+         #   self.startTime.timeout.connect(self.signalPlotting)
+         #   self.startTime.start()
   
 
 
       # draw plot: a+m
-      def  signalPlotting(self):
-           for channelIdx in range(len(self.SignalChannelArr)):
-                if self.SignalChannelArr[channelIdx].path !="null":
-                     self.xAxis[channelIdx] = self.SignalChannelArr[channelIdx].time[:self.pointsPlotted]
-                     self.yAxis[channelIdx] = self.SignalChannelArr[channelIdx].amplitude[:self.pointsPlotted]
+      def  signalPlotting(self,choosenGraph,choosenGraphIndex):
+           for channelIdx in range(len(self.SignalChannelArr[choosenGraphIndex])):
+                if self.SignalChannelArr[choosenGraphIndex][channelIdx].path !="null":
+                     if choosenGraphIndex == 0:
+                           self.xAxis1[channelIdx] = self.SignalChannelArr[choosenGraphIndex][channelIdx].time[:self.pointsPlotted1]
+                           self.yAxis1[channelIdx] = self.SignalChannelArr[choosenGraphIndex][channelIdx].amplitude[:self.pointsPlotted1]
+
+                     elif choosenGraphIndex == 1:
+                         self.xAxis2[channelIdx] = self.SignalChannelArr[choosenGraphIndex][channelIdx].time[:self.pointsPlotted2]
+                         self.yAxis2[channelIdx] = self.SignalChannelArr[choosenGraphIndex][channelIdx].amplitude[:self.pointsPlotted2]
            
-           self.pointsPlotted += 5
+           if choosenGraphIndex == 0:
+                self.pointsPlotted1 += 5
+           elif choosenGraphIndex == 1:
+                self.pointsPlotted2 += 5
            #if self.minSignalAmp < self.pointsPlotted:
            #     self.startTime.stop()
 
-           for channelIdx in range(len(self.SignalChannelArr)):
-                  if self.SignalChannelArr[channelIdx].path != "null":
-                       if len(self.SignalChannelArr[channelIdx].time) > self.pointsPlotted:
+           for channelIdx in range(len(self.SignalChannelArr[choosenGraphIndex])):
+                  if self.SignalChannelArr[choosenGraphIndex][channelIdx].path != "null":
+                       if choosenGraphIndex == 0:
+                              if len(self.SignalChannelArr[choosenGraphIndex][channelIdx].time) > self.pointsPlotted1:
                               # print(self.SignalChannelArr[channelIdx].getColor())
-                               self.SignalChannelArr[channelIdx].graph.setData(self.xAxis[self.getLongestSignal()], self.yAxis[channelIdx], pen=self.SignalChannelArr[channelIdx].getColor(), name=self.SignalChannelArr[channelIdx].label) 
+                                    self.SignalChannelArr[choosenGraphIndex][channelIdx].graph.setData(self.xAxis1[channelIdx], self.yAxis1[channelIdx], pen=self.SignalChannelArr[choosenGraphIndex][channelIdx].getColor(), name=self.SignalChannelArr[choosenGraphIndex][channelIdx].label) 
+
+                       elif choosenGraphIndex == 1:
+                               if len(self.SignalChannelArr[choosenGraphIndex][channelIdx].time) > self.pointsPlotted2:
+                              # print(self.SignalChannelArr[channelIdx].getColor())
+                                    self.SignalChannelArr[choosenGraphIndex][channelIdx].graph.setData(self.xAxis2[channelIdx], self.yAxis2[channelIdx], pen=self.SignalChannelArr[choosenGraphIndex][channelIdx].getColor(), name=self.SignalChannelArr[choosenGraphIndex][channelIdx].label)   
+                      
 
       # plot state show/hide : a+m
-      def DynamicSignalUpdate(self, isChangingColor = False):
-           for Index in range(len(self.SignalChannelArr)):
+      def DynamicSignalUpdate(self, choosenGraphIndex, selectedChannelIndex,  isChangingColor = False):
+           for Index in range(len(self.SignalChannelArr[choosenGraphIndex])):
                
              # if self.SignalChannelArr[Index].path != "null" and len(self.SignalChannelArr[Index].time) > self.pointsPlotted:
-               if self.SignalChannelArr[Index].path != "null" :
-                    if self.SignalChannelArr[Index].hiddenFlag == True:
-                         self.SignalChannelArr[Index].graph.hide()
+               if self.SignalChannelArr[choosenGraphIndex][Index].path != "null" :
+                    if self.SignalChannelArr[choosenGraphIndex][Index].hiddenFlag == True:
+                         self.SignalChannelArr[choosenGraphIndex][Index].graph.hide()
                     else:
-                         self.SignalChannelArr[Index].graph.show()
-                    if len(self.SignalChannelArr[Index].time) > self.pointsPlotted and isChangingColor == False:
-                         self.SignalChannelArr[Index].graph.setData(
-                              self.xAxis[self.getLongestSignal()], self.yAxis[Index], pen=self.SignalChannelArr[Index].getColor(), name=self.SignalChannelArr[Index].label, skipFiniteCheck=True)
-                    elif len(self.SignalChannelArr[Index].time) <= self.pointsPlotted  and isChangingColor == True:
-                         self.SignalChannelArr[Index].graph.setData(
-                              self.xAxis[Index], self.yAxis[Index], pen=self.SignalChannelArr[Index].getColor(), name=self.SignalChannelArr[Index].label, skipFiniteCheck=True)
-                    elif len(self.SignalChannelArr[Index].time) > self.pointsPlotted  and isChangingColor == True:
-                         self.SignalChannelArr[Index].graph.setData(
-                              self.xAxis[self.getLongestSignal()], self.yAxis[Index], pen=self.SignalChannelArr[Index].getColor(), name=self.SignalChannelArr[Index].label, skipFiniteCheck=True)     
+                         self.SignalChannelArr[choosenGraphIndex][Index].graph.show()
+                   ######################################################################
+                    if choosenGraphIndex == 0:
+                          currentpointsPlotted = self.pointsPlotted1
+                          currentXAxis = self.xAxis1
+                          currentYAxis = self.yAxis1 
+                    elif choosenGraphIndex == 1:
+                          currentpointsPlotted = self.pointsPlotted2
+                          currentXAxis = self.xAxis2
+                          currentYAxis = self.yAxis2 
+                   ##################################################       
+                    if len(self.SignalChannelArr[choosenGraphIndex][Index].time) > currentpointsPlotted and isChangingColor == False:
+                         self.SignalChannelArr[choosenGraphIndex][Index].graph.setData(
+                              currentXAxis[Index], currentYAxis[Index], pen=self.SignalChannelArr[choosenGraphIndex][Index].getColor(), name=self.SignalChannelArr[choosenGraphIndex][Index].label, skipFiniteCheck=True)
+                    elif len(self.SignalChannelArr[choosenGraphIndex][Index].time) <= currentpointsPlotted  and isChangingColor == True:
+                         self.SignalChannelArr[choosenGraphIndex][Index].graph.setData(
+                              currentXAxis[Index], currentYAxis[Index], pen=self.SignalChannelArr[choosenGraphIndex][Index].getColor(), name=self.SignalChannelArr[choosenGraphIndex][Index].label, skipFiniteCheck=True)
+                    elif len(self.SignalChannelArr[choosenGraphIndex][Index].time) > currentpointsPlotted  and isChangingColor == True:
+                         self.SignalChannelArr[choosenGraphIndex][Index].graph.setData(
+                              currentXAxis[Index], currentYAxis[Index], pen=self.SignalChannelArr[choosenGraphIndex][Index].getColor(), name=self.SignalChannelArr[choosenGraphIndex][Index].label, skipFiniteCheck=True)     
+      
+      
+      
+      
+      def linkGraphs(self,isChecked):
+           if self.linkGraphsCheckBox.isChecked() ==False :
+                         self.playPauseBtn1.setEnabled(True)
+                         self.playPauseBtn2.setEnabled(True)
+                         self.zoomInBtn1.setEnabled(True)
+                         self.zoomInBtn2.setEnabled(True)
+                         self.zoomOutBtn1.setEnabled(True)
+                         self.zoomOutBtn2.setEnabled(True)
+                         self.rewindBtn1.setEnabled(True)
+                         self.rewindBtn2.setEnabled(True)
+                         self.horizontalSlider.setEnabled(True)
+                         self.speedSlider2.setEnabled(True)
+
+                         self.playPauseLinkBtn.setEnabled(False)
+                         self.zoomInLinkBtn.setEnabled(False)
+                         self.zoomOutLinkBtn.setEnabled(False)
+                         self.rewindLinkBtn.setEnabled(False)
+                         return
+           if self.SignalChannelArr[0][0].path == "null" or self.SignalChannelArr[1][0].path == "null":
+                    if isChecked:
+                         self.linkGraphsCheckBox.setChecked(False)
+                    QtWidgets.QMessageBox.warning(self,"Operation Failed","You can't link the two graphs if one of them is empty")
+                    return
+           icon = QtGui.QIcon()
+           icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+           self.playPauseLinkBtn.setIcon(icon)
+           self.playPauseBtn1.setEnabled(False)
+           self.playPauseBtn2.setEnabled(False)
+           self.zoomInBtn1.setEnabled(False)
+           self.zoomInBtn2.setEnabled(False)
+           self.zoomOutBtn1.setEnabled(False)
+           self.zoomOutBtn2.setEnabled(False)
+           self.rewindBtn1.setEnabled(False)
+           self.rewindBtn2.setEnabled(False)
+           self.horizontalSlider.setEnabled(False)
+           self.speedSlider2.setEnabled(False)
+
+           self.playPauseLinkBtn.setEnabled(True)
+           self.zoomInLinkBtn.setEnabled(True)
+           self.zoomOutLinkBtn.setEnabled(True)
+           self.rewindLinkBtn.setEnabled(True)
+           self.rewindSignal(self.plotGraph1,0)
+           self.rewindSignal(self.plotGraph2,1)
+          #  self.isLinked = isChecked
+
+
+      def playPauseLink(self,playPauseBtn,playPauseBtn1,playPauseBtn2):
+             icon = QtGui.QIcon()
+             self.pauseFlagLink ^= True
+             if self.pauseFlagLink == True :
+                     icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                     playPauseBtn.setIcon(icon)
+                   
+             else:
+                    icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                    playPauseBtn.setIcon(icon)
+          
+
+             self.pauseGraph(playPauseBtn1,0)
+             self.pauseGraph(playPauseBtn2,1)
+
+
+      def zoomInLink(self,graph1,graph2):
+            self.zoomSignalIn(graph1)
+            self.zoomSignalIn(graph2)
+
+      def zoomOutLink(self,graph1,graph2):
+            self.zoomSignalOut(graph1)
+            self.zoomSignalOut(graph2)
+      
+      def rewindLink(self,graph1,graph2):
+            self.rewindSignal(graph1,0)
+            self.rewindSignal(graph2,1)
 
       def getLongestSignal(self):
            ans, index = 0,0
@@ -175,68 +333,109 @@ class MainWindow(QtWidgets.QMainWindow):
                      ans = len(self.SignalChannelArr[channelIndex].time)
            return index     
       # Zoom in Func  : Mask
-      def zoomSignalIn(self):
-          self.plotGraph1.plotItem.getViewBox().scaleBy((0.5, 0.5))
+      def zoomSignalIn(self,choosengraph):
+          choosengraph.plotItem.getViewBox().scaleBy((0.5, 0.5))
       # Zoom out Func : Mask
-      def zoomSignalOut(self):
-          self.plotGraph1.plotItem.getViewBox().scaleBy((2, 2))
+      def zoomSignalOut(self,choosengraph):
+          choosengraph.plotItem.getViewBox().scaleBy((2, 2))
 
 
-      # edit the signal color : Mask
-      def setSignalChannelColor(self):
-           self.SignalChannelArr[modules.choosenChannel].setColor(QColorDialog.getColor().name())
-           self.DynamicSignalUpdate(True)
-      def addNewChannel(self):
+      # edit the signal color : done
+      def setSignalChannelColor(self,choosenGraphIndex):
+           selectedChannelIndex = 0
+           if choosenGraphIndex == 0:
+                 selectedChannelIndex = modules.choosenChannelGraph1
+           elif choosenGraphIndex == 1:
+                      selectedChannelIndex = modules.choosenChannelGraph2
+           self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].setColor(QColorDialog.getColor().name())
+           self.DynamicSignalUpdate(choosenGraphIndex,selectedChannelIndex,True)
+
+      def addNewChannel(self,choosenChannelList,choosenGraphIndex):
             _translate = QtCore.QCoreApplication.translate
            # self.channelList1.setItemText(modules.choosenChannel+1, )
-            self.channelList1.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr)+1)))
+            choosenChannelList.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr[choosenGraphIndex])+1)))
          #   modules.choosenChannel+=1
-            self.SignalChannelArr.append(modules.SignalChannel())
+            if choosenGraphIndex == 0:
+                  self.xAxis1.append(0)
+                  self.yAxis1.append(0)
+            elif choosenGraphIndex == 1:
+                  self.xAxis2.append(0)
+                  self.yAxis2.append(0)   
+            self.SignalChannelArr[choosenGraphIndex].append(modules.SignalChannel())
 
 
 
       # play / pause func   : ziad
          # dont forget to change the icon 
-      def pauseGraph(self):
-           self.pauseFlag1 ^= True
+      def pauseGraph(self,playpauseButton,choosenGraphIndex):
            icon = QtGui.QIcon()
-           if self.pauseFlag1 == True :
-                icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-                self.playPauseBtn1.setIcon(icon)
-                self.startTime.stop()
-           else: 
-                 icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-                 self.playPauseBtn1.setIcon(icon)
-                 self.startTime.start() 
+           if choosenGraphIndex == 0:
+               self.pauseFlag1 ^= True
+               if self.pauseFlag1 == True :
+                     icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                     playpauseButton.setIcon(icon)
+                     self.startTime1.stop()
+               else: 
+                    icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                    playpauseButton.setIcon(icon)
+                    self.startTime1.start() 
+           elif choosenGraphIndex == 1:
+               self.pauseFlag2 ^= True
+               if self.pauseFlag2 == True :
+                     icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                     playpauseButton.setIcon(icon)
+                     self.startTime2.stop()
+               else: 
+                    icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                    playpauseButton.setIcon(icon)
+                    self.startTime2.start() 
+                
 
 
 
       # rewind 
-      def rewindSignal(self):
-          # print("ana morad",self.SignalChannelArr[modules.choosenChannel].path)
-           self.plotGraph1.clear()
-          # print("ana ashf",self.SignalChannelArr[modules.choosenChannel].path)
-          # icon = QtGui.QIcon()
-           #icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-           #self.playPauseBtn1.setIcon(icon)
-           for i in range(len(self.SignalChannelArr)):
-                modules.choosenChannel = i
-            #    print(self.SignalChannelArr[modules.choosenChannel].path,"iter:",i)
-                self.signalInitialization()
+      def rewindSignal(self,choosengraph,choosenGraphIndex):
+             selectedChannelIndex = 0
+             icon = QtGui.QIcon()
+             if choosenGraphIndex == 0:
+                      selectedChannelIndex = modules.choosenChannelGraph1
+                      icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                      self.playPauseBtn1.setIcon(icon)
+                    #  self.startTime1.stop()
+             elif choosenGraphIndex == 1:
+                      selectedChannelIndex = modules.choosenChannelGraph2
+                      icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                      self.playPauseBtn2.setIcon(icon)
+                    #  self.startTime2.stop()
+             choosengraph.clear()
+             #for channelIndex in range(len(self.SignalChannelArr[choosengraph])):
+             self.signalInitialization(choosengraph,choosenGraphIndex,True)
+             
+
   
       
       # show / hide function  : Mask
-      def hideSignal(self,checked):
-             self.SignalChannelArr[modules.choosenChannel].hiddenFlag = checked
-             self.DynamicSignalUpdate(False)
+      def hideSignal(self,checked,choosenGraphIndex):
+             selectedChannelIndex = 0
+             if choosenGraphIndex == 0:
+                 selectedChannelIndex = modules.choosenChannelGraph1
+             elif choosenGraphIndex == 1:
+                      selectedChannelIndex = modules.choosenChannelGraph2
+             self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].hiddenFlag = checked
+             self.DynamicSignalUpdate(choosenGraphIndex,selectedChannelIndex,False)
       # speed slider function 
 
-      def speedSlider(self):
-           
-           self.cineSpeed= self.horizontalSlider.value()
-           self.startTime.setInterval(200-self.cineSpeed)
+      def speedSlider(self,choosenGraphIndex):
+           if choosenGraphIndex == 0:           
+               self.cineSpeed1= self.horizontalSlider.value()
+               self.startTime1.setInterval(200-self.cineSpeed1)
+           else: 
+               self.cineSpeed2 = self.speedSlider2.value()
+               self.startTime2.setInterval(200-self.cineSpeed2)    
 
       # scroll in x dir
+
+
       def xScrollMove(self):
            val = self.xAxisScrollBar1.value()
            xmax = np.ceil(self.data[0][-1+self.vsize-self.psize+val])-1
@@ -247,14 +446,30 @@ class MainWindow(QtWidgets.QMainWindow):
       def yScrollMove(self):
            pass
       # naming the channel
-      def editChannelName(self,name):
+
+
+
+      def editChannelName(self,label,choosenGraphIndex):
              # self.SignalChannelArr[modules.choosenChannel].label = name
              # self.Legend.getLabel(self.SignalChannelArr[modules.choosenChannel].graph).setText(name)
-               channel_index = modules.choosenChannel
-               self.SignalChannelArr[channel_index].label = name
-               if self.SignalChannelArr[channel_index].path !="null":
-                    self.Legend.removeItem(self.SignalChannelArr[channel_index].graph)
-                    self.Legend.addItem(self.SignalChannelArr[channel_index].graph, name)
+               selectedChannelIndex = 0
+               if choosenGraphIndex == 0:
+                      selectedChannelIndex = modules.choosenChannelGraph1
+                      if self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].path == "null":
+                              QtWidgets.QMessageBox.warning(self,"Operation Failed","You can't edit channel name before browsing a file, browse a file first")
+                              return
+                      currentLegend = self.Legend1
+               elif choosenGraphIndex == 1:
+                      selectedChannelIndex = modules.choosenChannelGraph2
+                      if self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].path == "null":
+                              QtWidgets.QMessageBox.warning(self,"Operation Failed","You can't edit channel name before browsing a file, browse a file first")
+                              return
+                      currentLegend = self.Legend2
+
+               self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].label = label
+               if self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].path !="null":
+                    currentLegend.removeItem(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].graph)
+                    currentLegend.addItem(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].graph, label)
 
 
       # Link 2 channles sim
