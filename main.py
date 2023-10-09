@@ -45,6 +45,7 @@ class MainWindow(QtWidgets.QMainWindow):
          # self.PlotterWindowProp = modules.PlotterWindow()
           self.pauseFlag1 = False
           self.pauseFlag2 = False
+          self.isLinked = False
           self.holdHorizontalFlag1 = False
           self.holdVerticalFlag1 = False
           self.cineSpeed1 = 0
@@ -241,6 +242,27 @@ class MainWindow(QtWidgets.QMainWindow):
                     elif len(self.SignalChannelArr[choosenGraphIndex][Index].time) > currentpointsPlotted  and isChangingColor == True:
                          self.SignalChannelArr[choosenGraphIndex][Index].graph.setData(
                               currentXAxis[Index], currentYAxis[Index], pen=self.SignalChannelArr[choosenGraphIndex][Index].getColor(), name=self.SignalChannelArr[choosenGraphIndex][Index].label, skipFiniteCheck=True)     
+      
+      
+      
+      
+      def linkGraphs(self,isChecked):
+           if self.linkGraphsCheckBox.isChecked() == True:
+                    self.linkGraphsCheckBox.setChecked(False)
+                    return
+           if self.SignalChannelArr[0][0].path == "null" or self.SignalChannelArr[1][0].path == "null":
+                    self.linkGraphsCheckBox.setChecked(False)
+                    QtWidgets.QMessageBox.warning(self,"Operation Failed","You can't link the two graphs if one of them is empty")
+                    return
+           self.linkGraphsCheckBox.setChecked(True)
+           self.rewindSignal(self.plotGraph1,0)
+           self.rewindSignal(self.plotGraph2,1)
+           self.isLinked = isChecked
+
+
+
+
+
 
       def getLongestSignal(self):
            ans, index = 0,0

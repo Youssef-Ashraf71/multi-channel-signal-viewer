@@ -86,3 +86,10 @@ def __init__connectors__(self):
       self.yAxisScrollBar2 = self.findChild(QScrollBar, "yAxisScrollBar1")
       self.yAxisScrollBar2.sliderMoved.connect(lambda: main.MainWindow.yScrollMove(self))
 
+# ------------------------------------------------------------------------------------------------------------
+# Link
+      self.linkGraphsCheckBox = self.findChild(QCheckBox,"linkGraphsCheckBox")
+      self.linkGraphsCheckBox.stateChanged.connect(lambda: main.MainWindow.linkGraphs(self,self.linkGraphsCheckBox.isChecked()))
+
+
+     
