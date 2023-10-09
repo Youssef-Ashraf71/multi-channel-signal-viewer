@@ -34,3 +34,7 @@ def __init__connectors__(self):
 # temp using export btn to add more channels
       self.pushButton = self.findChild(QPushButton,"pushButton")
       self.pushButton.clicked.connect(lambda:main.MainWindow.addNewChannel(self))
+
+      # the actual export button >:(
+      self.reportBtn = self.findChild(QPushButton,"reportBtn")
+      self.reportBtn.clicked.connect(lambda: main.MainWindow.exportReportPdf(self))
