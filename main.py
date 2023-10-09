@@ -111,20 +111,27 @@ class MainWindow(QtWidgets.QMainWindow):
                        self.Legend2 = choosenGraph.addLegend()
                        self.playPauseBtn2.setIcon(icon)
 
-            self.signalInitialization(choosenGraph,choosenGraphIndex)
+            self.signalInitialization(choosenGraph,choosenGraphIndex,False)
 
 
       # initialize plotting: a+m
-      def signalInitialization(self,choosenGraph,choosenGraphIndex):
+      def signalInitialization(self,choosenGraph,choosenGraphIndex,isRewinding):
             selectedChannelIndex = 0
             if choosenGraphIndex == 0:
                  selectedChannelIndex = modules.choosenChannelGraph1
             elif choosenGraphIndex == 1:
                       selectedChannelIndex = modules.choosenChannelGraph2
-            self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].graph = choosenGraph.plot(
-                 name="Channel "+str(selectedChannelIndex+1) ,
-                 pen={'color': self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].getColor(), 'width': 1}
-            )
+            if isRewinding == False:           
+               self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].graph = choosenGraph.plot(
+                    name="Channel "+str(selectedChannelIndex+1) ,
+                    pen={'color': self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].getColor(), 'width': 1}
+               )
+            else:
+                 for channelIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
+                           self.SignalChannelArr[choosenGraphIndex][channelIndex].graph = choosenGraph.plot(
+                    name="Channel "+str(channelIndex+1) ,
+                    pen={'color': self.SignalChannelArr[choosenGraphIndex][channelIndex].getColor(), 'width': 1}
+               )
             choosenGraph.showGrid(x= True, y= True)
             maxTime,minTime,maxAmp,minAmp = 0,0,0,0
             for i in range(len(self.SignalChannelArr[choosenGraphIndex])):
@@ -294,17 +301,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
       # rewind 
-      def rewindSignal(self,choosengraph):
-          # print("ana morad",self.SignalChannelArr[modules.choosenChannel].path)
-           choosengraph.clear()
-          # print("ana ashf",self.SignalChannelArr[modules.choosenChannel].path)
-          # icon = QtGui.QIcon()
-           #icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-           #self.playPauseBtn1.setIcon(icon)
-           for i in range(len(self.SignalChannelArr)):
-                modules.choosenChannel = i
-            #    print(self.SignalChannelArr[modules.choosenChannel].path,"iter:",i)
-                self.signalInitialization()
+      def rewindSignal(self,choosengraph,choosenGraphIndex):
+             selectedChannelIndex = 0
+             if choosenGraphIndex == 0:
+                      selectedChannelIndex = modules.choosenChannelGraph1
+                      self.startTime1.stop()
+             elif choosenGraphIndex == 1:
+                      selectedChannelIndex = modules.choosenChannelGraph2
+                      self.startTime2.stop()
+             choosengraph.clear()
+             #for channelIndex in range(len(self.SignalChannelArr[choosengraph])):
+             self.signalInitialization(choosengraph,choosenGraphIndex,True)
+             
+
   
       
       # show / hide function  : Mask
@@ -318,10 +327,13 @@ class MainWindow(QtWidgets.QMainWindow):
              self.DynamicSignalUpdate(choosenGraphIndex,selectedChannelIndex,False)
       # speed slider function 
 
-      def speedSlider(self):
-           
-           self.cineSpeed= self.horizontalSlider.value()
-           self.startTime.setInterval(200-self.cineSpeed)
+      def speedSlider(self,choosenGraphIndex):
+           if choosenGraphIndex == 0:           
+               self.cineSpeed1= self.horizontalSlider.value()
+               self.startTime1.setInterval(200-self.cineSpeed1)
+           else: 
+               self.cineSpeed2 = self.speedSlider2.value()
+               self.startTime2.setInterval(200-self.cineSpeed2)    
 
       # scroll in x dir
       def xScrollMove(self):

@@ -24,7 +24,7 @@ def __init__connectors__(self):
       self.playPauseBtn1.clicked.connect(lambda:main.MainWindow.pauseGraph(self,self.playPauseBtn1,0))
 
       self.rewindBtn1 = self.findChild(QPushButton,"rewindBtn1")
-      self.rewindBtn1.clicked.connect(lambda:main.MainWindow.rewindSignal(self,self.plotGraph1))
+      self.rewindBtn1.clicked.connect(lambda:main.MainWindow.rewindSignal(self,self.plotGraph1,0))
 
       self.zoomInBtn1 = self.findChild(QPushButton,"zoomInBtn1")
       self.zoomInBtn1.clicked.connect(lambda:main.MainWindow.zoomSignalIn(self,self.plotGraph1))
@@ -39,7 +39,7 @@ def __init__connectors__(self):
       self.pushButton.clicked.connect(lambda:main.MainWindow.addNewChannel(self,self.channelList1,0))
 
       self.horizontalSlider = self.findChild(QSlider,"horizontalSlider")
-      self.horizontalSlider.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self))
+      self.horizontalSlider.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self,0))
 
       self.xAxisScrollBar1 = self.findChild(QScrollBar, "xAxisScrollBar1")
       self.xAxisScrollBar1.sliderMoved.connect(lambda: main.MainWindow.xScrollMove(self))
@@ -64,7 +64,7 @@ def __init__connectors__(self):
       self.playPauseBtn2.clicked.connect(lambda:main.MainWindow.pauseGraph(self,self.playPauseBtn2,1))
 
       self.rewindBtn2 = self.findChild(QPushButton,"rewindBtn2")
-      self.rewindBtn2.clicked.connect(lambda:main.MainWindow.rewindSignal(self,self.plotGraph2))
+      self.rewindBtn2.clicked.connect(lambda:main.MainWindow.rewindSignal(self,self.plotGraph2,1))
 
       self.zoomInBtn2 = self.findChild(QPushButton,"zoomInBtn2")
       self.zoomInBtn2.clicked.connect(lambda:main.MainWindow.zoomSignalIn(self,self.plotGraph2))
@@ -78,7 +78,7 @@ def __init__connectors__(self):
       self.addNewChannel2.clicked.connect(lambda:main.MainWindow.addNewChannel(self,self.channelList2,1))
 
       self.speedSlider2 = self.findChild(QSlider,"speedSlider2")
-      self.speedSlider2.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self))
+      self.speedSlider2.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self,1))
 
       self.xAxisScrollBar2 = self.findChild(QScrollBar, "xAxisScrollBar1")
       self.xAxisScrollBar2.sliderMoved.connect(lambda: main.MainWindow.xScrollMove(self))
