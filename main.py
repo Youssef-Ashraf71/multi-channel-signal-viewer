@@ -95,17 +95,22 @@ class MainWindow(QtWidgets.QMainWindow):
             icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)     
 
             if choosenGraphIndex == 0:
+                       if self.SignalChannelArr[0][modules.choosenChannelGraph1].path != "null":
+                              QtWidgets.QMessageBox.warning(self,"Error browsing the file","Please add a new channel, selected channel is already in use")
+                              return   
                        self.SignalChannelArr[0][modules.choosenChannelGraph1].path = path
                        if self.SignalChannelArr[0][0].path == "null":
                               QtWidgets.QMessageBox.warning(self,"Channel 1 in Graph 1 is Empty","Please use channel 1 first")
                               return
-                       
                        self.SignalChannelArr[0][modules.choosenChannelGraph1].time =  timeArr
                        self.SignalChannelArr[0][modules.choosenChannelGraph1].amplitude = amplitudeArr
                        self.Legend1 = choosenGraph.addLegend()
                        self.playPauseBtn1.setIcon(icon)
 
             elif choosenGraphIndex == 1:
+                       if self.SignalChannelArr[1][modules.choosenChannelGraph2].path != "null":
+                              QtWidgets.QMessageBox.warning(self,"Error browsing the file","Please add a new channel, selected channel is already in use")
+                              return  
                        self.SignalChannelArr[1][modules.choosenChannelGraph2].path = path
                        if self.SignalChannelArr[1][0].path == "null":
                               QtWidgets.QMessageBox.warning(self,"Channel 1 in Graph 2 is Empty","Please use channel 1 first")
@@ -130,13 +135,14 @@ class MainWindow(QtWidgets.QMainWindow):
                     name="Channel "+str(selectedChannelIndex+1) ,
                     pen={'color': self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].getColor(), 'width': 1}
                )
+             #  self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].label = "Channel "+str(selectedChannelIndex+1)
             else:
                  for channelIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
                       if self.SignalChannelArr[choosenGraphIndex][channelIndex].path !="null":     
                               self.SignalChannelArr[choosenGraphIndex][channelIndex].graph = choosenGraph.plot(
-                         name="Channel "+str(channelIndex+1) ,
+                         name=self.SignalChannelArr[choosenGraphIndex][channelIndex].label ,
                          pen={'color': self.SignalChannelArr[choosenGraphIndex][channelIndex].getColor(), 'width': 1}
-                    )
+                    )          
             choosenGraph.showGrid(x= True, y= True)
             maxTime,minTime,maxAmp,minAmp = 0,0,0,0
             for i in range(len(self.SignalChannelArr[choosenGraphIndex])):
@@ -360,6 +366,7 @@ class MainWindow(QtWidgets.QMainWindow):
             _translate = QtCore.QCoreApplication.translate
            # self.channelList1.setItemText(modules.choosenChannel+1, )
             choosenChannelList.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr[choosenGraphIndex])+1)))
+          #  self.SignalChannelArr[choosenGraphIndex][-1].label = "Channel" + str(len(self.SignalChannelArr[choosenGraphIndex])+1)
          #   modules.choosenChannel+=1
             if choosenGraphIndex == 0:
                   self.xAxis1.append(0)
@@ -477,6 +484,11 @@ class MainWindow(QtWidgets.QMainWindow):
                if self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].path !="null":
                     currentLegend.removeItem(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].graph)
                     currentLegend.addItem(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].graph, label)
+               if choosenGraphIndex == 0:
+                    self.channelList1.setItemText(selectedChannelIndex,label)
+               elif choosenGraphIndex == 1:
+                     self.channelList2.setItemText(selectedChannelIndex,label)
+                                
 
 
      #  def synchronizeXGraph1(self,graph1,graph2):
