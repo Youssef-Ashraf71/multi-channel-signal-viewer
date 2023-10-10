@@ -45,6 +45,8 @@ class MainWindow(QtWidgets.QMainWindow):
          # self.PlotterWindowProp = modules.PlotterWindow()
           self.pauseFlag1 = False
           self.pauseFlag2 = False
+          self.pauseFlagLink=False
+          self.isLinked = False
           self.holdHorizontalFlag1 = False
           self.holdVerticalFlag1 = False
           self.cineSpeed1 = 0
@@ -54,6 +56,10 @@ class MainWindow(QtWidgets.QMainWindow):
           self.SignalChannelArr.append(tmpList)
           tmpList = [modules.SignalChannel()]
           self.SignalChannelArr.append(tmpList)
+          self.playPauseLinkBtn.setEnabled(False)
+          self.zoomInLinkBtn.setEnabled(False)
+          self.zoomOutLinkBtn.setEnabled(False)
+          self.rewindLinkBtn.setEnabled(False)
          # for i in range(3):
            #    self.SignalChannelArr.append(modules.SignalChannel())
           # params
@@ -96,6 +102,7 @@ class MainWindow(QtWidgets.QMainWindow):
                        if self.SignalChannelArr[0][0].path == "null":
                               QtWidgets.QMessageBox.warning(self,"Channel 1 in Graph 1 is Empty","Please use channel 1 first")
                               return
+                       
                        self.SignalChannelArr[0][modules.choosenChannelGraph1].time =  timeArr
                        self.SignalChannelArr[0][modules.choosenChannelGraph1].amplitude = amplitudeArr
                        self.Legend1 = choosenGraph.addLegend()
@@ -241,6 +248,83 @@ class MainWindow(QtWidgets.QMainWindow):
                     elif len(self.SignalChannelArr[choosenGraphIndex][Index].time) > currentpointsPlotted  and isChangingColor == True:
                          self.SignalChannelArr[choosenGraphIndex][Index].graph.setData(
                               currentXAxis[Index], currentYAxis[Index], pen=self.SignalChannelArr[choosenGraphIndex][Index].getColor(), name=self.SignalChannelArr[choosenGraphIndex][Index].label, skipFiniteCheck=True)     
+      
+      
+      
+      
+      def linkGraphs(self,isChecked):
+           if self.linkGraphsCheckBox.isChecked() ==False :
+                         self.playPauseBtn1.setEnabled(True)
+                         self.playPauseBtn2.setEnabled(True)
+                         self.zoomInBtn1.setEnabled(True)
+                         self.zoomInBtn2.setEnabled(True)
+                         self.zoomOutBtn1.setEnabled(True)
+                         self.zoomOutBtn2.setEnabled(True)
+                         self.rewindBtn1.setEnabled(True)
+                         self.rewindBtn2.setEnabled(True)
+                         self.horizontalSlider.setEnabled(True)
+                         self.speedSlider2.setEnabled(True)
+
+                         self.playPauseLinkBtn.setEnabled(False)
+                         self.zoomInLinkBtn.setEnabled(False)
+                         self.zoomOutLinkBtn.setEnabled(False)
+                         self.rewindLinkBtn.setEnabled(False)
+                         return
+           if self.SignalChannelArr[0][0].path == "null" or self.SignalChannelArr[1][0].path == "null":
+                    if isChecked:
+                         self.linkGraphsCheckBox.setChecked(False)
+                    QtWidgets.QMessageBox.warning(self,"Operation Failed","You can't link the two graphs if one of them is empty")
+                    return
+           icon = QtGui.QIcon()
+           icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+           self.playPauseLinkBtn.setIcon(icon)
+           self.playPauseBtn1.setEnabled(False)
+           self.playPauseBtn2.setEnabled(False)
+           self.zoomInBtn1.setEnabled(False)
+           self.zoomInBtn2.setEnabled(False)
+           self.zoomOutBtn1.setEnabled(False)
+           self.zoomOutBtn2.setEnabled(False)
+           self.rewindBtn1.setEnabled(False)
+           self.rewindBtn2.setEnabled(False)
+           self.horizontalSlider.setEnabled(False)
+           self.speedSlider2.setEnabled(False)
+
+           self.playPauseLinkBtn.setEnabled(True)
+           self.zoomInLinkBtn.setEnabled(True)
+           self.zoomOutLinkBtn.setEnabled(True)
+           self.rewindLinkBtn.setEnabled(True)
+           self.rewindSignal(self.plotGraph1,0)
+           self.rewindSignal(self.plotGraph2,1)
+          #  self.isLinked = isChecked
+
+
+      def playPauseLink(self,playPauseBtn,playPauseBtn1,playPauseBtn2):
+             icon = QtGui.QIcon()
+             self.pauseFlagLink ^= True
+             if self.pauseFlagLink == True :
+                     icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                     playPauseBtn.setIcon(icon)
+                   
+             else:
+                    icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                    playPauseBtn.setIcon(icon)
+          
+
+             self.pauseGraph(playPauseBtn1,0)
+             self.pauseGraph(playPauseBtn2,1)
+
+
+      def zoomInLink(self,graph1,graph2):
+            self.zoomSignalIn(graph1)
+            self.zoomSignalIn(graph2)
+
+      def zoomOutLink(self,graph1,graph2):
+            self.zoomSignalOut(graph1)
+            self.zoomSignalOut(graph2)
+      
+      def rewindLink(self,graph1,graph2):
+            self.rewindSignal(graph1,0)
+            self.rewindSignal(graph2,1)
 
       def getLongestSignal(self):
            ans, index = 0,0
