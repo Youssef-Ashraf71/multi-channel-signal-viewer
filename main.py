@@ -102,6 +102,7 @@ class MainWindow(QtWidgets.QMainWindow):
                        if self.SignalChannelArr[0][0].path == "null":
                               QtWidgets.QMessageBox.warning(self,"Channel 1 in Graph 1 is Empty","Please use channel 1 first")
                               return
+                       
                        self.SignalChannelArr[0][modules.choosenChannelGraph1].time =  timeArr
                        self.SignalChannelArr[0][modules.choosenChannelGraph1].amplitude = amplitudeArr
                        self.Legend1 = choosenGraph.addLegend()
