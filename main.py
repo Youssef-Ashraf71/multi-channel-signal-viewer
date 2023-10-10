@@ -60,10 +60,7 @@ class MainWindow(QtWidgets.QMainWindow):
           self.zoomInLinkBtn.setEnabled(False)
           self.zoomOutLinkBtn.setEnabled(False)
           self.rewindLinkBtn.setEnabled(False)
-         # for i in range(3):
-           #    self.SignalChannelArr.append(modules.SignalChannel())
-          # params
-          # self.browseBtn1.clicked.connect(self.browse)
+          self.isSyncingX = False
           connector.__init__connectors__(self)
           # 
       def apply_stylesheet(self, stylesheet_path):
@@ -253,7 +250,7 @@ class MainWindow(QtWidgets.QMainWindow):
       
       
       def linkGraphs(self,isChecked):
-           if self.linkGraphsCheckBox.isChecked() ==False :
+           if self.linkGraphsCheckBox.isChecked() == False :
                          self.playPauseBtn1.setEnabled(True)
                          self.playPauseBtn2.setEnabled(True)
                          self.zoomInBtn1.setEnabled(True)
@@ -264,11 +261,15 @@ class MainWindow(QtWidgets.QMainWindow):
                          self.rewindBtn2.setEnabled(True)
                          self.horizontalSlider.setEnabled(True)
                          self.speedSlider2.setEnabled(True)
-
                          self.playPauseLinkBtn.setEnabled(False)
                          self.zoomInLinkBtn.setEnabled(False)
                          self.zoomOutLinkBtn.setEnabled(False)
-                         self.rewindLinkBtn.setEnabled(False)
+                         self.rewindLinkBtn.setEnabled(False)  
+                         self.plotGraph1.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph1)
+                         self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)
+                         icon = QtGui.QIcon()
+                         icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                         self.playPauseLinkBtn.setIcon(icon)
                          return
            if self.SignalChannelArr[0][0].path == "null" or self.SignalChannelArr[1][0].path == "null":
                     if isChecked:
@@ -295,6 +296,9 @@ class MainWindow(QtWidgets.QMainWindow):
            self.rewindLinkBtn.setEnabled(True)
            self.rewindSignal(self.plotGraph1,0)
            self.rewindSignal(self.plotGraph2,1)
+           
+           self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1)
+           self.plotGraph2.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph2)
            
           #  self.isLinked = isChecked
 
@@ -439,10 +443,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
       def xScrollMove(self):
-           val = self.xAxisScrollBar1.value()
-           xmax = np.ceil(self.data[0][-1+self.vsize-self.psize+val])-1
-           xmin = xmax-self.vsize
-           self.plot_widget.setXRange(xmin, xmax)
+          #  val = self.xAxisScrollBar1.value()
+          #  xmax = np.ceil(self.data[0][-1+self.vsize-self.psize+val])-1
+          #  xmin = xmax-self.vsize
+          #  self.plot_widget.setXRange(xmin, xmax)
+          pass
      
       # scroll in y dir 
       def yScrollMove(self):
@@ -474,15 +479,43 @@ class MainWindow(QtWidgets.QMainWindow):
                     currentLegend.addItem(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].graph, label)
 
 
-      def synchronizeXGraph1(self,graph1,graph2):
-          #  graph2.getViewBox().blockSignals(True)  # Block signals temporarily to avoid recursion
-           graph2.getViewBox().setXRange(*graph1.getViewBox().viewRange()[0])
-          #  graph2.getViewBox().blockSignals(False)  # Unblock signals
+     #  def synchronizeXGraph1(self,graph1,graph2):
+     #      #  graph2.getViewBox().blockSignals(True)  # Block signals temporarily to avoid recursion
+     #       graph2.getViewBox().setXRange(*graph1.getViewBox().viewRange()[0])
+     #      #  graph2.getViewBox().blockSignals(False)  # Unblock signals
           
 
-      def synchronizeXGraph2(self,graph1,graph2):
-             graph1.getViewBox().setXRange(*graph2.getViewBox().viewRange()[0])
-             graph1.getViewBox().blockSignals(False)  # Unblock signals
+     #  def synchronizeXGraph2(self,graph1,graph2):
+     #         graph1.getViewBox().setXRange(*graph2.getViewBox().viewRange()[0])
+     #         graph1.getViewBox().blockSignals(False)  # Unblock signals
+
+      def synchronizeXGraph1(self):
+        if not self.isSyncingX:
+            # Disconnect the signals to avoid recursion
+            self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)
+            
+            # Set the X-axis range of graph2 based on graph1
+            xRange = self.plotGraph1.getViewBox().viewRange()[0]
+            self.isSyncingX = True
+            self.plotGraph2.getViewBox().setXRange(*xRange)
+            self.isSyncingX = False
+            
+            # Reconnect the signal
+            self.plotGraph2.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph2)
+
+      def synchronizeXGraph2(self):
+        if not self.isSyncingX:
+            # Disconnect the signals to avoid recursion
+            self.plotGraph1.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph1)
+            
+            # Set the X-axis range of graph1 based on graph2
+            xRange = self.plotGraph2.getViewBox().viewRange()[0]
+            self.isSyncingX = True
+            self.plotGraph1.getViewBox().setXRange(*xRange)
+            self.isSyncingX = False
+            
+            # Reconnect the signal
+            self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1)
 
       # export the report to pdf
 

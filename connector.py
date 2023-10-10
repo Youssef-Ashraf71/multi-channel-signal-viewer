@@ -110,6 +110,7 @@ def __init__connectors__(self):
       self.plotGraph1=self.findChild(PlotWidget,'plotGraph1')
       self.plotGraph2=self.findChild(PlotWidget,'plotGraph2')
 
-      self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1())
-      # self.plotGraph2.getViewBox().sigXRangeChanged.connect(lambda:main.MainWindow.synchronizeXGraph2(self,self.plotGraph1,self.plotGraph2))
+      # self.plotGraph1.getViewBox().sigXRangeChanged.connect(lambda:main.MainWindow.synchronizeXGraph1(self))
+      # self.plotGraph2.getViewBox().sigXRangeChanged.connect(lambda:main.MainWindow.synchronizeXGraph2(self))
+
       # self.plotGraph1.getViewBox().sigYRangeChanged.connect(lambda:main.MainWindow.synchronizeGraphs(self,self.plotGraph1,self.plotGraph2))
