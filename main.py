@@ -27,6 +27,22 @@ import modules
 import connector
 
 
+from PyQt5.QtGui import QPixmap
+from reportlab.lib.utils import ImageReader
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import Frame
+from reportlab.lib.pagesizes import A4, landscape
+import pyqtgraph.exporters as exporters
+from PIL import Image
+import statistics
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, PageBreak, Image as PlatypusImage
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfgen import canvas
+
+
+
 class MainWindow(QtWidgets.QMainWindow):
 
         # Mainwindow constructor
@@ -36,7 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
           self.setWindowIcon(QtGui.QIcon('Images/MainIcon.png'))
           self.setWindowTitle("Realtime-signal-viewer")
          # Apply Aqya stylesheet
-          self.apply_stylesheet("Aqua.qss")
+          self.apply_stylesheet("MacOS.qss")
 
           self.xAxis1 = [0]
           self.yAxis1 = [0]
@@ -60,10 +76,7 @@ class MainWindow(QtWidgets.QMainWindow):
           self.zoomInLinkBtn.setEnabled(False)
           self.zoomOutLinkBtn.setEnabled(False)
           self.rewindLinkBtn.setEnabled(False)
-         # for i in range(3):
-           #    self.SignalChannelArr.append(modules.SignalChannel())
-          # params
-          # self.browseBtn1.clicked.connect(self.browse)
+          self.isSyncingX = False
           connector.__init__connectors__(self)
           # 
       def apply_stylesheet(self, stylesheet_path):
@@ -98,17 +111,22 @@ class MainWindow(QtWidgets.QMainWindow):
             icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)     
 
             if choosenGraphIndex == 0:
+                       if self.SignalChannelArr[0][modules.choosenChannelGraph1].path != "null":
+                              QtWidgets.QMessageBox.warning(self,"Error browsing the file","Please add a new channel, selected channel is already in use")
+                              return   
                        self.SignalChannelArr[0][modules.choosenChannelGraph1].path = path
                        if self.SignalChannelArr[0][0].path == "null":
                               QtWidgets.QMessageBox.warning(self,"Channel 1 in Graph 1 is Empty","Please use channel 1 first")
                               return
-                       
                        self.SignalChannelArr[0][modules.choosenChannelGraph1].time =  timeArr
                        self.SignalChannelArr[0][modules.choosenChannelGraph1].amplitude = amplitudeArr
                        self.Legend1 = choosenGraph.addLegend()
                        self.playPauseBtn1.setIcon(icon)
 
             elif choosenGraphIndex == 1:
+                       if self.SignalChannelArr[1][modules.choosenChannelGraph2].path != "null":
+                              QtWidgets.QMessageBox.warning(self,"Error browsing the file","Please add a new channel, selected channel is already in use")
+                              return  
                        self.SignalChannelArr[1][modules.choosenChannelGraph2].path = path
                        if self.SignalChannelArr[1][0].path == "null":
                               QtWidgets.QMessageBox.warning(self,"Channel 1 in Graph 2 is Empty","Please use channel 1 first")
@@ -133,13 +151,14 @@ class MainWindow(QtWidgets.QMainWindow):
                     name="Channel "+str(selectedChannelIndex+1) ,
                     pen={'color': self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].getColor(), 'width': 1}
                )
+             #  self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].label = "Channel "+str(selectedChannelIndex+1)
             else:
                  for channelIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
                       if self.SignalChannelArr[choosenGraphIndex][channelIndex].path !="null":     
                               self.SignalChannelArr[choosenGraphIndex][channelIndex].graph = choosenGraph.plot(
-                         name="Channel "+str(channelIndex+1) ,
+                         name=self.SignalChannelArr[choosenGraphIndex][channelIndex].label ,
                          pen={'color': self.SignalChannelArr[choosenGraphIndex][channelIndex].getColor(), 'width': 1}
-                    )
+                    )          
             choosenGraph.showGrid(x= True, y= True)
             maxTime,minTime,maxAmp,minAmp = 0,0,0,0
             for i in range(len(self.SignalChannelArr[choosenGraphIndex])):
@@ -253,7 +272,7 @@ class MainWindow(QtWidgets.QMainWindow):
       
       
       def linkGraphs(self,isChecked):
-           if self.linkGraphsCheckBox.isChecked() ==False :
+           if self.linkGraphsCheckBox.isChecked() == False :
                          self.playPauseBtn1.setEnabled(True)
                          self.playPauseBtn2.setEnabled(True)
                          self.zoomInBtn1.setEnabled(True)
@@ -264,11 +283,15 @@ class MainWindow(QtWidgets.QMainWindow):
                          self.rewindBtn2.setEnabled(True)
                          self.horizontalSlider.setEnabled(True)
                          self.speedSlider2.setEnabled(True)
-
                          self.playPauseLinkBtn.setEnabled(False)
                          self.zoomInLinkBtn.setEnabled(False)
                          self.zoomOutLinkBtn.setEnabled(False)
-                         self.rewindLinkBtn.setEnabled(False)
+                         self.rewindLinkBtn.setEnabled(False)  
+                         self.plotGraph1.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph1)
+                         self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)
+                         icon = QtGui.QIcon()
+                         icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                         self.playPauseLinkBtn.setIcon(icon)
                          return
            if self.SignalChannelArr[0][0].path == "null" or self.SignalChannelArr[1][0].path == "null":
                     if isChecked:
@@ -295,6 +318,10 @@ class MainWindow(QtWidgets.QMainWindow):
            self.rewindLinkBtn.setEnabled(True)
            self.rewindSignal(self.plotGraph1,0)
            self.rewindSignal(self.plotGraph2,1)
+           
+           self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1)
+           self.plotGraph2.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph2)
+           
           #  self.isLinked = isChecked
 
 
@@ -355,6 +382,7 @@ class MainWindow(QtWidgets.QMainWindow):
             _translate = QtCore.QCoreApplication.translate
            # self.channelList1.setItemText(modules.choosenChannel+1, )
             choosenChannelList.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr[choosenGraphIndex])+1)))
+          #  self.SignalChannelArr[choosenGraphIndex][-1].label = "Channel" + str(len(self.SignalChannelArr[choosenGraphIndex])+1)
          #   modules.choosenChannel+=1
             if choosenGraphIndex == 0:
                   self.xAxis1.append(0)
@@ -438,10 +466,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
       def xScrollMove(self):
-           val = self.xAxisScrollBar1.value()
-           xmax = np.ceil(self.data[0][-1+self.vsize-self.psize+val])-1
-           xmin = xmax-self.vsize
-           self.plot_widget.setXRange(xmin, xmax)
+          #  val = self.xAxisScrollBar1.value()
+          #  xmax = np.ceil(self.data[0][-1+self.vsize-self.psize+val])-1
+          #  xmin = xmax-self.vsize
+          #  self.plot_widget.setXRange(xmin, xmax)
+          pass
      
       # scroll in y dir 
       def yScrollMove(self):
@@ -471,14 +500,181 @@ class MainWindow(QtWidgets.QMainWindow):
                if self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].path !="null":
                     currentLegend.removeItem(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].graph)
                     currentLegend.addItem(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].graph, label)
+               if choosenGraphIndex == 0:
+                    self.channelList1.setItemText(selectedChannelIndex,label)
+               elif choosenGraphIndex == 1:
+                     self.channelList2.setItemText(selectedChannelIndex,label)
+                                
 
 
-      # Link 2 channles sim
+     #  def synchronizeXGraph1(self,graph1,graph2):
+     #      #  graph2.getViewBox().blockSignals(True)  # Block signals temporarily to avoid recursion
+     #       graph2.getViewBox().setXRange(*graph1.getViewBox().viewRange()[0])
+     #      #  graph2.getViewBox().blockSignals(False)  # Unblock signals
+          
 
+     #  def synchronizeXGraph2(self,graph1,graph2):
+     #         graph1.getViewBox().setXRange(*graph2.getViewBox().viewRange()[0])
+     #         graph1.getViewBox().blockSignals(False)  # Unblock signals
 
+      def synchronizeXGraph1(self):
+        if not self.isSyncingX:
+            # Disconnect the signals to avoid recursion
+            self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)
+            
+            # Set the X-axis range of graph2 based on graph1
+            xRange = self.plotGraph1.getViewBox().viewRange()[0]
+            self.isSyncingX = True
+            self.plotGraph2.getViewBox().setXRange(*xRange)
+            self.isSyncingX = False
+            
+            # Reconnect the signal
+            self.plotGraph2.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph2)
+
+      def synchronizeXGraph2(self):
+        if not self.isSyncingX:
+            # Disconnect the signals to avoid recursion
+            self.plotGraph1.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph1)
+            
+            # Set the X-axis range of graph1 based on graph2
+            xRange = self.plotGraph2.getViewBox().viewRange()[0]
+            self.isSyncingX = True
+            self.plotGraph1.getViewBox().setXRange(*xRange)
+            self.isSyncingX = False
+            
+            # Reconnect the signal
+            self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1)
 
       # export the report to pdf
+      def captureGraphImage(self, targetGraph):
+          # Create an exporter to capture the graph
+          if (targetGraph == 0):
+               exporter = exporters.ImageExporter(self.plotGraph1.scene())
+          elif(targetGraph == 1):
+               exporter = exporters.ImageExporter(self.plotGraph2.scene())
+          
 
+          # Set the file suffix to specify the export type
+          exporter.params.fileSuffix = 'png'
+
+          # Set the filename
+          export_filename = 'graph_capture.png'
+
+          # Export the graph to the specified filename
+          exporter.export(export_filename)
+
+
+
+      def calculatePlotStatistics(self, targetGraph):
+          
+          #data
+          amplitudes = []
+          meanValues = []
+          medianValues = []
+          modeValues = []
+          standardDeviations = []
+          channelsNumbers = []
+          channelLabels = []
+
+          if targetGraph == 0:
+               # selectedChannelIndex = modules.choosenChannelGraph1
+               for Index in range(len(self.SignalChannelArr[0])):
+                    if self.SignalChannelArr[targetGraph][Index].path != "null":
+                         amplitudes.append(self.SignalChannelArr[targetGraph][Index].amplitude)
+                         channelsNumbers.append(Index)
+                         channelLabels.append(self.SignalChannelArr[targetGraph][Index].label)
+
+                     
+          elif targetGraph == 1:
+               # selectedChannelIndex = modules.choosenChannelGraph2
+               for  Index in range(len(self.SignalChannelArr[targetGraph])):
+                    if self.SignalChannelArr[targetGraph][Index].path != "null":
+                         amplitudes.append(self.SignalChannelArr[targetGraph][Index].amplitude)
+                         channelsNumbers.append(Index)
+                         channelLabels.append(self.SignalChannelArr[targetGraph][Index].label)
+
+
+          for index, dataset in enumerate(amplitudes):
+               if dataset:
+                    meanValues.append(statistics.mean(dataset))
+                    medianValues.append(statistics.median(dataset))
+                    modeValues.append(statistics.mode(dataset))
+                    standardDeviations.append(statistics.stdev(dataset))
+               else:
+                    meanValues.append("N/A")
+                    medianValues.append("N/A")
+                    modeValues.append("N/A")
+                    standardDeviations.append("N/A")
+
+                    # Create a table to display statistics
+          tableData = []
+          tableData.append(["signal", "Channel number", "Mean", "Median", "Mode", "Standard Deviation"])
+
+          for label, channel, mean, median, mode, std_dev in zip(channelLabels, channelsNumbers, meanValues, medianValues, modeValues, standardDeviations):
+               tableData.append([ label, channel+1, round(mean,4), round(median,4), round(mode,4), round(std_dev,4)])
+               # TABLE STYLE    
+          style = TableStyle([
+          ('BACKGROUND', (0, 0), (-1, 0), colors.Color(0.8, 0.8, 0.8)),  # Light gray background for the header row
+          ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),      # Black text color for the header row
+          ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+          ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+          ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+          ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+          ('GRID', (0, 0), (-1, -1), 1, colors.black)
+          ])
+          table = Table(tableData)
+          table.setStyle(style)
+
+          return table
+          
+  
+     # export the report to pdf
+      def exportReportPdf(self, graphNumber):
+
+          fileName = 'Report.pdf'
+          title = 'Signals Insights'
+          if(graphNumber == 0):
+                selectedGraph = 'Report for Graph 1'
+          if(graphNumber == 1):
+                selectedGraph = 'Report for Graph 2'                
+          
+          # Capture the plot and get the file path
+
+          self.captureGraphImage(graphNumber)
+          
+          pdf = canvas.Canvas(fileName, pagesize=letter )
+          
+          pdf.setFont("Helvetica", 24)
+
+          pdf.drawCentredString(290, 720, title)
+
+          pdf.drawAlignedString(260, 670, selectedGraph)
+
+          majorLogoPath = './Images/logo-major.png'
+          collegeLogoPath = './Images/collegeLogo.jpg'
+          
+          major_logo = ImageReader(majorLogoPath)
+          college_logo = ImageReader(collegeLogoPath)
+          
+          # Add logos to the PDF
+          pdf.drawImage(major_logo, 10, 725, width=112, height=45)
+          pdf.drawImage(college_logo, 525, 705, width=70, height=70)
+          
+          # Open the image file
+          image = Image.open('graph_capture.png')
+          # Get the size (width and height) of the image
+          image_width, image_height = image.size
+          aspect_ratio = image_width / image_height
+          # Close the image file
+          image.close()
+          
+          plotImg = ImageReader('graph_capture.png')
+          pdf.drawImage(plotImg, 35, 500, width=550, height=550 / aspect_ratio)
+          statistics_table = self.calculatePlotStatistics(graphNumber)
+          statistics_table.wrapOn(pdf, 0, 0)
+          statistics_table.drawOn(pdf, 60, 400)  
+          
+          pdf.save()
 
 
 

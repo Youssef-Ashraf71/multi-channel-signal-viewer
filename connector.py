@@ -1,6 +1,8 @@
 from PyQt5 import QtWidgets, uic
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QSlider, QTextEdit, QFileDialog, QScrollBar, QComboBox, QCheckBox, QScrollBar, QLCDNumber, QLineEdit
+from pyqtgraph import PlotWidget
+
 
 import main
 import modules
@@ -41,12 +43,7 @@ def __init__connectors__(self):
       self.horizontalSlider = self.findChild(QSlider,"horizontalSlider")
       self.horizontalSlider.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self,0))
 
-      self.xAxisScrollBar1 = self.findChild(QScrollBar, "xAxisScrollBar1")
-      self.xAxisScrollBar1.sliderMoved.connect(lambda: main.MainWindow.xScrollMove(self))
-
-      self.yAxisScrollBar1 = self.findChild(QScrollBar, "yAxisScrollBar1")
-      self.yAxisScrollBar1.sliderMoved.connect(lambda: main.MainWindow.yScrollMove(self))
-
+      
 # ------------------------------------------------------------------------------------------------------------
 # Graph2 
       self.browseBtn2.clicked.connect(lambda:(self.browse(self.plotGraph2,1)))
@@ -80,11 +77,6 @@ def __init__connectors__(self):
       self.speedSlider2 = self.findChild(QSlider,"speedSlider2")
       self.speedSlider2.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self,1))
 
-      self.xAxisScrollBar2 = self.findChild(QScrollBar, "xAxisScrollBar1")
-      self.xAxisScrollBar2.sliderMoved.connect(lambda: main.MainWindow.xScrollMove(self))
-
-      self.yAxisScrollBar2 = self.findChild(QScrollBar, "yAxisScrollBar1")
-      self.yAxisScrollBar2.sliderMoved.connect(lambda: main.MainWindow.yScrollMove(self))
 
 # ------------------------------------------------------------------------------------------------------------
 # Link
@@ -103,6 +95,19 @@ def __init__connectors__(self):
       self.rewindLinkBtn = self.findChild(QPushButton,"rewindLinkBtn")
       self.rewindLinkBtn.clicked.connect(lambda:main.MainWindow.rewindLink(self,self.plotGraph1,self.plotGraph2))
 
+      self.exportButton1 = self.findChild(QPushButton, "exportButton1")
+      self.exportButton1.clicked.connect(lambda:main.MainWindow.exportReportPdf(self, 0))
+
+      self.exportButton2 = self.findChild(QPushButton, "exportButton2")
+      self.exportButton2.clicked.connect(lambda:main.MainWindow.exportReportPdf(self, 1))
 
 
-     
+
+#---------------------------------------------------------------------------------------
+      self.plotGraph1=self.findChild(PlotWidget,'plotGraph1')
+      self.plotGraph2=self.findChild(PlotWidget,'plotGraph2')
+
+      # self.plotGraph1.getViewBox().sigXRangeChanged.connect(lambda:main.MainWindow.synchronizeXGraph1(self))
+      # self.plotGraph2.getViewBox().sigXRangeChanged.connect(lambda:main.MainWindow.synchronizeXGraph2(self))
+
+      # self.plotGraph1.getViewBox().sigYRangeChanged.connect(lambda:main.MainWindow.synchronizeGraphs(self,self.plotGraph1,self.plotGraph2))
