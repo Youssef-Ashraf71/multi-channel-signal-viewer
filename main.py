@@ -611,9 +611,7 @@ class MainWindow(QtWidgets.QMainWindow):
           tableData.append(["signal", "Channel number", "Mean", "Median", "Mode", "Standard Deviation"])
 
           for label, channel, mean, median, mode, std_dev in zip(channelLabels, channelsNumbers, meanValues, medianValues, modeValues, standardDeviations):
-               tableData.append([ label, channel+1, mean, median, mode, std_dev])
-
-
+               tableData.append([ label, channel+1, round(mean,4), round(median,4), round(mode,4), round(std_dev,4)])
                # TABLE STYLE    
           style = TableStyle([
           ('BACKGROUND', (0, 0), (-1, 0), colors.Color(0.8, 0.8, 0.8)),  # Light gray background for the header row
