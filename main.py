@@ -52,7 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
           self.setWindowIcon(QtGui.QIcon('Images/MainIcon.png'))
           self.setWindowTitle("Realtime-signal-viewer")
          # Apply Aqya stylesheet
-          self.apply_stylesheet("Aqua.qss")
+          self.apply_stylesheet("MacOS.qss")
 
           self.xAxis1 = [0]
           self.yAxis1 = [0]
@@ -582,8 +582,11 @@ class MainWindow(QtWidgets.QMainWindow):
       def exportReportPdf(self, graphNumber):
 
           fileName = 'Report.pdf'
-          documentTitle = 'Signal Insights Report'
-          title = 'Signals Insights'          
+          title = 'Signals Insights'
+          if(graphNumber == 0):
+                selectedGraph = 'Report for Graph 1'
+          if(graphNumber == 1):
+                selectedGraph = 'Report for Graph 2'                
           
           # Capture the plot and get the file path
 
@@ -595,6 +598,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
           pdf.drawCentredString(290, 720, title)
 
+          pdf.drawAlignedString(260, 670, selectedGraph)
+
           majorLogoPath = './Images/logo-major.png'
           collegeLogoPath = './Images/collegeLogo.jpg'
           
@@ -604,7 +609,6 @@ class MainWindow(QtWidgets.QMainWindow):
           # Add logos to the PDF
           pdf.drawImage(major_logo, 10, 725, width=112, height=45)
           pdf.drawImage(college_logo, 525, 705, width=70, height=70)
-          
           
           # Open the image file
           image = Image.open('graph_capture.png')

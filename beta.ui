@@ -114,6 +114,18 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="moveToGraph2">
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Move to Graph 2</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -130,27 +142,10 @@
     </item>
     <item row="1" column="0">
      <layout class="QGridLayout" name="plotGridLayout1">
-      <item row="2" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_4"/>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QScrollBar" name="xAxisScrollBar1">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
        <widget class="PlotWidget" name="plotGraph1"/>
       </item>
       <item row="0" column="1">
-       <widget class="QScrollBar" name="yAxisScrollBar1">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout">
@@ -168,6 +163,9 @@
           </item>
           <item>
            <widget class="QComboBox" name="channelList1">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
             <item>
              <property name="text">
               <string>Channel 1</string>
@@ -317,12 +315,28 @@
         </item>
        </layout>
       </item>
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+      </item>
      </layout>
     </item>
     <item row="2" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_9">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <spacer name="horizontalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <widget class="QPushButton" name="playPauseLinkBtn">
           <property name="enabled">
@@ -407,6 +421,19 @@
          <string>Link Graphs</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_8">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
@@ -509,6 +536,18 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="moveToGraph1">
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Move to Graph 1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -525,27 +564,7 @@
     </item>
     <item row="4" column="0">
      <layout class="QGridLayout" name="plotGridLayout1_2">
-      <item row="0" column="0">
-       <widget class="PlotWidget" name="plotGraph2"/>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QScrollBar" name="xAxisScrollBar2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
-       <widget class="QScrollBar" name="yAxisScrollBar2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_6"/>
-      </item>
-      <item row="0" column="2">
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -563,6 +582,9 @@
           </item>
           <item>
            <widget class="QComboBox" name="channelList2">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
             <item>
              <property name="text">
               <string>Channel 1</string>
@@ -605,6 +627,9 @@
              <font>
               <pointsize>14</pointsize>
              </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
             </property>
             <property name="text">
              <string>Select Color</string>
@@ -711,6 +736,12 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_6"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="PlotWidget" name="plotGraph2"/>
       </item>
      </layout>
     </item>

@@ -41,12 +41,7 @@ def __init__connectors__(self):
       self.horizontalSlider = self.findChild(QSlider,"horizontalSlider")
       self.horizontalSlider.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self,0))
 
-      self.xAxisScrollBar1 = self.findChild(QScrollBar, "xAxisScrollBar1")
-      self.xAxisScrollBar1.sliderMoved.connect(lambda: main.MainWindow.xScrollMove(self))
-
-      self.yAxisScrollBar1 = self.findChild(QScrollBar, "yAxisScrollBar1")
-      self.yAxisScrollBar1.sliderMoved.connect(lambda: main.MainWindow.yScrollMove(self))
-
+      
 # ------------------------------------------------------------------------------------------------------------
 # Graph2 
       self.browseBtn2.clicked.connect(lambda:(self.browse(self.plotGraph2,1)))
@@ -80,11 +75,6 @@ def __init__connectors__(self):
       self.speedSlider2 = self.findChild(QSlider,"speedSlider2")
       self.speedSlider2.sliderReleased.connect(lambda:main.MainWindow.speedSlider(self,1))
 
-      self.xAxisScrollBar2 = self.findChild(QScrollBar, "xAxisScrollBar1")
-      self.xAxisScrollBar2.sliderMoved.connect(lambda: main.MainWindow.xScrollMove(self))
-
-      self.yAxisScrollBar2 = self.findChild(QScrollBar, "yAxisScrollBar1")
-      self.yAxisScrollBar2.sliderMoved.connect(lambda: main.MainWindow.yScrollMove(self))
 
 # ------------------------------------------------------------------------------------------------------------
 # Link
