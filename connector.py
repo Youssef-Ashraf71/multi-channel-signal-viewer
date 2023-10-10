@@ -1,6 +1,8 @@
 from PyQt5 import QtWidgets, uic
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QSlider, QTextEdit, QFileDialog, QScrollBar, QComboBox, QCheckBox, QScrollBar, QLCDNumber, QLineEdit
+from pyqtgraph import PlotWidget
+
 
 import main
 import modules
@@ -104,5 +106,10 @@ def __init__connectors__(self):
       self.rewindLinkBtn.clicked.connect(lambda:main.MainWindow.rewindLink(self,self.plotGraph1,self.plotGraph2))
 
 
+#---------------------------------------------------------------------------------------
+      self.plotGraph1=self.findChild(PlotWidget,'plotGraph1')
+      self.plotGraph2=self.findChild(PlotWidget,'plotGraph2')
 
-     
+      self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1())
+      # self.plotGraph2.getViewBox().sigXRangeChanged.connect(lambda:main.MainWindow.synchronizeXGraph2(self,self.plotGraph1,self.plotGraph2))
+      # self.plotGraph1.getViewBox().sigYRangeChanged.connect(lambda:main.MainWindow.synchronizeGraphs(self,self.plotGraph1,self.plotGraph2))

@@ -295,6 +295,7 @@ class MainWindow(QtWidgets.QMainWindow):
            self.rewindLinkBtn.setEnabled(True)
            self.rewindSignal(self.plotGraph1,0)
            self.rewindSignal(self.plotGraph2,1)
+           
           #  self.isLinked = isChecked
 
 
@@ -473,12 +474,19 @@ class MainWindow(QtWidgets.QMainWindow):
                     currentLegend.addItem(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].graph, label)
 
 
-      # Link 2 channles sim
+      def synchronizeXGraph1(self,graph1,graph2):
+          #  graph2.getViewBox().blockSignals(True)  # Block signals temporarily to avoid recursion
+           graph2.getViewBox().setXRange(*graph1.getViewBox().viewRange()[0])
+          #  graph2.getViewBox().blockSignals(False)  # Unblock signals
+          
 
-
+      def synchronizeXGraph2(self,graph1,graph2):
+             graph1.getViewBox().setXRange(*graph2.getViewBox().viewRange()[0])
+             graph1.getViewBox().blockSignals(False)  # Unblock signals
 
       # export the report to pdf
 
+     
 
 
 
