@@ -27,6 +27,22 @@ import modules
 import connector
 
 
+from PyQt5.QtGui import QPixmap
+from reportlab.lib.utils import ImageReader
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import Frame
+from reportlab.lib.pagesizes import A4, landscape
+import pyqtgraph.exporters as exporters
+from PIL import Image
+import statistics
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, PageBreak, Image as PlatypusImage
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfgen import canvas
+
+
+
 class MainWindow(QtWidgets.QMainWindow):
 
         # Mainwindow constructor
@@ -36,7 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
           self.setWindowIcon(QtGui.QIcon('Images/MainIcon.png'))
           self.setWindowTitle("Realtime-signal-viewer")
          # Apply Aqya stylesheet
-          self.apply_stylesheet("Aqua.qss")
+          self.apply_stylesheet("MacOS.qss")
 
           self.xAxis1 = [0]
           self.yAxis1 = [0]
@@ -530,8 +546,137 @@ class MainWindow(QtWidgets.QMainWindow):
             self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1)
 
       # export the report to pdf
+      def captureGraphImage(self, targetGraph):
+          # Create an exporter to capture the graph
+          if (targetGraph == 0):
+               exporter = exporters.ImageExporter(self.plotGraph1.scene())
+          elif(targetGraph == 1):
+               exporter = exporters.ImageExporter(self.plotGraph2.scene())
+          
 
-     
+          # Set the file suffix to specify the export type
+          exporter.params.fileSuffix = 'png'
+
+          # Set the filename
+          export_filename = 'graph_capture.png'
+
+          # Export the graph to the specified filename
+          exporter.export(export_filename)
+
+
+
+      def calculatePlotStatistics(self, targetGraph):
+          
+          #data
+          amplitudes = []
+          meanValues = []
+          medianValues = []
+          modeValues = []
+          standardDeviations = []
+          channelsNumbers = []
+          channelLabels = []
+
+          if targetGraph == 0:
+               # selectedChannelIndex = modules.choosenChannelGraph1
+               for Index in range(len(self.SignalChannelArr[0])):
+                    if self.SignalChannelArr[targetGraph][Index].path != "null":
+                         amplitudes.append(self.SignalChannelArr[targetGraph][Index].amplitude)
+                         channelsNumbers.append(Index)
+                         channelLabels.append(self.SignalChannelArr[targetGraph][Index].label)
+
+                     
+          elif targetGraph == 1:
+               # selectedChannelIndex = modules.choosenChannelGraph2
+               for  Index in range(len(self.SignalChannelArr[targetGraph])):
+                    if self.SignalChannelArr[targetGraph][Index].path != "null":
+                         amplitudes.append(self.SignalChannelArr[targetGraph][Index].amplitude)
+                         channelsNumbers.append(Index)
+                         channelLabels.append(self.SignalChannelArr[targetGraph][Index].label)
+
+
+          for index, dataset in enumerate(amplitudes):
+               if dataset:
+                    meanValues.append(statistics.mean(dataset))
+                    medianValues.append(statistics.median(dataset))
+                    modeValues.append(statistics.mode(dataset))
+                    standardDeviations.append(statistics.stdev(dataset))
+               else:
+                    meanValues.append("N/A")
+                    medianValues.append("N/A")
+                    modeValues.append("N/A")
+                    standardDeviations.append("N/A")
+
+                    # Create a table to display statistics
+          tableData = []
+          tableData.append(["signal", "Channel number", "Mean", "Median", "Mode", "Standard Deviation"])
+
+          for label, channel, mean, median, mode, std_dev in zip(channelLabels, channelsNumbers, meanValues, medianValues, modeValues, standardDeviations):
+               tableData.append([ label, channel+1, mean, median, mode, std_dev])
+
+
+               # TABLE STYLE    
+          style = TableStyle([
+          ('BACKGROUND', (0, 0), (-1, 0), colors.Color(0.8, 0.8, 0.8)),  # Light gray background for the header row
+          ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),      # Black text color for the header row
+          ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+          ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+          ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+          ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+          ('GRID', (0, 0), (-1, -1), 1, colors.black)
+          ])
+          table = Table(tableData)
+          table.setStyle(style)
+
+          return table
+          
+  
+     # export the report to pdf
+      def exportReportPdf(self, graphNumber):
+
+          fileName = 'Report.pdf'
+          title = 'Signals Insights'
+          if(graphNumber == 0):
+                selectedGraph = 'Report for Graph 1'
+          if(graphNumber == 1):
+                selectedGraph = 'Report for Graph 2'                
+          
+          # Capture the plot and get the file path
+
+          self.captureGraphImage(graphNumber)
+          
+          pdf = canvas.Canvas(fileName, pagesize=letter )
+          
+          pdf.setFont("Helvetica", 24)
+
+          pdf.drawCentredString(290, 720, title)
+
+          pdf.drawAlignedString(260, 670, selectedGraph)
+
+          majorLogoPath = './Images/logo-major.png'
+          collegeLogoPath = './Images/collegeLogo.jpg'
+          
+          major_logo = ImageReader(majorLogoPath)
+          college_logo = ImageReader(collegeLogoPath)
+          
+          # Add logos to the PDF
+          pdf.drawImage(major_logo, 10, 725, width=112, height=45)
+          pdf.drawImage(college_logo, 525, 705, width=70, height=70)
+          
+          # Open the image file
+          image = Image.open('graph_capture.png')
+          # Get the size (width and height) of the image
+          image_width, image_height = image.size
+          aspect_ratio = image_width / image_height
+          # Close the image file
+          image.close()
+          
+          plotImg = ImageReader('graph_capture.png')
+          pdf.drawImage(plotImg, 35, 500, width=550, height=550 / aspect_ratio)
+          statistics_table = self.calculatePlotStatistics(graphNumber)
+          statistics_table.wrapOn(pdf, 0, 0)
+          statistics_table.drawOn(pdf, 60, 400)  
+          
+          pdf.save()
 
 
 
