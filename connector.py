@@ -103,6 +103,13 @@ def __init__connectors__(self):
       self.rewindLinkBtn = self.findChild(QPushButton,"rewindLinkBtn")
       self.rewindLinkBtn.clicked.connect(lambda:main.MainWindow.rewindLink(self,self.plotGraph1,self.plotGraph2))
 
+      self.exportButton1 = self.findChild(QPushButton, "exportButton1")
+      self.exportButton1.clicked.connect(lambda:main.MainWindow.exportReportPdf(self, 0))
+
+      self.exportButton2 = self.findChild(QPushButton, "exportButton2")
+      self.exportButton2.clicked.connect(lambda:main.MainWindow.exportReportPdf(self, 1))
+
+
 
 
      

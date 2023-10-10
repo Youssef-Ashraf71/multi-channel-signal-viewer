@@ -109,7 +109,7 @@
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>Images/download.png</normaloff>Images/download.png</iconset>
+          <normaloff>Images/export-pdf.png</normaloff>Images/export-pdf.png</iconset>
         </property>
        </widget>
       </item>
@@ -215,6 +215,19 @@
              <string>Select Color</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
@@ -491,7 +504,7 @@
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>Images/download.png</normaloff>Images/download.png</iconset>
+          <normaloff>Images/export-pdf.png</normaloff>Images/export-pdf.png</iconset>
         </property>
        </widget>
       </item>
@@ -562,6 +575,31 @@
         <item row="1" column="0" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout_13">
           <item>
+           <widget class="QCheckBox" name="checkBox2">
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Hide </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <widget class="QPushButton" name="selectColorBtn2">
             <property name="font">
              <font>
@@ -585,18 +623,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox2">
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Hide </string>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>
