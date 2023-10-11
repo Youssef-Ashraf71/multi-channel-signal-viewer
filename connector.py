@@ -111,3 +111,8 @@ def __init__connectors__(self):
       # self.plotGraph2.getViewBox().sigXRangeChanged.connect(lambda:main.MainWindow.synchronizeXGraph2(self))
 
       # self.plotGraph1.getViewBox().sigYRangeChanged.connect(lambda:main.MainWindow.synchronizeGraphs(self,self.plotGraph1,self.plotGraph2))
+      
+      self.exportButton1 = self.findChild(QPushButton,"moveToGraph2")
+      self.exportButton1.clicked.connect(lambda:main.MainWindow.moveSignal(self,0))
+      self.exportButton2 = self.findChild(QPushButton,"moveToGraph1")
+      self.exportButton2.clicked.connect(lambda:main.MainWindow.moveSignal(self,1))
