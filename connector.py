@@ -14,7 +14,7 @@ def __init__connectors__(self):
       self.browseBtn1.clicked.connect(lambda:(self.browse(self.plotGraph1,0)))
 
       self.channelList1 = self.findChild(QComboBox, "channelList1")
-      self.channelList1.currentIndexChanged.connect(lambda:modules.setChoosenChannel(self,self.channelList1.currentIndex(),0, ))
+      self.channelList1.currentIndexChanged.connect(lambda:modules.setChoosenChannel(self,self.channelList1.currentIndex(),0 ))
 
       self.checkBox1 = self.findChild(QCheckBox,"checkBox1")
       self.checkBox1.stateChanged.connect(lambda: main.MainWindow.hideSignal(self,self.checkBox1.isChecked(),0))

@@ -300,7 +300,7 @@ class MainWindow(QtWidgets.QMainWindow):
  
 
                          return
-           if self.SignalChannelArr[0][0].path == "null" or self.SignalChannelArr[1][0].path == "null":
+           if ( self.SignalChannelArr[0][0].path == "null" and self.isSignalFound(0) == False)  or (self.SignalChannelArr[1][0].path == "null" and self.isSignalFound(1) == False):
                     if isChecked:
                          self.linkGraphsCheckBox.setChecked(False)
                     QtWidgets.QMessageBox.warning(self,"Operation Failed","You can't link the two graphs if one of them is empty")
@@ -510,8 +510,11 @@ class MainWindow(QtWidgets.QMainWindow):
                elif choosenGraphIndex == 1:
                      self.channelList2.setItemText(selectedChannelIndex,label)
                                 
-
-
+      def isSignalFound(self,choosenGraphIndex):
+            for channelIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
+                  if self.SignalChannelArr[choosenGraphIndex][channelIndex].path != "null":
+                        return True
+            return False   
      #  def synchronizeXGraph1(self,graph1,graph2):
      #      #  graph2.getViewBox().blockSignals(True)  # Block signals temporarily to avoid recursion
      #       graph2.getViewBox().setXRange(*graph1.getViewBox().viewRange()[0])
@@ -583,10 +586,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
                   self.plotGraph1.removeItem(currentMovedSignal.graph)
                   self.SignalChannelArr[choosenGraphIndex].pop(currentMovedSignalIndex)
+                  if modules.choosenChannelGraph1 > 0:
+                        modules.choosenChannelGraph1 = modules.choosenChannelGraph1 -1
                   if len( self.SignalChannelArr[choosenGraphIndex]) == 0:
                          self.addNewChannel(self.channelList1,choosenGraphIndex)
-                  if modules.choosenChannelGraph1 > 0:
-                        modules.choosenChannelGraph1-=1
+
                   self.xAxis2.append(0)
                   self.yAxis2.append(0)
                   self.Legend2 = self.plotGraph2.addLegend()
@@ -604,10 +608,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
                   self.plotGraph2.removeItem(currentMovedSignal.graph)
                   self.SignalChannelArr[choosenGraphIndex].pop(currentMovedSignalIndex)
+                  if modules.choosenChannelGraph2 >0:
+                         modules.choosenChannelGraph2 = modules.choosenChannelGraph2-1
                   if len( self.SignalChannelArr[choosenGraphIndex]) == 0:
                          self.addNewChannel(self.channelList2,choosenGraphIndex)
-                  if modules.choosenChannelGraph2 >0:
-                        modules.choosenChannelGraph2-=1
+
                   self.xAxis1.append(0)
                   self.yAxis1.append(0)
                   self.Legend1 = self.plotGraph1.addLegend()
