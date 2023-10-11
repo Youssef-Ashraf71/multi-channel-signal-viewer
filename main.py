@@ -58,7 +58,6 @@ class MainWindow(QtWidgets.QMainWindow):
           self.yAxis1 = [0]
           self.xAxis2 = [0]
           self.yAxis2 = [0]
-         # self.PlotterWindowProp = modules.PlotterWindow()
           self.pauseFlag1 = False
           self.pauseFlag2 = False
           self.pauseFlagLink=False
@@ -296,8 +295,8 @@ class MainWindow(QtWidgets.QMainWindow):
                          icon = QtGui.QIcon()
                          icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                          self.playPauseLinkBtn.setIcon(icon)
-                      #   self.plotGraph1.getViewBox().autoRange()
-                        # self.plotGraph2.getViewBox().autoRange()
+                         self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().XAxis, enable=True)
+                         self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().XAxis, enable=True)
  
 
                          return

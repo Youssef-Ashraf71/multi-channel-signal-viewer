@@ -79,14 +79,3 @@ class SignalChannel:
 
             
 
-class PlotterWindow:
-    def __init__(self, YAxisRange=(0, 1), XAxisRange=(-1, 1), CineSpeed=1.0):
-        self.YAxisRange = YAxisRange  # Tuple containing min/max ranges
-        self.XAxisRange = XAxisRange
-
-        self.CineSpeed = 50
-
-    def UpdateCineSpeed(self, Input):
-        self.CineSpeed = (50) / (Input/100)
-        #MainWindow.timer = QtCore.QTimer()
-        # MainWindow.timer.setInterval(100*self.CineSpeed)
