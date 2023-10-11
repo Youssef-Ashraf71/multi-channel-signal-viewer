@@ -48,7 +48,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Mainwindow constructor
       def __init__(self, *args, **kwargs):
           super(MainWindow, self).__init__(*args, **kwargs)
-          uic.loadUi('beta3.ui', self)
+          uic.loadUi('beta4.ui', self)
           self.setWindowIcon(QtGui.QIcon('Images/MainIcon.png'))
           self.setWindowTitle("Realtime-signal-viewer")
          # Apply Aqya stylesheet
@@ -274,8 +274,10 @@ class MainWindow(QtWidgets.QMainWindow):
       
       
       
-      def linkGraphs(self,isChecked):
-           if self.linkGraphsCheckBox.isChecked() == False :
+      def linkGraphs(self):
+           if self.isLinked == True :
+                         self.isLinked = False
+
                          self.playPauseBtn1.setEnabled(True)
                          self.playPauseBtn2.setEnabled(True)
                          self.zoomInBtn1.setEnabled(True)
@@ -286,28 +288,40 @@ class MainWindow(QtWidgets.QMainWindow):
                          self.rewindBtn2.setEnabled(True)
                          self.horizontalSlider.setEnabled(True)
                          self.speedSlider2.setEnabled(True)
+                         self.linkGraphsButton.setText("Link Graphs")
+
                          self.playPauseLinkBtn.hide()
                          self.zoomInLinkBtn.hide()
                          self.zoomOutLinkBtn.hide()
                          self.rewindLinkBtn.hide()
+
                          self.plotGraph1.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph1)
-                         self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)                  
+                         self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)  
+
                          icon = QtGui.QIcon()
                          icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-                         self.playPauseLinkBtn.setIcon(icon)
+                        # self.playPauseLinkBtn1.setIcon(icon)
+                        # self.playPauseLinkBtn2.setIcon(icon)
+
                          self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().XAxis, enable=True)
                          self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().XAxis, enable=True)
  
 
                          return
-           if ( self.SignalChannelArr[0][0].path == "null" and self.isSignalFound(0) == False)  or (self.SignalChannelArr[1][0].path == "null" and self.isSignalFound(1) == False):
-                    if isChecked:
-                         self.linkGraphsCheckBox.setChecked(False)
-                    QtWidgets.QMessageBox.warning(self,"Operation Failed","You can't link the two graphs if one of them is empty")
-                    return
+          #  if ( self.SignalChannelArr[0][0].path == "null" and self.isSignalFound(0) == False)  or (self.SignalChannelArr[1][0].path == "null" and self.isSignalFound(1) == False):
+          #           if isChecked:
+          #               # self.linkGraphsCheckBox.setChecked(False)
+          #               self.isLinked = False
+          #           QtWidgets.QMessageBox.warning(self,"Operation Failed","You can't link the two graphs if one of them is empty")
+          #           return
+           self.isLinked = True
            icon = QtGui.QIcon()
            icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
            self.playPauseLinkBtn.setIcon(icon)
+           icon.addPixmap(QtGui.QPixmap("Images/unlink.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+           self.linkGraphsButton.setIcon(icon)
+           self.linkGraphsButton.setText("Unlink Graphs")
+
            self.playPauseBtn1.setEnabled(False)
            self.playPauseBtn2.setEnabled(False)
            self.zoomInBtn1.setEnabled(False)
@@ -318,10 +332,12 @@ class MainWindow(QtWidgets.QMainWindow):
            self.rewindBtn2.setEnabled(False)
            self.horizontalSlider.setEnabled(False)
            self.speedSlider2.setEnabled(False)
+
            self.playPauseLinkBtn.show()
            self.zoomInLinkBtn.show()
            self.zoomOutLinkBtn.show()
            self.rewindLinkBtn.show()
+
            self.rewindSignal(self.plotGraph1,0)
            self.rewindSignal(self.plotGraph2,1)
            
@@ -356,8 +372,15 @@ class MainWindow(QtWidgets.QMainWindow):
             self.zoomSignalOut(graph2)
       
       def rewindLink(self,graph1,graph2):
+            self.plotGraph1.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph1)
+            self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)  
+            self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().XAxis, enable=True)
+            self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().XAxis, enable=True)
             self.rewindSignal(graph1,0)
             self.rewindSignal(graph2,1)
+            self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1)
+            self.plotGraph2.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph2)
+           
 
       def getLongestSignal(self):
            ans, index = 0,0
@@ -588,6 +611,7 @@ class MainWindow(QtWidgets.QMainWindow):
                   self.SignalChannelArr[choosenGraphIndex].pop(currentMovedSignalIndex)
                   if modules.choosenChannelGraph1 > 0:
                         modules.choosenChannelGraph1 = modules.choosenChannelGraph1 -1
+                        self.channelList1.setCurrentIndex(modules.choosenChannelGraph1)
                   if len( self.SignalChannelArr[choosenGraphIndex]) == 0:
                          self.addNewChannel(self.channelList1,choosenGraphIndex)
 
@@ -610,6 +634,7 @@ class MainWindow(QtWidgets.QMainWindow):
                   self.SignalChannelArr[choosenGraphIndex].pop(currentMovedSignalIndex)
                   if modules.choosenChannelGraph2 >0:
                          modules.choosenChannelGraph2 = modules.choosenChannelGraph2-1
+                         self.channelList1.setCurrentIndex(modules.choosenChannelGraph2)
                   if len( self.SignalChannelArr[choosenGraphIndex]) == 0:
                          self.addNewChannel(self.channelList2,choosenGraphIndex)
 

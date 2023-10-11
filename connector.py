@@ -10,6 +10,7 @@ import modules
 
 def __init__connectors__(self):
 
+#---------------------------------------------------------------------------------------
       # Graph 1
       self.browseBtn1.clicked.connect(lambda:(self.browse(self.plotGraph1,0)))
 
@@ -80,8 +81,10 @@ def __init__connectors__(self):
 
 # ------------------------------------------------------------------------------------------------------------
 # Link
-      self.linkGraphsCheckBox = self.findChild(QCheckBox,"linkGraphsCheckBox")
-      self.linkGraphsCheckBox.stateChanged.connect(lambda: main.MainWindow.linkGraphs(self,self.linkGraphsCheckBox.isChecked()))
+      #self.linkGraphsCheckBox = self.findChild(QCheckBox,"linkGraphsCheckBox")
+     # self.linkGraphsCheckBox.stateChanged.connect(lambda: main.MainWindow.linkGraphs(self,self.linkGraphsCheckBox.isChecked()))
+      self.linkGraphsButton = self.findChild(QPushButton, "linkGraphsButton")
+      self.linkGraphsButton.clicked.connect(lambda:main.MainWindow.linkGraphs(self))
 
       self.playPauseLinkBtn = self.findChild(QPushButton,"playPauseLinkBtn")
       self.playPauseLinkBtn.clicked.connect(lambda:main.MainWindow.playPauseLink(self,self.playPauseLinkBtn,self.playPauseBtn1,self.playPauseBtn2))
@@ -104,14 +107,13 @@ def __init__connectors__(self):
 
 
 #---------------------------------------------------------------------------------------
+# Plot Widgets
       self.plotGraph1=self.findChild(PlotWidget,'plotGraph1')
       self.plotGraph2=self.findChild(PlotWidget,'plotGraph2')
 
-      # self.plotGraph1.getViewBox().sigXRangeChanged.connect(lambda:main.MainWindow.synchronizeXGraph1(self))
-      # self.plotGraph2.getViewBox().sigXRangeChanged.connect(lambda:main.MainWindow.synchronizeXGraph2(self))
 
-      # self.plotGraph1.getViewBox().sigYRangeChanged.connect(lambda:main.MainWindow.synchronizeGraphs(self,self.plotGraph1,self.plotGraph2))
-      
+#---------------------------------------------------------------------------------------
+# Export Buttons
       self.exportButton1 = self.findChild(QPushButton,"moveToGraph2")
       self.exportButton1.clicked.connect(lambda:main.MainWindow.moveSignal(self,0))
       self.exportButton2 = self.findChild(QPushButton,"moveToGraph1")
