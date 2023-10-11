@@ -66,7 +66,15 @@ class SignalChannel:
             if color == "#000000":
                   self.color = old
             else:
-                  self.color = color      
+                  self.color = color 
+
+      def setData(self,time,amplitude,hiddenFlag, color, label, path):
+            self.time = time
+            self.amplitude = amplitude
+            self.hiddenFlag = hiddenFlag
+            self.color = color
+            self.label = label
+            self.path = path            
 
 
             

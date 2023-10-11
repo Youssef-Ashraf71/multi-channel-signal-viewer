@@ -438,6 +438,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     #  self.startTime2.stop()
              choosengraph.clear()
              #for channelIndex in range(len(self.SignalChannelArr[choosengraph])):
+             print("ana hena ya homar")
              self.signalInitialization(choosengraph,choosenGraphIndex,True)
              
 
@@ -563,7 +564,52 @@ class MainWindow(QtWidgets.QMainWindow):
           # Export the graph to the specified filename
           exporter.export(export_filename)
 
+      def moveSignal(self,choosenGraphIndex):
+            if choosenGraphIndex == 0 :
+                  currentMovedSignalIndex = modules.choosenChannelGraph1
+                  print("Graph 1 ",currentMovedSignalIndex)
+                  currentMovedSignal = self.SignalChannelArr[choosenGraphIndex][currentMovedSignalIndex]
+                  self.SignalChannelArr[1].append(modules.SignalChannel())
+                  self.SignalChannelArr[1][-1].setData(time = currentMovedSignal.time,amplitude = currentMovedSignal.amplitude, hiddenFlag =currentMovedSignal.hiddenFlag
+                  , label =  currentMovedSignal.label, color =  currentMovedSignal.color, path =  currentMovedSignal.path)
+                  
+                  _translate = QtCore.QCoreApplication.translate
+                  self.channelList1.removeItem(currentMovedSignalIndex)
+                  self.channelList2.addItem(_translate("MainWindow",self.SignalChannelArr[1][-1].label))
 
+
+                  self.plotGraph1.removeItem(currentMovedSignal.graph)
+                  self.SignalChannelArr[choosenGraphIndex].pop(currentMovedSignalIndex)
+                  if len( self.SignalChannelArr[choosenGraphIndex]) == 0:
+                         self.addNewChannel(self.channelList1,choosenGraphIndex)
+                  if modules.choosenChannelGraph1 > 0:
+                        modules.choosenChannelGraph1-=1
+                  self.xAxis2.append(0)
+                  self.yAxis2.append(0)
+                  self.Legend2 = self.plotGraph2.addLegend()
+                  self.rewindSignal(self.plotGraph2,1)
+            elif choosenGraphIndex == 1:
+                  currentMovedSignalIndex = modules.choosenChannelGraph2
+                  print("Graph 2 ",currentMovedSignalIndex)
+                  currentMovedSignal = self.SignalChannelArr[choosenGraphIndex][currentMovedSignalIndex]
+                  self.SignalChannelArr[0].append(modules.SignalChannel())
+                  self.SignalChannelArr[0][-1].setData(time = currentMovedSignal.time,amplitude = currentMovedSignal.amplitude, hiddenFlag =currentMovedSignal.hiddenFlag
+                  , label =  currentMovedSignal.label, color =  currentMovedSignal.color, path =  currentMovedSignal.path)
+
+                  _translate = QtCore.QCoreApplication.translate
+                  self.channelList2.removeItem(currentMovedSignalIndex)
+                  self.channelList1.addItem(_translate("MainWindow", self.SignalChannelArr[0][-1].label))
+
+                  self.plotGraph2.removeItem(currentMovedSignal.graph)
+                  self.SignalChannelArr[choosenGraphIndex].pop(currentMovedSignalIndex)
+                  if len( self.SignalChannelArr[choosenGraphIndex]) == 0:
+                         self.addNewChannel(self.channelList2,choosenGraphIndex)
+                  if modules.choosenChannelGraph2 >0:
+                        modules.choosenChannelGraph2-=1
+                  self.xAxis1.append(0)
+                  self.yAxis1.append(0)
+                  self.Legend1 = self.plotGraph1.addLegend()
+                  self.rewindSignal(self.plotGraph1,0)
 
       def calculatePlotStatistics(self, targetGraph):
           
