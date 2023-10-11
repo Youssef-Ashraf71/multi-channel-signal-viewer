@@ -33,10 +33,14 @@ def setChoosenChannel(self,index,graphIndex):
         global choosenChannelGraph2
         if graphIndex == 0:
             choosenChannelGraph1 = index
+            if choosenChannelGraph1 < 0 or choosenChannelGraph1 > len(self.SignalChannelArr[graphIndex])-1:
+                  return
             self.checkBox1.setChecked(self.SignalChannelArr[graphIndex][choosenChannelGraph1].hiddenFlag)
             self.lineEdit.clear()
         if graphIndex == 1:
               choosenChannelGraph2 = index    
+              if choosenChannelGraph2 < 0 or choosenChannelGraph2 > len(self.SignalChannelArr[graphIndex])-1:
+                  return
               self.checkBox2.setChecked(self.SignalChannelArr[graphIndex][choosenChannelGraph2].hiddenFlag)
               self.lineEdit2.clear() 
  
