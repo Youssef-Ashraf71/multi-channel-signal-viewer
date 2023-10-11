@@ -48,7 +48,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Mainwindow constructor
       def __init__(self, *args, **kwargs):
           super(MainWindow, self).__init__(*args, **kwargs)
-          uic.loadUi('beta.ui', self)
+          uic.loadUi('beta3.ui', self)
           self.setWindowIcon(QtGui.QIcon('Images/MainIcon.png'))
           self.setWindowTitle("Realtime-signal-viewer")
          # Apply Aqya stylesheet
@@ -72,10 +72,14 @@ class MainWindow(QtWidgets.QMainWindow):
           self.SignalChannelArr.append(tmpList)
           tmpList = [modules.SignalChannel()]
           self.SignalChannelArr.append(tmpList)
-          self.playPauseLinkBtn.setEnabled(False)
-          self.zoomInLinkBtn.setEnabled(False)
-          self.zoomOutLinkBtn.setEnabled(False)
-          self.rewindLinkBtn.setEnabled(False)
+        #  self.playPauseLinkBtn.setEnabled(False)
+          self.playPauseLinkBtn.hide()
+        #  self.zoomInLinkBtn.setEnabled(False)
+          self.zoomInLinkBtn.hide()
+     #     self.zoomOutLinkBtn.setEnabled(False)
+          self.zoomOutLinkBtn.hide()
+       #   self.rewindLinkBtn.setEnabled(False)
+          self.rewindLinkBtn.hide()
           self.isSyncingX = False
           connector.__init__connectors__(self)
           # 
@@ -229,12 +233,12 @@ class MainWindow(QtWidgets.QMainWindow):
                   if self.SignalChannelArr[choosenGraphIndex][channelIdx].path != "null":
                        if choosenGraphIndex == 0:
                               if len(self.SignalChannelArr[choosenGraphIndex][channelIdx].time) > self.pointsPlotted1:
-                              # print(self.SignalChannelArr[channelIdx].getColor())
+                              
                                     self.SignalChannelArr[choosenGraphIndex][channelIdx].graph.setData(self.xAxis1[channelIdx], self.yAxis1[channelIdx], pen=self.SignalChannelArr[choosenGraphIndex][channelIdx].getColor(), name=self.SignalChannelArr[choosenGraphIndex][channelIdx].label) 
 
                        elif choosenGraphIndex == 1:
                                if len(self.SignalChannelArr[choosenGraphIndex][channelIdx].time) > self.pointsPlotted2:
-                              # print(self.SignalChannelArr[channelIdx].getColor())
+                              
                                     self.SignalChannelArr[choosenGraphIndex][channelIdx].graph.setData(self.xAxis2[channelIdx], self.yAxis2[channelIdx], pen=self.SignalChannelArr[choosenGraphIndex][channelIdx].getColor(), name=self.SignalChannelArr[choosenGraphIndex][channelIdx].label)   
                       
 
@@ -283,15 +287,19 @@ class MainWindow(QtWidgets.QMainWindow):
                          self.rewindBtn2.setEnabled(True)
                          self.horizontalSlider.setEnabled(True)
                          self.speedSlider2.setEnabled(True)
-                         self.playPauseLinkBtn.setEnabled(False)
-                         self.zoomInLinkBtn.setEnabled(False)
-                         self.zoomOutLinkBtn.setEnabled(False)
-                         self.rewindLinkBtn.setEnabled(False)  
+                         self.playPauseLinkBtn.hide()
+                         self.zoomInLinkBtn.hide()
+                         self.zoomOutLinkBtn.hide()
+                         self.rewindLinkBtn.hide()
                          self.plotGraph1.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph1)
-                         self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)
+                         self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)                  
                          icon = QtGui.QIcon()
                          icon.addPixmap(QtGui.QPixmap("Images/play.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                          self.playPauseLinkBtn.setIcon(icon)
+                      #   self.plotGraph1.getViewBox().autoRange()
+                        # self.plotGraph2.getViewBox().autoRange()
+ 
+
                          return
            if self.SignalChannelArr[0][0].path == "null" or self.SignalChannelArr[1][0].path == "null":
                     if isChecked:
@@ -311,11 +319,10 @@ class MainWindow(QtWidgets.QMainWindow):
            self.rewindBtn2.setEnabled(False)
            self.horizontalSlider.setEnabled(False)
            self.speedSlider2.setEnabled(False)
-
-           self.playPauseLinkBtn.setEnabled(True)
-           self.zoomInLinkBtn.setEnabled(True)
-           self.zoomOutLinkBtn.setEnabled(True)
-           self.rewindLinkBtn.setEnabled(True)
+           self.playPauseLinkBtn.show()
+           self.zoomInLinkBtn.show()
+           self.zoomOutLinkBtn.show()
+           self.rewindLinkBtn.show()
            self.rewindSignal(self.plotGraph1,0)
            self.rewindSignal(self.plotGraph2,1)
            
@@ -437,8 +444,6 @@ class MainWindow(QtWidgets.QMainWindow):
                       self.playPauseBtn2.setIcon(icon)
                     #  self.startTime2.stop()
              choosengraph.clear()
-             #for channelIndex in range(len(self.SignalChannelArr[choosengraph])):
-             print("ana hena ya homar")
              self.signalInitialization(choosengraph,choosenGraphIndex,True)
              
 
@@ -566,8 +571,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
       def moveSignal(self,choosenGraphIndex):
             if choosenGraphIndex == 0 :
-                  currentMovedSignalIndex = modules.choosenChannelGraph1
-                  print("Graph 1 ",currentMovedSignalIndex)
+                  currentMovedSignalIndex = modules.choosenChannelGraph1 
                   currentMovedSignal = self.SignalChannelArr[choosenGraphIndex][currentMovedSignalIndex]
                   self.SignalChannelArr[1].append(modules.SignalChannel())
                   self.SignalChannelArr[1][-1].setData(time = currentMovedSignal.time,amplitude = currentMovedSignal.amplitude, hiddenFlag =currentMovedSignal.hiddenFlag
@@ -590,7 +594,6 @@ class MainWindow(QtWidgets.QMainWindow):
                   self.rewindSignal(self.plotGraph2,1)
             elif choosenGraphIndex == 1:
                   currentMovedSignalIndex = modules.choosenChannelGraph2
-                  print("Graph 2 ",currentMovedSignalIndex)
                   currentMovedSignal = self.SignalChannelArr[choosenGraphIndex][currentMovedSignalIndex]
                   self.SignalChannelArr[0].append(modules.SignalChannel())
                   self.SignalChannelArr[0][-1].setData(time = currentMovedSignal.time,amplitude = currentMovedSignal.amplitude, hiddenFlag =currentMovedSignal.hiddenFlag

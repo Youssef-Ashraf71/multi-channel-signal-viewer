@@ -39,7 +39,7 @@ def setChoosenChannel(self,index,graphIndex):
               choosenChannelGraph2 = index    
               self.checkBox2.setChecked(self.SignalChannelArr[graphIndex][choosenChannelGraph2].hiddenFlag)
               self.lineEdit2.clear() 
-       # print(choosenChannel)    
+ 
 
 class SignalChannel:
       def __init__(self,time = [] , amplitude = [] ,hiddenFlag = False , label="N/A", color= 0xffff00 , path="null"):
