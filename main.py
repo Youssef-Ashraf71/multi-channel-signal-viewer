@@ -154,7 +154,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     name="Channel "+str(selectedChannelIndex+1) ,
                     pen={'color': self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].getColor(), 'width': 1}
                )
-             #  self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].label = "Channel "+str(selectedChannelIndex+1)
+               self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].label = "Channel "+str(selectedChannelIndex+1)
             else:
                  for channelIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
                       if self.SignalChannelArr[choosenGraphIndex][channelIndex].path !="null":     
