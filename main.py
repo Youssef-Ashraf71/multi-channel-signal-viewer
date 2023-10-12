@@ -4,10 +4,6 @@ from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QTextEdit, QFileDialog, QScrollBar, QComboBox, QColorDialog, QCheckBox, QSlider
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QTimer, QFile, QTextStream
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
-
 import scipy.io
 from scipy import signal
 import numpy as np
@@ -18,10 +14,6 @@ import pyqtgraph as pg
 import sys
 import csv
 import os
-
-from fpdf import FPDF
-from wfdb.io.record import rdrecord
-import wfdb
 
 import modules
 import connector
