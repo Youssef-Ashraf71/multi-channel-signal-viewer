@@ -18,7 +18,7 @@ QPushButton, QToolButton, QCommandLinkButton{
     border-width: 2px;
     border-radius: 8px;
     color: #616161;
-    font-weight: bold;
+   /* font-weight: bold; */
     background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #fbfdfd, stop:0.5 #ffffff, stop:1 #fbfdfd);
 }
 QPushButton::default, QToolButton::default, QCommandLinkButton::default{
@@ -190,6 +190,7 @@ QComboBox, QFontComboBox {
     background-color: #f4f4f4;
     color: #272727;
     padding-left: 5px;
+    height: 22px;
 }
 QComboBox:editable, QComboBox:!editable, QComboBox::drop-down:editable, QComboBox:!editable:on, QComboBox::drop-down:editable:on {
     background: #ffffff;

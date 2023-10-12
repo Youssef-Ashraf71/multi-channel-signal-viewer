@@ -6,12 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1455</width>
-    <height>777</height>
+    <width>1256</width>
+    <height>722</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #DAC7D0;
+
+</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -70,6 +75,9 @@
          <iconset>
           <normaloff>Images/play.png</normaloff>Images/play.png</iconset>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+P</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -108,6 +116,9 @@
         <property name="icon">
          <iconset>
           <normaloff>Images/zoom-in.png</normaloff>Images/zoom-in.png</iconset>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl++</string>
         </property>
        </widget>
       </item>
@@ -148,6 +159,9 @@
          <iconset>
           <normaloff>Images/zoom-out.png</normaloff>Images/zoom-out.png</iconset>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+-</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -186,6 +200,9 @@
         <property name="icon">
          <iconset>
           <normaloff>Images/rewind.png</normaloff>Images/rewind.png</iconset>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+R</string>
         </property>
        </widget>
       </item>
@@ -286,7 +303,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>425</width>
+          <width>450</width>
           <height>20</height>
          </size>
         </property>
@@ -347,8 +364,35 @@
               <pointsize>14</pointsize>
              </font>
             </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #fff;
+  border: 2px solid rgb(190, 190, 190);
+
+  border-radius: 8px;
+
+  color: #0f1111;
+  
+
+
+  line-height: 29px;
+
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;</string>
+            </property>
             <property name="text">
-             <string>Select Color</string>
+             <string> Select Color</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Images/color-wheel.png</normaloff>Images/color-wheel.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -421,8 +465,38 @@
             <pointsize>14</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #fff;
+  border: 2px solid rgb(190, 190, 190);
+
+  border-radius: 8px;
+
+  color: #0f1111;
+  
+
+
+  line-height: 29px;
+
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;</string>
+          </property>
           <property name="text">
-           <string>Browse file</string>
+           <string> Browse file</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>Images/browse.png</normaloff>Images/browse.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>25</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="shortcut">
+           <string>Ctrl+B</string>
           </property>
          </widget>
         </item>
@@ -433,8 +507,38 @@
             <pointsize>14</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #fff;
+  border: 2px solid rgb(190, 190, 190);
+
+  border-radius: 8px;
+
+  color: #0f1111;
+  
+
+
+  line-height: 29px;
+
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;</string>
+          </property>
           <property name="text">
-           <string>Add Channel</string>
+           <string> Add Channel</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>Images/add-file.png</normaloff>Images/add-file.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>25</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="shortcut">
+           <string>Ctrl+A</string>
           </property>
          </widget>
         </item>
@@ -674,6 +778,9 @@
           <property name="icon">
            <iconset>
             <normaloff>Images/link.png</normaloff>Images/link.png</iconset>
+          </property>
+          <property name="shortcut">
+           <string>Ctrl+L</string>
           </property>
          </widget>
         </item>
@@ -968,7 +1075,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>425</width>
+          <width>450</width>
           <height>20</height>
          </size>
         </property>
@@ -1017,6 +1124,10 @@
               <pointsize>14</pointsize>
              </font>
             </property>
+            <property name="styleSheet">
+             <string notr="true">
+ </string>
+            </property>
             <property name="text">
              <string>Hide </string>
             </property>
@@ -1030,10 +1141,34 @@
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">background-color: #fff;
+  border: 2px solid rgb(190, 190, 190);
+
+  border-radius: 8px;
+
+  color: #0f1111;
+  
+
+
+  line-height: 29px;
+
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;</string>
             </property>
             <property name="text">
-             <string>Select Color</string>
+             <string> Select Color</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Images/color-wheel.png</normaloff>Images/color-wheel.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -1106,8 +1241,35 @@
             <pointsize>14</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #fff;
+  border: 2px solid rgb(190, 190, 190);
+
+  border-radius: 8px;
+
+  color: #0f1111;
+  
+
+
+  line-height: 29px;
+
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;</string>
+          </property>
           <property name="text">
-           <string>Browse file</string>
+           <string> Browse file</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>Images/browse.png</normaloff>Images/browse.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>25</width>
+            <height>25</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -1118,8 +1280,35 @@
             <pointsize>14</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #fff;
+  border: 2px solid rgb(190, 190, 190);
+
+  border-radius: 8px;
+
+  color: #0f1111;
+  
+
+
+  line-height: 29px;
+
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;</string>
+          </property>
           <property name="text">
-           <string>Add Channel</string>
+           <string> Add Channel</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>Images/add-file.png</normaloff>Images/add-file.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>25</width>
+            <height>25</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -1147,47 +1336,15 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1455</width>
+     <width>1256</width>
      <height>26</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-    <widget class="QMenu" name="menuOpen">
-     <property name="title">
-      <string>Open</string>
-     </property>
-     <widget class="QMenu" name="menuGraph_1">
-      <property name="title">
-       <string>Graph 1</string>
-      </property>
-      <addaction name="actionChannel_3"/>
-      <addaction name="actionChannel_4"/>
-      <addaction name="actionChannel_5"/>
-     </widget>
-     <widget class="QMenu" name="menuGraph_2">
-      <property name="title">
-       <string>Graph 2</string>
-      </property>
-      <addaction name="actionChannel_6"/>
-      <addaction name="actionChannel_7"/>
-      <addaction name="actionChannel_8"/>
-     </widget>
-     <addaction name="menuGraph_1"/>
-     <addaction name="menuGraph_2"/>
-    </widget>
-    <addaction name="actionNew"/>
-    <addaction name="menuOpen"/>
-    <addaction name="actionSave_As"/>
-   </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
      <string>About</string>
     </property>
    </widget>
-   <addaction name="menuFile"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

@@ -201,11 +201,7 @@ class MainWindow(QtWidgets.QMainWindow):
                    self.startTime2.setInterval(200-self.cineSpeed2)
                    self.startTime2.timeout.connect(lambda:self.signalPlotting(choosenGraph,choosenGraphIndex))
                    self.startTime2.start()
-         #   self.pointsPlotted = 0
-        #    self.startTime = QtCore.QTimer()
-           # self.startTime.setInterval(200-self.cineSpeed)
-         #   self.startTime.timeout.connect(self.signalPlotting)
-         #   self.startTime.start()
+
   
 
 
@@ -308,12 +304,11 @@ class MainWindow(QtWidgets.QMainWindow):
  
 
                          return
-          #  if ( self.SignalChannelArr[0][0].path == "null" and self.isSignalFound(0) == False)  or (self.SignalChannelArr[1][0].path == "null" and self.isSignalFound(1) == False):
-          #           if isChecked:
-          #               # self.linkGraphsCheckBox.setChecked(False)
-          #               self.isLinked = False
-          #           QtWidgets.QMessageBox.warning(self,"Operation Failed","You can't link the two graphs if one of them is empty")
-          #           return
+           if ( self.isSignalFound(0) == False)  or (self.isSignalFound(1) == False):
+                    if self.isLinked:
+                        self.isLinked = False
+                    QtWidgets.QMessageBox.warning(self,"Operation Failed","You can't link the two graphs if one of them is empty")
+                    return
            self.isLinked = True
            icon = QtGui.QIcon()
            icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -344,7 +339,6 @@ class MainWindow(QtWidgets.QMainWindow):
            self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1)
            self.plotGraph2.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph2)
            
-          #  self.isLinked = isChecked
 
 
       def playPauseLink(self,playPauseBtn,playPauseBtn1,playPauseBtn2):
