@@ -62,8 +62,6 @@ class MainWindow(QtWidgets.QMainWindow):
           self.pauseFlag2 = False
           self.pauseFlagLink=False
           self.isLinked = False
-          self.holdHorizontalFlag1 = False
-          self.holdVerticalFlag1 = False
           self.cineSpeed1 = 0
           self.cineSpeed2 = 0
           self.SignalChannelArr = []
@@ -94,7 +92,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
       # browse function to open directory : a+m
       def browse(self,choosenGraph,choosenGraphIndex):
-            self.fileName = QFileDialog.getOpenFileName(None,"Open a File","./",filter="Raw Data(*.txt *.csv *.xls *.hea *.dat)" )
+            self.fileName = QFileDialog.getOpenFileName(None,"Open a File","./",filter="Raw Data(*.txt *.csv *.xls)" )
             if self.fileName[0]:
                  self.openFile(self.fileName[0],choosenGraph,choosenGraphIndex)   
 
@@ -376,13 +374,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.plotGraph2.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph2)
            
 
-      def getLongestSignal(self):
-           ans, index = 0,0
-           for channelIndex in range(len(self.SignalChannelArr)):
-                if len(self.SignalChannelArr[channelIndex].time) > ans and self.SignalChannelArr[channelIndex].path != "null":
-                     index = channelIndex
-                     ans = len(self.SignalChannelArr[channelIndex].time)
-           return index     
       # Zoom in Func  : Mask
       def zoomSignalIn(self,choosengraph):
           choosengraph.plotItem.getViewBox().scaleBy((0.5, 0.5))
@@ -741,11 +732,11 @@ class MainWindow(QtWidgets.QMainWindow):
           image.close()
           
           plotImg = ImageReader('graph_capture.png')
-          pdf.drawImage(plotImg, 35, 500, width=550, height=550 / aspect_ratio)
+          pdf.drawImage(plotImg, 35, 500, width=550, height=400 / aspect_ratio)
           statistics_table = self.calculatePlotStatistics(graphNumber)
           statistics_table.wrapOn(pdf, 0, 0)
-          statistics_table.drawOn(pdf, 60, 400)  
-          
+          statistics_table.drawOn(pdf, 60, 200)  
+          QtWidgets.QMessageBox.information(self,"Report Created","Congrats, PDF is successfully created")
           pdf.save()
 
 
