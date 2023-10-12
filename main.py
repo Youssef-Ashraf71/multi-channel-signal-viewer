@@ -52,7 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
           self.setWindowIcon(QtGui.QIcon('Images/MainIcon.png'))
           self.setWindowTitle("Realtime-signal-viewer")
          # Apply Aqya stylesheet
-          self.apply_stylesheet("MacOS.qss")
+          self.apply_stylesheet("ManjaroMix.qss")
 
           self.xAxis1 = [0]
           self.yAxis1 = [0]
@@ -451,6 +451,7 @@ class MainWindow(QtWidgets.QMainWindow):
                       self.playPauseBtn2.setIcon(icon)
                     #  self.startTime2.stop()
              choosengraph.clear()
+             self.resetGraphsZooming()
              self.signalInitialization(choosengraph,choosenGraphIndex,True)
              
 
@@ -628,6 +629,12 @@ class MainWindow(QtWidgets.QMainWindow):
                   self.Legend1 = self.plotGraph1.addLegend()
                   self.rewindSignal(self.plotGraph1,0)
 
+
+
+      def resetGraphsZooming(self):
+                  self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().XAxis, enable=True)
+                  self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().XAxis, enable=True)
+ 
       def calculatePlotStatistics(self, targetGraph):
           
           #data
