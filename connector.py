@@ -81,8 +81,6 @@ def __init__connectors__(self):
 
 # ------------------------------------------------------------------------------------------------------------
 # Link
-      #self.linkGraphsCheckBox = self.findChild(QCheckBox,"linkGraphsCheckBox")
-     # self.linkGraphsCheckBox.stateChanged.connect(lambda: main.MainWindow.linkGraphs(self,self.linkGraphsCheckBox.isChecked()))
       self.linkGraphsButton = self.findChild(QPushButton, "linkGraphsButton")
       self.linkGraphsButton.clicked.connect(lambda:main.MainWindow.linkGraphs(self))
 

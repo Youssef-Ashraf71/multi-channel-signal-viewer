@@ -3,6 +3,7 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
+- [Live Demo](#live-demo)
 - [Project Description](#project-description)
 - [Features](#features)
 - [Prerequisites](#prerequisites)
@@ -11,16 +12,20 @@
 
 ---
 
+## Team: 11
+
+- Mariam Ahmed
+- Mourad Magdy
+- Ziad Meligy
+- Youssef Ashraf
+
 ## Introduction
 
 Welcome to the Multi-Port, Multi-Channel Signal Viewer project! This desktop application, developed using Python and Qt, is designed to help you visualize and analyze multiple medical signal types simultaneously. The application allows you to view various signals, such as ECG, EMG, EEG, and more, both in normal and abnormal conditions.
 
 ## Live Demo
 
-
 https://github.com/Youssef-Ashraf71/DSP-task1/assets/83988379/b47c3518-ccf8-4633-b10d-4d4af63f082e
-
-
 
 ## Project Description
 
@@ -76,3 +81,34 @@ python main.py
 2. Explore and manipulate the signals using the provided controls.
 
 3. Generate reports as needed.
+
+## Contributors
+
+<table>
+  <tr>
+    <td align="center">
+    <a href="https://github.com/Youssef-Ashraf71" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/83988379?v=4" width="150px;" alt="Youssef Ashraf"/>
+    <br />
+    <sub><b>Youssef Ashraf</b></sub></a>
+    </td>
+    <td align="center">
+    <a href="https://github.com/mouradmagdy" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/89527761?v=4" width="150px;" alt="Mourad Magdy"/>
+    <br />
+    <sub><b>Mourad Magdy</b></sub></a>
+    <td align="center">
+    <a href="https://github.com/ZiadMeligy" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/89343979?v=4" width="150px;" alt="Ziad Meligy"/>
+    <br />
+    <sub><b>Ziad Meligy</b></sub></a>
+    </td>
+    </td>
+    <td align="center">
+    <a href="https://github.com/Maskuerade" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/106713214?v=4" width="150px;" alt="Mariam Ahmed"/>
+    <br />
+    <sub><b>Mariam Ahmed</b></sub></a>
+    </td>
+      </tr>
+ </table>
