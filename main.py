@@ -66,6 +66,7 @@ class MainWindow(QtWidgets.QMainWindow):
           self.zoomOutLinkBtn.hide()
           self.rewindLinkBtn.hide()
           self.isSyncingX = False
+          self.about_clicked = False 
           connector.__init__connectors__(self)
           
 
@@ -640,6 +641,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
       def rewindSignal(self,choosengraph,choosenGraphIndex):
+             '''
+             Rewinds/Restarts the signals on a PlotWidget of a certain graph
+
+             This function Restarts all the signals on a specific PlotWidget or Graph on the application
+
+             params:
+             - self: The calling object instance.
+             - choosengraph: The PlotWidget instance (Graph1 or Graph2 Objects)
+             - choosenGraphIndex: This is an index argument that is given to know which Graph
+               the rewind signal is called to Restart the signals
+
+              Returns:
+              This function does not return any values.
+             '''
              selectedChannelIndex = 0
              icon = QtGui.QIcon()
              if choosenGraphIndex == 0:
@@ -651,7 +666,8 @@ class MainWindow(QtWidgets.QMainWindow):
                       selectedChannelIndex = modules.choosenChannelGraph2
                       icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                       self.playPauseBtn2.setIcon(icon)
-               
+             if self.isLinked == True:
+                   self.playPauseLinkBtn.setIcon(icon)
              choosengraph.clear()
              self.resetGraphsZooming()
              self.signalInitialization(choosengraph,choosenGraphIndex,True)
@@ -661,6 +677,22 @@ class MainWindow(QtWidgets.QMainWindow):
   
       
       def hideSignal(self,checked,choosenGraphIndex):
+             '''
+               Hide the signal or Plot plotted on the graph.
+
+               This function Hides the plotted signal or plot on the PlotWidget 
+               It hides specific channels depending on the choosen channel in each graph
+               and whether the hide box is checked on the first graph or the second graph controls.
+
+               params:
+                    - self: The calling object instance.
+                    - checked: This is a boolean value that is passed 1 if the hide check box is true 
+                    and passed 0 if the hide checkbox is unchecked.
+                    - choosenGraphIndex: This is a variable that holds the index of the graph to perform the function on
+
+               returns:
+                    This function does not return any values.
+             '''
              selectedChannelIndex = 0
              if choosenGraphIndex == 0:
                  selectedChannelIndex = modules.choosenChannelGraph1
@@ -671,6 +703,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
       def speedSlider(self,choosenGraphIndex):
+           '''
+               Changes the speed of the plotting of each graph
+
+               This function changes the interval between the time Plotting happens
+               The lower the time --> The faster the graph plots
+               This function is customized so that it works customized to each speed slider (graph1 and graph2 controls)
+
+          params:
+              - self: The calling object instance.
+              -  choosenGraphIndex:: This is a variable that holds the index of the graph to perform the function on.
+
+          returns:
+                    This function has no return values
+          '''
            if choosenGraphIndex == 0:           
                self.cineSpeed1= self.horizontalSlider.value()
                self.startTime1.setInterval(200-self.cineSpeed1)
@@ -680,6 +726,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
       def editChannelName(self,label,choosenGraphIndex):
+               '''
+                    Edits the name of each Channel in the respective graph
+
+                    This function edits the name of the channel with the label typed
+                    by the user on the QlineEdit and it also changes the name of the legend of that signal channel
+                    customized to each graph. The function gets called when LineEdit is returned.
+
+                    Params:
+                         - self: The calling object instance.
+                         - label: its a parameter that is passed to the function that contains the text of the QLineEdit
+                         - choosenGraphIndex: This is a variable that holds the index of the graph to perform the function on.
+
+                    returns:
+                         This function has no return values
+               '''
                selectedChannelIndex = 0
                if choosenGraphIndex == 0:
                       selectedChannelIndex = modules.choosenChannelGraph1
@@ -705,12 +766,40 @@ class MainWindow(QtWidgets.QMainWindow):
                                 
 
       def isSignalFound(self,choosenGraphIndex):
+            '''
+            Check if Signals are Found in a Specific Graph
+
+            This function checks if there are any signals found in a specific graph, identified by the given `choosenGraphIndex`. It iterates through the signal channels within the graph and checks if any of them have a non-null path, indicating the presence of a signal.
+
+            Parameters:
+                    - self: The instance of the class where this method is defined.
+                    - choosenGraphIndex: An index argument specifying the graph to be checked for signal presence.
+
+            Returns:
+                    True if at least one signal is found in the specified graph; otherwise, False.
+
+            '''
             for channelIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
                   if self.SignalChannelArr[choosenGraphIndex][channelIndex].path != "null":
                         return True
             return False   
 
       def synchronizeXGraph1(self):
+        '''
+          Synchronize X-axis Range for Graph1
+
+          This function synchronizes the X-axis range of Graph1 with Graph2. It disconnects the X-range changed signal to avoid recursion,
+            sets the X-axis range of Graph2 based on Graph1, and then reconnects the signal.
+
+          If the X-axis range of Graph1 changes, this function will automatically adjust Graph2 to match it.
+
+          Note:
+          - Make sure to call this function when Graph1's X-axis range should be synchronized with Graph2.
+          - Ensure that the `isSyncingX` flag is set to `False` when calling this function.
+
+          Parameters:
+               - self: The instance of the class where this method is defined.
+         '''
         if not self.isSyncingX:
             # Disconnect the signals to avoid recursion
             self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)
@@ -725,6 +814,24 @@ class MainWindow(QtWidgets.QMainWindow):
             self.plotGraph2.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph2)
 
       def synchronizeXGraph2(self):
+        '''
+          Synchronize X-axis Range for Graph2
+
+          This function synchronizes the X-axis range of Graph2 with Graph1. It disconnects the X-range changed signal to avoid recursion, 
+          sets the X-axis range of Graph1 based on Graph2, and then reconnects the signal.
+
+          If the X-axis range of Graph2 changes, this function will automatically adjust Graph1 to match it.
+
+          Note:
+          - Make sure to call this function when Graph2's X-axis range should be synchronized with Graph1.
+          - Ensure that the `isSyncingX` flag is set to `False` when calling this function.
+
+          Parameters:
+               - self: The instance of the class where this method is defined.
+
+          Returns:
+               This function does not have any returns
+        '''
         if not self.isSyncingX:
             # Disconnect the signals to avoid recursion
             self.plotGraph1.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph1)
@@ -740,6 +847,23 @@ class MainWindow(QtWidgets.QMainWindow):
 
       # export the report to pdf
       def captureGraphImage(self, targetGraph):
+          '''
+          Capture and Export a Graph to an Image
+
+          This function captures and exports the specified graph (either Graph1 or Graph2) to an image file (PNG format by default). It creates an exporter to capture the graph scene, sets the export filename, and exports the graph.
+
+          Note:
+               - Ensure that the necessary exporter module (e.g., exporters.ImageExporter) is available.
+               - The captured image will be saved as 'graph_capture.png' in the current working directory by default.
+
+          Parameters:
+               - self: The instance of the class where this method is defined.
+               - targetGraph: An integer (0 for Graph1, 1 for Graph2) indicating the target graph to capture.
+          
+          Returns:
+               This function does not have any return values
+          
+          '''
           # Create an exporter to capture the graph
           if (targetGraph == 0):
                exporter = exporters.ImageExporter(self.plotGraph1.scene())
@@ -757,6 +881,22 @@ class MainWindow(QtWidgets.QMainWindow):
           exporter.export(export_filename)
 
       def moveSignal(self,choosenGraphIndex):
+            '''
+               Move a Signal Between the two Graphs
+
+               This function moves a signal from one graph (Graph1 or Graph2) to the other graph, specified by `choosenGraphIndex`.
+                 It performs the necessary operations to transfer the signal,
+                 including creating a new signal in the target graph, 
+                 Adding the channel in the combo box and changing the Legend accordingly, 
+                 and rewinding the signals in the target graph.
+
+               Parameters:
+                    - self: The instance of the class where this method is defined.
+                    - choosenGraphIndex: An integer (0 for Graph1, 1 for Graph2) indicating the target graph where the signal will be moved.
+
+               Returns:
+               This function does not have any return values
+            '''
             if choosenGraphIndex == 0 :
                   currentMovedSignalIndex = modules.choosenChannelGraph1 
                   currentMovedSignal = self.SignalChannelArr[choosenGraphIndex][currentMovedSignalIndex]
@@ -808,12 +948,42 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
       def resetGraphsZooming(self):
+                  '''
+                    Reset Zooming for Both Graphs
+
+                    This function resets the zooming for both Graph1 and Graph2. 
+                    It enables the auto range for both X and Y axes in both graphs, effectively resetting the zoom levels.
+
+                    Parameters:
+                         - self: The instance of the class where this method is defined.
+
+                    Returns:
+                         This function does not return any value
+                  '''
                   self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().XAxis, enable=True)
                   self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().XAxis, enable=True)
                   self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().YAxis, enable=True)
                   self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().YAxis, enable=True)
  
       def calculatePlotStatistics(self, targetGraph):
+          '''
+          Calculate Plot Statistics
+
+          This function calculates statistical measures (mean, median, mode, and standard deviation) for the signal amplitudes 
+          in the specified graph (Graph1 or Graph2) And makes a Table using a library called Reportlab-Platypus. The statistics are 
+          calculated using a library usually from an array. These statistics are dynamically appended to the Table with each row 
+          coressponding to a specific channel
+
+          Lastly, the Table is styled with the preferred styling.
+
+
+          Parameters:
+          - self: The instance of the class where this method is defined.
+          - targetGraph: An integer (0 for Graph1, 1 for Graph2) specifying the target graph for statistics calculation.
+
+          Returns:
+               A table containing the calculated statistics, suitable for presentation in a PDF report.
+          '''
           
           #data
           amplitudes = []
@@ -876,8 +1046,22 @@ class MainWindow(QtWidgets.QMainWindow):
           return table
           
   
-     # export the report to pdf
       def exportReportPdf(self, graphNumber):
+          '''
+          Export a PDF Report with an image of the plotgraph and statistics for the graph and its corresponding channels
+
+          This function generates and exports a PDF report that includes key information about signal insights.
+          The report comprises a title, the selected graph information, a captured plot, and a table of statistics.
+          You can choose whether to generate the report for Graph1 or Graph2
+          based on the `graphNumber` parameter which is passed by each export button.
+
+          Parameters:
+               - self: The instance of the class where this method is defined.
+               - graphNumber: An integer (0 for Graph1, 1 for Graph2) indicating the target graph for the report.
+
+          Returns:
+              This function does not return any value
+          '''
 
           fileName = 'Report.pdf'
           title = 'Signals Insights'
@@ -924,6 +1108,10 @@ class MainWindow(QtWidgets.QMainWindow):
           QtWidgets.QMessageBox.information(self,"Report Created","Congrats, PDF is successfully created")
           pdf.save()
 
+      def showAboutDialog(self):
+               about_text = "Our project introduces a robust desktop application created with Python and Qt.\n\nTasked with developing a Multi-Port, Multi-Channel Signal Viewer, this software brings real-time data visualization to the forefront of intensive care units (ICUs) and beyond.\n\nWith features allowing users to load and simultaneously display various medical signals, customize the view, and even generate comprehensive reports, our application empowers healthcare professionals and signal analysis enthusiasts.\n\nExperience the future of signal monitoring with ease and precision through our innovative, user-friendly solution.\n\n Thank you for using our Application \n\n Our Team:\n Youssef Ashraf \n Mourad Magdy\n Ziad El Meligy \n Mariam Ahmed\n\n SBME 25"
+               QMessageBox.about(self, "About", about_text)    
+               self.about_clicked = True 
 
 
 

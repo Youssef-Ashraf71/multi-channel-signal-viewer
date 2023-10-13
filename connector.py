@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, uic
 from PyQt5 import QtGui, QtCore, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QSlider, QTextEdit, QFileDialog, QScrollBar, QComboBox, QCheckBox, QScrollBar, QLCDNumber, QLineEdit
+from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QSlider, QTextEdit, QFileDialog, QScrollBar, QComboBox, QCheckBox, QScrollBar, QLCDNumber, QLineEdit , QMenu , QAction
 from pyqtgraph import PlotWidget
 
 
@@ -118,3 +118,12 @@ def __init__connectors__(self):
       self.exportButton1.clicked.connect(lambda:main.MainWindow.moveSignal(self,0))
       self.exportButton2 = self.findChild(QPushButton,"moveToGraph1")
       self.exportButton2.clicked.connect(lambda:main.MainWindow.moveSignal(self,1))
+
+
+
+#---------------------------------------------------------------------------------------
+# About Section
+      self.menuAbout = self.findChild(QMenu, "menuAbout")
+      aboutAction = QAction("About this Application", self)
+      aboutAction.triggered.connect(lambda: main.MainWindow.showAboutDialog(self))
+      self.menuAbout.addAction(aboutAction)
