@@ -17,6 +17,8 @@ Welcome to the Multi-Port, Multi-Channel Signal Viewer project! This desktop app
 
 ## Live Demo
 
+https://github.com/Youssef-Ashraf71/DSP-task1/blob/V11/Multi-Signal-Viewer%20Demo.mp4
+
 ## Project Description
 
 Monitoring vital signals in an ICU room is crucial. This application provides a user-friendly interface for viewing, analyzing, and manipulating medical signals. It supports various features to enhance the user experience and assist in understanding the signals.
