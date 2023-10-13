@@ -555,24 +555,6 @@ class MainWindow(QtWidgets.QMainWindow):
             # Reconnect the signal
             self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1)
 
-      # export the report to pdf
-      def captureGraphImage(self, targetGraph):
-          # Create an exporter to capture the graph
-          if (targetGraph == 0):
-               exporter = exporters.ImageExporter(self.plotGraph1.scene())
-          elif(targetGraph == 1):
-               exporter = exporters.ImageExporter(self.plotGraph2.scene())
-          
-
-          # Set the file suffix to specify the export type
-          exporter.params.fileSuffix = 'png'
-
-          # Set the filename
-          export_filename = 'graph_capture.png'
-
-          # Export the graph to the specified filename
-          exporter.export(export_filename)
-
       def moveSignal(self,choosenGraphIndex):
             if choosenGraphIndex == 0 :
                   currentMovedSignalIndex = modules.choosenChannelGraph1 
@@ -627,10 +609,32 @@ class MainWindow(QtWidgets.QMainWindow):
       def resetGraphsZooming(self):
                   self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().XAxis, enable=True)
                   self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().XAxis, enable=True)
- 
+
+
+############################################# GENERATING PDF REPORT #######################################################
+     # Capturing an image of the desired graph 
+      def captureGraphImage(self, targetGraph):
+          
+          # Creating an exporter and capturing the plot depedending on the graph selected
+          if (targetGraph == 0):
+               exporter = exporters.ImageExporter(self.plotGraph1.scene())
+          elif(targetGraph == 1):
+               exporter = exporters.ImageExporter(self.plotGraph2.scene())
+          
+          # Set the file suffix to specify the export type
+          exporter.params.fileSuffix = 'png'
+
+          # Set the filename
+          export_filename = 'Graph_image.png'
+
+          # Export the graph to the specified filename
+          exporter.export(export_filename)
+
+
+     # Calculating the statistics of the plot 
       def calculatePlotStatistics(self, targetGraph):
           
-          #data
+          # Lists to store data
           amplitudes = []
           meanValues = []
           medianValues = []
@@ -639,8 +643,8 @@ class MainWindow(QtWidgets.QMainWindow):
           channelsNumbers = []
           channelLabels = []
 
+          # Storing the amplitude depedending on the chosen graph for export 
           if targetGraph == 0:
-               # selectedChannelIndex = modules.choosenChannelGraph1
                for Index in range(len(self.SignalChannelArr[0])):
                     if self.SignalChannelArr[targetGraph][Index].path != "null":
                          amplitudes.append(self.SignalChannelArr[targetGraph][Index].amplitude)
@@ -649,14 +653,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
                      
           elif targetGraph == 1:
-               # selectedChannelIndex = modules.choosenChannelGraph2
                for  Index in range(len(self.SignalChannelArr[targetGraph])):
                     if self.SignalChannelArr[targetGraph][Index].path != "null":
                          amplitudes.append(self.SignalChannelArr[targetGraph][Index].amplitude)
                          channelsNumbers.append(Index)
                          channelLabels.append(self.SignalChannelArr[targetGraph][Index].label)
 
-
+          # Calculating the statistics of the amplitudes stored 
           for index, dataset in enumerate(amplitudes):
                if dataset:
                     meanValues.append(statistics.mean(dataset))
@@ -669,13 +672,15 @@ class MainWindow(QtWidgets.QMainWindow):
                     modeValues.append("N/A")
                     standardDeviations.append("N/A")
 
-                    # Create a table to display statistics
+
+          # Creating list of lists and appending the data of the statistics 
           tableData = []
           tableData.append(["signal", "Channel number", "Mean", "Median", "Mode", "Standard Deviation"])
-
           for label, channel, mean, median, mode, std_dev in zip(channelLabels, channelsNumbers, meanValues, medianValues, modeValues, standardDeviations):
                tableData.append([ label, channel+1, round(mean,4), round(median,4), round(mode,4), round(std_dev,4)])
-               # TABLE STYLE    
+
+
+          # Styling the table    
           style = TableStyle([
           ('BACKGROUND', (0, 0), (-1, 0), colors.Color(0.8, 0.8, 0.8)),  # Light gray background for the header row
           ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),      # Black text color for the header row
@@ -685,57 +690,61 @@ class MainWindow(QtWidgets.QMainWindow):
           ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
           ('GRID', (0, 0), (-1, -1), 1, colors.black)
           ])
+
+          # Creating the table and adding style      
           table = Table(tableData)
           table.setStyle(style)
-
           return table
           
   
-     # export the report to pdf
+     # Creating the report and exporting it
       def exportReportPdf(self, graphNumber):
-
+          
+          # Setting the file information and shape
           fileName = 'Report.pdf'
           title = 'Signals Insights'
+          statistics = 'Statistics and Insights'
           if(graphNumber == 0):
                 selectedGraph = 'Report for Graph 1'
           if(graphNumber == 1):
                 selectedGraph = 'Report for Graph 2'                
-          
-          # Capture the plot and get the file path
 
-          self.captureGraphImage(graphNumber)
-          
+          # Structuring the PDF
           pdf = canvas.Canvas(fileName, pagesize=letter )
-          
           pdf.setFont("Helvetica", 24)
-
           pdf.drawCentredString(290, 720, title)
-
           pdf.drawAlignedString(260, 670, selectedGraph)
-
           majorLogoPath = './Images/logo-major.png'
           collegeLogoPath = './Images/collegeLogo.jpg'
-          
           major_logo = ImageReader(majorLogoPath)
           college_logo = ImageReader(collegeLogoPath)
           
           # Add logos to the PDF
           pdf.drawImage(major_logo, 10, 725, width=112, height=45)
           pdf.drawImage(college_logo, 525, 705, width=70, height=70)
+
           
-          # Open the image file
-          image = Image.open('graph_capture.png')
+          # Capture the plot and get the file path
+          self.captureGraphImage(graphNumber)
+
+          # Open the plot image file
+          image = Image.open('Graph_image.png')
           # Get the size (width and height) of the image
           image_width, image_height = image.size
           aspect_ratio = image_width / image_height
-          # Close the image file
-          image.close()
-          
-          plotImg = ImageReader('graph_capture.png')
+          image.close()          
+          plotImg = ImageReader('Graph_image.png')
+
+          # Adding the plot to the PDF
           pdf.drawImage(plotImg, 35, 500, width=550, height=400 / aspect_ratio)
+
+          # Getting the statistics and Adding it to the PDF
+          pdf.drawAlignedString(260, 400, statistics)
           statistics_table = self.calculatePlotStatistics(graphNumber)
           statistics_table.wrapOn(pdf, 0, 0)
           statistics_table.drawOn(pdf, 60, 200)  
+
+          # Notifying user that Graph is successfully Created
           QtWidgets.QMessageBox.information(self,"Report Created","Congrats, PDF is successfully created")
           pdf.save()
 
