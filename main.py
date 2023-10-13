@@ -61,19 +61,28 @@ class MainWindow(QtWidgets.QMainWindow):
           self.SignalChannelArr.append(tmpList)
           tmpList = [modules.SignalChannel()]
           self.SignalChannelArr.append(tmpList)
-        #  self.playPauseLinkBtn.setEnabled(False)
           self.playPauseLinkBtn.hide()
-        #  self.zoomInLinkBtn.setEnabled(False)
           self.zoomInLinkBtn.hide()
-     #     self.zoomOutLinkBtn.setEnabled(False)
           self.zoomOutLinkBtn.hide()
-       #   self.rewindLinkBtn.setEnabled(False)
           self.rewindLinkBtn.hide()
           self.isSyncingX = False
           connector.__init__connectors__(self)
-          # 
+          
+
+
       def apply_stylesheet(self, stylesheet_path):
-        # Read the QSS stylesheet from the file
+        """
+        This function reads a Qt StyleSheet from a file and applies it to the
+        calling QWidget. The Qt StyleSheet (QSS) allows you to define the
+        appearance and styling of Qt widgets.
+
+        Parameters:
+        - self (QWidget): The calling QWidget instance to apply the stylesheet to.
+        - stylesheet_path (str): The path to the QSS stylesheet file to be applied.
+
+        Returns:
+        This function does not return any values.
+        """
         stylesheet = QFile(stylesheet_path)
         if stylesheet.open(QFile.ReadOnly | QFile.Text):
             stream = QTextStream(stylesheet)
@@ -82,14 +91,47 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             print(f"Failed to open stylesheet file: {stylesheet_path}")
 
-      # browse function to open directory : a+m
+
       def browse(self,choosenGraph,choosenGraphIndex):
+            """
+            Open a file dialog to select a data file and trigger a function to process it.
+
+            This function opens a file dialog that allows the user to choose a data file
+            (typically in the formats .txt, .csv, or .xls). If a file is selected, it
+            then calls the 'openFile' function to process and load the data from the
+            chosen file.
+
+            Parameters:
+            - self: The calling object instance.
+            - choosenGraph (QWidget): The widget representing the chosen graph.
+            - choosenGraphIndex (int): An index representing the selected graph.
+
+            Returns:
+            This function does not return any values.
+            """
             self.fileName = QFileDialog.getOpenFileName(None,"Open a File","./",filter="Raw Data(*.txt *.csv *.xls)" )
             if self.fileName[0]:
                  self.openFile(self.fileName[0],choosenGraph,choosenGraphIndex)   
 
-      # open the file from directory : a+m
+
       def openFile(self, path:str,choosenGraph, choosenGraphIndex):
+            """
+            Open and process a data file, and load its content into the selected graph.
+
+            This function opens and processes a data file located at the given 'path'. The
+            data is expected to be in formats such as .csv, .txt, or .xls. It reads the
+            time and amplitude data from the file, associates it with the specified graph,
+            and updates the corresponding channel.
+
+            Parameters:
+            - self: The calling object instance.
+            - path (str): The file path to the data file to be opened and processed.
+            - choosenGraph (QWidget): The widget representing the chosen graph.
+            - choosenGraphIndex (int): An index representing the selected graph.
+
+            Returns:
+            This function does not return any values.
+            """
             timeArr, amplitudeArr = [],[]
             length = len(path)
             fileExtentsion = path[length-3:]
@@ -132,8 +174,24 @@ class MainWindow(QtWidgets.QMainWindow):
             self.signalInitialization(choosenGraph,choosenGraphIndex,False)
 
 
-      # initialize plotting: a+m
       def signalInitialization(self,choosenGraph,choosenGraphIndex,isRewinding):
+            """
+            Initialize the graph with signal data and configure real-time plotting.
+
+            This function is responsible for setting up the selected graph (choosenGraph)
+            for signal data visualization. It configures real-time plotting and initializes
+            various parameters for the specified graph.
+
+            Parameters:
+            - self: The calling object instance.
+            - choosenGraph (QWidget): The widget representing the chosen graph for signal
+              data visualization.
+            - choosenGraphIndex (int): An index representing the selected graph.
+            - isRewinding (bool): A boolean indicating whether the graph is being rewound or not.
+
+            Returns:
+            This function does not return any values.
+            """
             selectedChannelIndex = 0
             if choosenGraphIndex == 0:
                  selectedChannelIndex = modules.choosenChannelGraph1
@@ -195,8 +253,23 @@ class MainWindow(QtWidgets.QMainWindow):
   
 
 
-      # draw plot: a+m
       def  signalPlotting(self,choosenGraph,choosenGraphIndex):
+           """
+           Plot real-time signal data on the selected graph.
+
+           This function is responsible for updating and plotting real-time signal data on
+           the chosen graph. It retrieves time and amplitude data from the associated channels
+           and updates the graph with the latest data points.
+
+           Parameters:
+           - self: The calling object instance.
+           - choosenGraph (QWidget): The widget representing the chosen graph for signal data
+               visualization.
+           - choosenGraphIndex (int): An index representing the selected graph.
+
+           Returns:
+           This function does not return any values.
+           """
            for channelIdx in range(len(self.SignalChannelArr[choosenGraphIndex])):
                 if self.SignalChannelArr[choosenGraphIndex][channelIdx].path !="null":
                      if choosenGraphIndex == 0:
@@ -211,8 +284,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.pointsPlotted1 += 5
            elif choosenGraphIndex == 1:
                 self.pointsPlotted2 += 5
-           #if self.minSignalAmp < self.pointsPlotted:
-           #     self.startTime.stop()
 
            for channelIdx in range(len(self.SignalChannelArr[choosenGraphIndex])):
                   if self.SignalChannelArr[choosenGraphIndex][channelIdx].path != "null":
@@ -227,11 +298,24 @@ class MainWindow(QtWidgets.QMainWindow):
                                     self.SignalChannelArr[choosenGraphIndex][channelIdx].graph.setData(self.xAxis2[channelIdx], self.yAxis2[channelIdx], pen=self.SignalChannelArr[choosenGraphIndex][channelIdx].getColor(), name=self.SignalChannelArr[choosenGraphIndex][channelIdx].label)   
                       
 
-      # plot state show/hide : a+m
       def DynamicSignalUpdate(self, choosenGraphIndex, selectedChannelIndex,  isChangingColor = False):
+           """
+           Update the dynamic signal data as { hide state / Color change } on the selected graph.
+
+           This function is responsible for updating the dynamic signal data on the selected
+           graph upon checking the visibility and color of each channel's data, and updates the
+           graph accordingly.
+
+           Parameters:
+           - self: The calling object instance.
+           - choosenGraphIndex (int): An index representing the selected graph.
+           - selectedChannelIndex (int): An index representing the selected channel.
+           - isChangingColor (bool): A boolean indicating whether the color is changing.
+
+           Returns:
+           This function does not return any values.
+           """
            for Index in range(len(self.SignalChannelArr[choosenGraphIndex])):
-               
-             # if self.SignalChannelArr[Index].path != "null" and len(self.SignalChannelArr[Index].time) > self.pointsPlotted:
                if self.SignalChannelArr[choosenGraphIndex][Index].path != "null" :
                     if self.SignalChannelArr[choosenGraphIndex][Index].hiddenFlag == True:
                          self.SignalChannelArr[choosenGraphIndex][Index].graph.hide()
@@ -246,7 +330,7 @@ class MainWindow(QtWidgets.QMainWindow):
                           currentpointsPlotted = self.pointsPlotted2
                           currentXAxis = self.xAxis2
                           currentYAxis = self.yAxis2 
-                   ##################################################       
+                   ######################################################################      
                     if len(self.SignalChannelArr[choosenGraphIndex][Index].time) > currentpointsPlotted and isChangingColor == False:
                          self.SignalChannelArr[choosenGraphIndex][Index].graph.setData(
                               currentXAxis[Index], currentYAxis[Index], pen=self.SignalChannelArr[choosenGraphIndex][Index].getColor(), name=self.SignalChannelArr[choosenGraphIndex][Index].label, skipFiniteCheck=True)
@@ -261,6 +345,18 @@ class MainWindow(QtWidgets.QMainWindow):
       
       
       def linkGraphs(self):
+           """
+           Link the two graphs when the button is clicked
+
+           This function is used to link the two graphs together by calling the rewindSignal function 
+           on the two graphs, it disables the buttons of the two graphs as well.
+
+           Parameters:
+           - self: The calling object instance.
+
+           Returns:
+           This function doesn't return any values.
+           """
            if self.isLinked == True :
                          self.isLinked = False
 
@@ -334,6 +430,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
       def playPauseLink(self,playPauseBtn,playPauseBtn1,playPauseBtn2):
+             """
+             Pause/Play the two graphs when the they are linked
+
+             This function is called when the two graphs are linked to pause or play them together,
+             it calls the pauseGraph function twice once for each graph of them . 
+
+             parameters:
+             - self: The calling object instance.
+             - PlayPauseBtn: Instance of the calling button
+             - playPauseBtn1: The button of the first graph
+             - playPauseBtn2: The button of the second graph
+
+             Returns:
+             This function doesn't return any parameters.
+             """
              icon = QtGui.QIcon()
              self.pauseFlagLink ^= True
              if self.pauseFlagLink == True :
@@ -350,14 +461,54 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
       def zoomInLink(self,graph1,graph2):
+            """
+            Zoom the two graphs in when they are linked
+
+            This function is used to Zoom the two graphs in when the zoomin button is clicked 
+
+            Parameters:
+            - self: The calling object instance.
+            - graph1: The Plotwidget of the first graph
+            - graph2: The Plotwidget of the second graph
+
+            Returns:     
+            This function doesn't return any values.
+            """
             self.zoomSignalIn(graph1)
             self.zoomSignalIn(graph2)
 
       def zoomOutLink(self,graph1,graph2):
+            """
+            Zoom the two graphs out when they are linked
+
+            This function is used to Zoom the two graphs out when the zoomout button is clicked 
+
+            Parameters:
+            - self: The calling object instance.
+            - graph1: The Plotwidget of the first graph
+            - graph2: The Plotwidget of the second graph
+
+            Returns:
+            This function doesn't return any values.
+            """
             self.zoomSignalOut(graph1)
             self.zoomSignalOut(graph2)
       
       def rewindLink(self,graph1,graph2):
+            """
+            Rewind the two graphs together when linked
+
+            This function is used to rewind the two graphs when the rewind button is clicked,
+            it calls the rewindSignal function, it also resets the view of the two graphs.
+
+            Parameters:
+            - self: The calling object instance.
+            - graph1: The Plotwidget of the first graph
+            - graph2: The Plotwidget of the second graph
+
+             Returns:
+             This function doesn't return any parameters.
+            """
             self.plotGraph1.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph1)
             self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)  
             self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().XAxis, enable=True)
@@ -370,16 +521,51 @@ class MainWindow(QtWidgets.QMainWindow):
             self.plotGraph2.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph2)
            
 
-      # Zoom in Func  : Mask
       def zoomSignalIn(self,choosengraph):
+          """
+          Zoom the selected graph in
+
+          This function is used to zoom the selected graph in when the zoom in button is clicked
+
+          parameters:
+          - self: The calling object instance.
+          - choosengraph: the graph in which we want to zoom in
+
+          Return:
+          This function doesn't return any value.
+          """
           choosengraph.plotItem.getViewBox().scaleBy((0.5, 0.5))
-      # Zoom out Func : Mask
+
+
       def zoomSignalOut(self,choosengraph):
+          """
+          Zoom the selected graph out
+
+          This function is used to zoom the selected graph out when the zoom out button is clicked
+
+          parameters:
+          - self: The calling object instance.
+          - choosengraph: the graph in which we want to zoom out
+
+          Return:
+          This function doesn't return any value.
+          """ 
           choosengraph.plotItem.getViewBox().scaleBy((2, 2))
 
 
-      # edit the signal color : done
       def setSignalChannelColor(self,choosenGraphIndex):
+           """
+           sets the color of the signal
+
+           This function is used to set the color of a signal, it also calls the  DynamicSignalUpdate function which updates the state of the color
+
+           parameters:
+           - self: The calling object instance.
+           - choosenGraphIndex: the index of the graph whether it is 1 or 2
+
+           Returns:
+           This function doesn't return any value.
+           """
            selectedChannelIndex = 0
            if choosenGraphIndex == 0:
                  selectedChannelIndex = modules.choosenChannelGraph1
@@ -389,11 +575,21 @@ class MainWindow(QtWidgets.QMainWindow):
            self.DynamicSignalUpdate(choosenGraphIndex,selectedChannelIndex,True)
 
       def addNewChannel(self,choosenChannelList,choosenGraphIndex):
+            """
+            Add new channels to a certain graph
+
+            This function is used to add new channels to the selected graph
+
+            parameters:
+            - self: The calling object instance.
+            - choosenChannelList: Whether it is the channel list of the first or the second graph
+            - choosenGraphIndex: Whether it graph 1 or graph 2
+
+            Returns:
+            This function doesn't return any value.
+            """
             _translate = QtCore.QCoreApplication.translate
-           # self.channelList1.setItemText(modules.choosenChannel+1, )
             choosenChannelList.addItem(_translate("MainWindow", "Channel "+str(len(self.SignalChannelArr[choosenGraphIndex])+1)))
-          #  self.SignalChannelArr[choosenGraphIndex][-1].label = "Channel" + str(len(self.SignalChannelArr[choosenGraphIndex])+1)
-         #   modules.choosenChannel+=1
             if choosenGraphIndex == 0:
                   self.xAxis1.append(0)
                   self.yAxis1.append(0)
@@ -404,9 +600,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 
-      # play / pause func   : ziad
-         # dont forget to change the icon 
       def pauseGraph(self,playpauseButton,choosenGraphIndex):
+           """
+           pause/play the graph
+
+           This function is used to pause/play the signal when the play/pause button is clicked in a certain graph,
+
+           parameters:
+           - self: The calling object instance.
+           - playpauseButton: the instance of the button 
+           - choosenGraphIndex: Whether it is graph 1 or graph 2
+
+           Returns:
+           This function doesn't return any value. 
+           """
            icon = QtGui.QIcon()
            if choosenGraphIndex == 0:
                self.pauseFlag1 ^= True
@@ -432,7 +639,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 
-      # rewind 
       def rewindSignal(self,choosengraph,choosenGraphIndex):
              selectedChannelIndex = 0
              icon = QtGui.QIcon()
@@ -440,12 +646,12 @@ class MainWindow(QtWidgets.QMainWindow):
                       selectedChannelIndex = modules.choosenChannelGraph1
                       icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                       self.playPauseBtn1.setIcon(icon)
-                    #  self.startTime1.stop()
+                    
              elif choosenGraphIndex == 1:
                       selectedChannelIndex = modules.choosenChannelGraph2
                       icon.addPixmap(QtGui.QPixmap("Images/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                       self.playPauseBtn2.setIcon(icon)
-                    #  self.startTime2.stop()
+               
              choosengraph.clear()
              self.resetGraphsZooming()
              self.signalInitialization(choosengraph,choosenGraphIndex,True)
@@ -454,7 +660,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
   
       
-      # show / hide function  : Mask
       def hideSignal(self,checked,choosenGraphIndex):
              selectedChannelIndex = 0
              if choosenGraphIndex == 0:
@@ -463,7 +668,7 @@ class MainWindow(QtWidgets.QMainWindow):
                       selectedChannelIndex = modules.choosenChannelGraph2
              self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].hiddenFlag = checked
              self.DynamicSignalUpdate(choosenGraphIndex,selectedChannelIndex,False)
-      # speed slider function 
+
 
       def speedSlider(self,choosenGraphIndex):
            if choosenGraphIndex == 0:           
@@ -473,26 +678,8 @@ class MainWindow(QtWidgets.QMainWindow):
                self.cineSpeed2 = self.speedSlider2.value()
                self.startTime2.setInterval(200-self.cineSpeed2)    
 
-      # scroll in x dir
-
-
-      def xScrollMove(self):
-          #  val = self.xAxisScrollBar1.value()
-          #  xmax = np.ceil(self.data[0][-1+self.vsize-self.psize+val])-1
-          #  xmin = xmax-self.vsize
-          #  self.plot_widget.setXRange(xmin, xmax)
-          pass
-     
-      # scroll in y dir 
-      def yScrollMove(self):
-           pass
-      # naming the channel
-
-
 
       def editChannelName(self,label,choosenGraphIndex):
-             # self.SignalChannelArr[modules.choosenChannel].label = name
-             # self.Legend.getLabel(self.SignalChannelArr[modules.choosenChannel].graph).setText(name)
                selectedChannelIndex = 0
                if choosenGraphIndex == 0:
                       selectedChannelIndex = modules.choosenChannelGraph1
@@ -516,20 +703,12 @@ class MainWindow(QtWidgets.QMainWindow):
                elif choosenGraphIndex == 1:
                      self.channelList2.setItemText(selectedChannelIndex,label)
                                 
+
       def isSignalFound(self,choosenGraphIndex):
             for channelIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
                   if self.SignalChannelArr[choosenGraphIndex][channelIndex].path != "null":
                         return True
             return False   
-     #  def synchronizeXGraph1(self,graph1,graph2):
-     #      #  graph2.getViewBox().blockSignals(True)  # Block signals temporarily to avoid recursion
-     #       graph2.getViewBox().setXRange(*graph1.getViewBox().viewRange()[0])
-     #      #  graph2.getViewBox().blockSignals(False)  # Unblock signals
-          
-
-     #  def synchronizeXGraph2(self,graph1,graph2):
-     #         graph1.getViewBox().setXRange(*graph2.getViewBox().viewRange()[0])
-     #         graph1.getViewBox().blockSignals(False)  # Unblock signals
 
       def synchronizeXGraph1(self):
         if not self.isSyncingX:
