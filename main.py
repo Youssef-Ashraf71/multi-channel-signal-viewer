@@ -40,7 +40,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Mainwindow constructor
       def __init__(self, *args, **kwargs):
           super(MainWindow, self).__init__(*args, **kwargs)
-          uic.loadUi('beta4.ui', self)
+          uic.loadUi('layout.ui', self)
           self.setWindowIcon(QtGui.QIcon('Images/MainIcon.png'))
           self.setWindowTitle("Realtime-signal-viewer")
          # Apply Aqya stylesheet
