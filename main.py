@@ -291,6 +291,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
                          self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().XAxis, enable=True)
                          self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().XAxis, enable=True)
+                         self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().YAxis, enable=True)
+                         self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().YAxis, enable=True)
  
 
                          return
@@ -360,6 +362,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.plotGraph2.getViewBox().sigXRangeChanged.disconnect(self.synchronizeXGraph2)  
             self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().XAxis, enable=True)
             self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().XAxis, enable=True)
+            self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().YAxis, enable=True)
+            self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().YAxis, enable=True)
             self.rewindSignal(graph1,0)
             self.rewindSignal(graph2,1)
             self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1)
@@ -627,6 +631,8 @@ class MainWindow(QtWidgets.QMainWindow):
       def resetGraphsZooming(self):
                   self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().XAxis, enable=True)
                   self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().XAxis, enable=True)
+                  self.plotGraph1.getViewBox().enableAutoRange(axis = self.plotGraph1.getViewBox().YAxis, enable=True)
+                  self.plotGraph2.getViewBox().enableAutoRange(axis = self.plotGraph2.getViewBox().YAxis, enable=True)
  
       def calculatePlotStatistics(self, targetGraph):
           
