@@ -445,6 +445,7 @@ class MainWindow(QtWidgets.QMainWindow):
              choosengraph.clear()
              self.resetGraphsZooming()
              self.signalInitialization(choosengraph,choosenGraphIndex,True)
+             self.DynamicSignalUpdate(choosenGraphIndex,0,False)
              
 
   
