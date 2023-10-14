@@ -283,9 +283,10 @@ class MainWindow(QtWidgets.QMainWindow):
            
            if choosenGraphIndex == 0:
                 self.pointsPlotted1 += 5
+                self.plotGraph1.setXRange(self.getLongestSignal(0,self.pointsPlotted1)-0.1,self.getLongestSignal(0,self.pointsPlotted1))
            elif choosenGraphIndex == 1:
                 self.pointsPlotted2 += 5
-
+                self.plotGraph2.setXRange(self.getLongestSignal(1,self.pointsPlotted2)-0.1,self.getLongestSignal(1,self.pointsPlotted2))    
            for channelIdx in range(len(self.SignalChannelArr[choosenGraphIndex])):
                   if self.SignalChannelArr[choosenGraphIndex][channelIdx].path != "null":
                        if choosenGraphIndex == 0:
@@ -701,7 +702,14 @@ class MainWindow(QtWidgets.QMainWindow):
              self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].hiddenFlag = checked
              self.DynamicSignalUpdate(choosenGraphIndex,selectedChannelIndex,False)
 
-
+      def getLongestSignal(self,choosenGraphIndex,pointsPlotted):
+            ans = -1
+            for channedlIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
+                  if self.SignalChannelArr[choosenGraphIndex][channedlIndex].path !="null":
+                        ans = max(ans , self.SignalChannelArr[choosenGraphIndex][channedlIndex].time[pointsPlotted-1])
+            return ans      
+                  
+             
       def speedSlider(self,choosenGraphIndex):
            '''
                Changes the speed of the plotting of each graph
