@@ -97,10 +97,10 @@ def __init__connectors__(self):
       self.rewindLinkBtn.clicked.connect(lambda:main.MainWindow.rewindLink(self,self.plotGraph1,self.plotGraph2))
 
       self.exportButton1 = self.findChild(QPushButton, "exportButton1")
-      self.exportButton1.clicked.connect(lambda:main.MainWindow.exportReportPdf(self, 0))
+      self.exportButton1.clicked.connect(lambda:main.MainWindow.captureGraphImage(self, 0))
 
       self.exportButton2 = self.findChild(QPushButton, "exportButton2")
-      self.exportButton2.clicked.connect(lambda:main.MainWindow.exportReportPdf(self, 1))
+      self.exportButton2.clicked.connect(lambda:main.MainWindow.captureGraphImage(self, 1))
 
 
 
@@ -112,11 +112,12 @@ def __init__connectors__(self):
 
 #---------------------------------------------------------------------------------------
 # Export Buttons
-      self.exportButton1 = self.findChild(QPushButton,"moveToGraph2")
-      self.exportButton1.clicked.connect(lambda:main.MainWindow.moveSignal(self,0))
-      self.exportButton2 = self.findChild(QPushButton,"moveToGraph1")
-      self.exportButton2.clicked.connect(lambda:main.MainWindow.moveSignal(self,1))
-
+      self.moveToGraph2 = self.findChild(QPushButton,"moveToGraph2")
+      self.moveToGraph2.clicked.connect(lambda:main.MainWindow.moveSignal(self,0))
+      self.moveToGraph1 = self.findChild(QPushButton,"moveToGraph1")
+      self.moveToGraph1.clicked.connect(lambda:main.MainWindow.moveSignal(self,1))
+      self.exportReportButton = self.findChild(QPushButton,"exportReportButton")
+      self.exportReportButton.clicked.connect(lambda:main.MainWindow.exportReportPdf(self,0))
 
 
 #---------------------------------------------------------------------------------------

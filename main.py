@@ -241,14 +241,14 @@ class MainWindow(QtWidgets.QMainWindow):
                    self.minSignalAmp1 = len(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].amplitude)
                    self.pointsPlotted1 = 0
                    self.startTime1 = QtCore.QTimer()
-                   self.startTime1.setInterval(200-self.cineSpeed1)
+                   self.startTime1.setInterval(150-self.cineSpeed1)
                    self.startTime1.timeout.connect(lambda:self.signalPlotting(choosenGraph,choosenGraphIndex))
                    self.startTime1.start()
             if choosenGraphIndex == 1:
                    self.minSignalAmp2 = len(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].amplitude)    
                    self.pointsPlotted2 = 0
                    self.startTime2 = QtCore.QTimer()
-                   self.startTime2.setInterval(200-self.cineSpeed2)
+                   self.startTime2.setInterval(150-self.cineSpeed2)
                    self.startTime2.timeout.connect(lambda:self.signalPlotting(choosenGraph,choosenGraphIndex))
                    self.startTime2.start()
 
@@ -707,7 +707,8 @@ class MainWindow(QtWidgets.QMainWindow):
             ans = -1
             for channedlIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
                   if self.SignalChannelArr[choosenGraphIndex][channedlIndex].path !="null":
-                        ans = max(ans , self.SignalChannelArr[choosenGraphIndex][channedlIndex].time[pointsPlotted-1])
+                        if len(self.SignalChannelArr[choosenGraphIndex][channedlIndex].time) > pointsPlotted:
+                            ans = max(ans , self.SignalChannelArr[choosenGraphIndex][channedlIndex].time[pointsPlotted-1])
             return ans      
                   
              
@@ -728,10 +729,10 @@ class MainWindow(QtWidgets.QMainWindow):
           '''
            if choosenGraphIndex == 0:           
                self.cineSpeed1= self.horizontalSlider.value()
-               self.startTime1.setInterval(200-self.cineSpeed1)
+               self.startTime1.setInterval(150-self.cineSpeed1)
            else: 
                self.cineSpeed2 = self.speedSlider2.value()
-               self.startTime2.setInterval(200-self.cineSpeed2)    
+               self.startTime2.setInterval(150-self.cineSpeed2)    
 
 
       def editChannelName(self,label,choosenGraphIndex):
@@ -1074,10 +1075,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
           fileName = 'Report.pdf'
           title = 'Signals Insights'
-          if(graphNumber == 0):
-                selectedGraph = 'Report for Graph 1'
-          if(graphNumber == 1):
-                selectedGraph = 'Report for Graph 2'                
+              
           
           # Capture the plot and get the file path
 
@@ -1089,7 +1087,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
           pdf.drawCentredString(290, 720, title)
 
-          pdf.drawAlignedString(260, 670, selectedGraph)
+          pdf.drawCentredString(290, 670, "Multi-Channel-Viewer Report")
 
           majorLogoPath = './Images/logo-major.png'
           collegeLogoPath = './Images/collegeLogo.jpg'
@@ -1108,16 +1106,40 @@ class MainWindow(QtWidgets.QMainWindow):
           aspect_ratio = image_width / image_height
           # Close the image file
           image.close()
-          for i in range(self.numImg-1): 
-             #  print(self.numImg,"aaaaaaaaa")    
-               plotImg = ImageReader('img%s.png'%(i+1))
-               pdf.drawImage(plotImg, 35, 500+20*i, width=550, height=400 / aspect_ratio)
-               
-          statistics_table = self.calculatePlotStatistics(graphNumber)
+          for i in range(self.numImg - 1):
+               # Create a new page for every 3 images
+               if i % 3 == 0:
+                    if i!=0:
+                        pdf.showPage()
+                    # Add logos to the first page
+                    if i == 0:
+                         pdf.drawImage(major_logo, 10, 725, width=112, height=45)
+                         pdf.drawImage(college_logo, 525, 705, width=70, height=70)
+
+               # Load and display the image
+               plotImg = ImageReader('img%s.png' % (i + 1))
+              # pdf.drawImage(plotImg, 35, 500 - (400 / aspect_ratio) * (i % 3) - 80, width=550, height=400 / aspect_ratio)
+               pdf.drawImage(plotImg, 35, 500 - (400 / aspect_ratio) * (i % 3) - 50 - (i % 3) * 20, width=550, height=400 / aspect_ratio)
+
+          # Add statistics table to the last page
+          pdf.showPage()
+          pdf.drawCentredString(290, 600, "Stats for Graph1")
+          statistics_table = self.calculatePlotStatistics(0)
           statistics_table.wrapOn(pdf, 0, 0)
-          statistics_table.drawOn(pdf, 60, 200)  
-          QtWidgets.QMessageBox.information(self,"Report Created","Congrats, PDF is successfully created")
+          statistics_table.drawOn(pdf, 35, 525)
+          pdf.drawCentredString(290, 375, "Stats for Graph2")
+          statistics_table2 = self.calculatePlotStatistics(1)
+          statistics_table2.wrapOn(pdf, 0, 0)
+          statistics_table2.drawOn(pdf, 35, 300)
+          
+          
+          # Save the PDF file
           pdf.save()
+
+
+
+
+
 
       def showAboutDialog(self):
                about_text = "Our project introduces a robust desktop application created with Python and Qt.\n\nTasked with developing a Multi-Port, Multi-Channel Signal Viewer, this software brings real-time data visualization to the forefront of intensive care units (ICUs) and beyond.\n\nWith features allowing users to load and simultaneously display various medical signals, customize the view, and even generate comprehensive reports, our application empowers healthcare professionals and signal analysis enthusiasts.\n\nExperience the future of signal monitoring with ease and precision through our innovative, user-friendly solution.\n\n Thank you for using our Application \n\n Our Team:\n Youssef Ashraf \n Mourad Magdy\n Ziad El Meligy \n Mariam Ahmed\n\n SBME 25"

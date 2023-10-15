@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1256</width>
+    <width>1510</width>
     <height>722</height>
    </rect>
   </property>
@@ -252,7 +252,7 @@
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>Images/export-pdf.png</normaloff>Images/export-pdf.png</iconset>
+          <normaloff>Images/screenshot.png</normaloff>Images/screenshot.png</iconset>
         </property>
        </widget>
       </item>
@@ -802,6 +802,63 @@
         </property>
        </spacer>
       </item>
+      <item>
+       <widget class="QPushButton" name="exportReportButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: #fff;
+  border: 1px solid #d5d9d9;
+  border-radius: 8px;
+
+  color: #0f1111;
+  font-family: &quot;Amazon Ember&quot;,sans-serif;
+
+  font-size: 13px;
+  line-height: 29px;
+  padding: 0 10px 0 11px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;</string>
+        </property>
+        <property name="text">
+         <string>Export Report</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>170</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </item>
     <item>
@@ -1024,7 +1081,7 @@
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>Images/export-pdf.png</normaloff>Images/export-pdf.png</iconset>
+          <normaloff>Images/screenshot.png</normaloff>Images/screenshot.png</iconset>
         </property>
        </widget>
       </item>
@@ -1085,6 +1142,9 @@
     </item>
     <item>
      <layout class="QGridLayout" name="plotGridLayout1_2">
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_6"/>
+      </item>
       <item row="0" column="1">
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0" colspan="2">
@@ -1125,8 +1185,7 @@
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">
- </string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string>Hide </string>
@@ -1314,9 +1373,6 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_6"/>
-      </item>
       <item row="0" column="0">
        <widget class="PlotWidget" name="plotGraph2">
         <property name="minimumSize">
@@ -1336,7 +1392,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1256</width>
+     <width>1510</width>
      <height>26</height>
     </rect>
    </property>
