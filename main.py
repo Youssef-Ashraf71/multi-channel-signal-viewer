@@ -67,6 +67,7 @@ class MainWindow(QtWidgets.QMainWindow):
           self.rewindLinkBtn.hide()
           self.isSyncingX = False
           self.about_clicked = False 
+          self.numImg = 1
           connector.__init__connectors__(self)
           
 
@@ -883,8 +884,8 @@ class MainWindow(QtWidgets.QMainWindow):
           exporter.params.fileSuffix = 'png'
 
           # Set the filename
-          export_filename = 'graph_capture.png'
-
+          export_filename = "img%s.png"%(self.numImg)
+          self.numImg += 1
           # Export the graph to the specified filename
           exporter.export(export_filename)
 
@@ -1101,15 +1102,17 @@ class MainWindow(QtWidgets.QMainWindow):
           pdf.drawImage(college_logo, 525, 705, width=70, height=70)
           
           # Open the image file
-          image = Image.open('graph_capture.png')
+          image = Image.open('img1.png')
           # Get the size (width and height) of the image
           image_width, image_height = image.size
           aspect_ratio = image_width / image_height
           # Close the image file
           image.close()
-          
-          plotImg = ImageReader('graph_capture.png')
-          pdf.drawImage(plotImg, 35, 500, width=550, height=400 / aspect_ratio)
+          for i in range(self.numImg-1): 
+             #  print(self.numImg,"aaaaaaaaa")    
+               plotImg = ImageReader('img%s.png'%(i+1))
+               pdf.drawImage(plotImg, 35, 500+20*i, width=550, height=400 / aspect_ratio)
+               
           statistics_table = self.calculatePlotStatistics(graphNumber)
           statistics_table.wrapOn(pdf, 0, 0)
           statistics_table.drawOn(pdf, 60, 200)  
