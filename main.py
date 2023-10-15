@@ -43,6 +43,7 @@ class MainWindow(QtWidgets.QMainWindow):
           uic.loadUi('layout.ui', self)
           self.setWindowIcon(QtGui.QIcon('Images/MainIcon.png'))
           self.setWindowTitle("Realtime-signal-viewer")
+          self.setGeometry(350,100,1247,873)
          # Apply Aqya stylesheet
           self.apply_stylesheet("ManjaroMix.qss")
 

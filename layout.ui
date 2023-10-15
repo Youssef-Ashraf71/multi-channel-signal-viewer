@@ -812,7 +812,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>100</width>
+          <width>220</width>
           <height>0</height>
          </size>
         </property>
@@ -822,17 +822,26 @@
           <height>30</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <family>MS Shell Dlg 2</family>
+          <pointsize>12</pointsize>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
         <property name="styleSheet">
          <string notr="true">background-color: #fff;
-  border: 1px solid #d5d9d9;
+  border: 2px solid rgb(190, 190, 190);
+
   border-radius: 8px;
 
   color: #0f1111;
-  font-family: &quot;Amazon Ember&quot;,sans-serif;
+  
 
-  font-size: 13px;
+
   line-height: 29px;
-  padding: 0 10px 0 11px;
+
   position: relative;
   text-align: center;
   text-decoration: none;
@@ -840,6 +849,16 @@
         </property>
         <property name="text">
          <string>Export Report</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>Images/export-pdf.png</normaloff>Images/export-pdf.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>25</width>
+          <height>30</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -853,7 +872,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>170</width>
+          <width>110</width>
           <height>20</height>
          </size>
         </property>
