@@ -353,7 +353,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Hide </string>
+             <string>Visible</string>
             </property>
            </widget>
           </item>
@@ -1207,7 +1207,7 @@
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>Hide </string>
+             <string>Visible</string>
             </property>
            </widget>
           </item>

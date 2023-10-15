@@ -18,6 +18,7 @@ def __init__connectors__(self):
       self.channelList1.currentIndexChanged.connect(lambda:modules.setChoosenChannel(self,self.channelList1.currentIndex(),0 ))
 
       self.checkBox1 = self.findChild(QCheckBox,"checkBox1")
+      self.checkBox1.setChecked(True);
       self.checkBox1.stateChanged.connect(lambda: main.MainWindow.hideSignal(self,self.checkBox1.isChecked(),0))
 
       self.selectColorBtn1 = self.findChild(QPushButton,"selectColorBtn1")
@@ -53,6 +54,7 @@ def __init__connectors__(self):
       self.channelList2.currentIndexChanged.connect(lambda:modules.setChoosenChannel(self,self.channelList2.currentIndex(),1))
 
       self.graphIndex = self.findChild(QCheckBox,"checkBox2")
+      self.checkBox2.setChecked(True);
       self.checkBox2.stateChanged.connect(lambda: main.MainWindow.hideSignal(self,self.checkBox2.isChecked(),1))
 
       self.selectColorBtn2 = self.findChild(QPushButton,"selectColorBtn2")

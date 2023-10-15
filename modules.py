@@ -37,7 +37,7 @@ def setChoosenChannel(self,index,graphIndex):
  
 
 class SignalChannel:
-      def __init__(self,time = [] , amplitude = [] ,hiddenFlag = False , label="N/A", color= 0xffff00 , path="null"):
+      def __init__(self,time = [] , amplitude = [] ,hiddenFlag = True , label="N/A", color= 0xffff00 , path="null"):
             self.graph = PlotWidget()
             self.time = time
             self.amplitude = amplitude

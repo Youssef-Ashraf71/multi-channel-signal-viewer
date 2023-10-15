@@ -321,7 +321,7 @@ class MainWindow(QtWidgets.QMainWindow):
            """
            for Index in range(len(self.SignalChannelArr[choosenGraphIndex])):
                if self.SignalChannelArr[choosenGraphIndex][Index].path != "null" :
-                    if self.SignalChannelArr[choosenGraphIndex][Index].hiddenFlag == True:
+                    if self.SignalChannelArr[choosenGraphIndex][Index].hiddenFlag == False:
                          self.SignalChannelArr[choosenGraphIndex][Index].graph.hide()
                     else:
                          self.SignalChannelArr[choosenGraphIndex][Index].graph.show()
