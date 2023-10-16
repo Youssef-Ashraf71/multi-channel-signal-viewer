@@ -284,7 +284,7 @@ class MainWindow(QtWidgets.QMainWindow):
            if choosenGraphIndex == 0:
                 self.pointsPlotted1 += 5
                 self.plotGraph1.setXRange(self.getLongestSignal(0,self.pointsPlotted1)-0.1,self.getLongestSignal(0,self.pointsPlotted1))
-                print(self.getLongestSignal(0,self.pointsPlotted1)-0.1,self.getLongestSignal(0,self.pointsPlotted1))
+               # print(self.getLongestSignal(0,self.pointsPlotted1)-0.1,self.getLongestSignal(0,self.pointsPlotted1))
            elif choosenGraphIndex == 1:
                 self.pointsPlotted2 += 5
                 self.plotGraph2.setXRange(self.getLongestSignal(1,self.pointsPlotted2)-0.1,self.getLongestSignal(1,self.pointsPlotted2))    
