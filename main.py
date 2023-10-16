@@ -231,7 +231,7 @@ class MainWindow(QtWidgets.QMainWindow):
                             minAmp = min(self.SignalChannelArr[choosenGraphIndex][i].amplitude)           
                             
             choosenGraph.plotItem.setLimits(
-             xMin=minTime, xMax=maxTime, yMin=minAmp, yMax=maxAmp     
+             xMin=minTime, xMax=maxTime, yMin=minAmp, yMax=maxAmp+0.2     
             )   
             # self.minAmp = minAmp
             # self.maxAmp = maxAmp
@@ -239,14 +239,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.pauseFlag2 = False
 
             if choosenGraphIndex == 0:
-                   self.minSignalAmp1 = len(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].amplitude)
                    self.pointsPlotted1 = 0
                    self.startTime1 = QtCore.QTimer()
                    self.startTime1.setInterval(150-self.cineSpeed1)
                    self.startTime1.timeout.connect(lambda:self.signalPlotting(choosenGraph,choosenGraphIndex))
                    self.startTime1.start()
             if choosenGraphIndex == 1:
-                   self.minSignalAmp2 = len(self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].amplitude)    
                    self.pointsPlotted2 = 0
                    self.startTime2 = QtCore.QTimer()
                    self.startTime2.setInterval(150-self.cineSpeed2)
@@ -286,6 +284,7 @@ class MainWindow(QtWidgets.QMainWindow):
            if choosenGraphIndex == 0:
                 self.pointsPlotted1 += 5
                 self.plotGraph1.setXRange(self.getLongestSignal(0,self.pointsPlotted1)-0.1,self.getLongestSignal(0,self.pointsPlotted1))
+                print(self.getLongestSignal(0,self.pointsPlotted1)-0.1,self.getLongestSignal(0,self.pointsPlotted1))
            elif choosenGraphIndex == 1:
                 self.pointsPlotted2 += 5
                 self.plotGraph2.setXRange(self.getLongestSignal(1,self.pointsPlotted2)-0.1,self.getLongestSignal(1,self.pointsPlotted2))    
@@ -374,6 +373,10 @@ class MainWindow(QtWidgets.QMainWindow):
                          self.rewindBtn2.setEnabled(True)
                          self.horizontalSlider.setEnabled(True)
                          self.speedSlider2.setEnabled(True)
+                         self.browseBtn1.setEnabled(True)
+                         self.browseBtn2.setEnabled(True)
+           
+                         
                          self.linkGraphsButton.setText("Link Graphs")
 
                          self.playPauseLinkBtn.hide()
@@ -430,6 +433,9 @@ class MainWindow(QtWidgets.QMainWindow):
            
            self.plotGraph1.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph1)
            self.plotGraph2.getViewBox().sigXRangeChanged.connect(self.synchronizeXGraph2)
+
+           self.browseBtn1.setEnabled(False)
+           self.browseBtn2.setEnabled(False)
            
 
 
@@ -704,13 +710,17 @@ class MainWindow(QtWidgets.QMainWindow):
              self.SignalChannelArr[choosenGraphIndex][selectedChannelIndex].hiddenFlag = checked
              self.DynamicSignalUpdate(choosenGraphIndex,selectedChannelIndex,False)
 
-      def getLongestSignal(self,choosenGraphIndex,pointsPlotted):
-            ans = -1
-            for channedlIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
-                  if self.SignalChannelArr[choosenGraphIndex][channedlIndex].path !="null":
-                        if len(self.SignalChannelArr[choosenGraphIndex][channedlIndex].time) > pointsPlotted:
-                            ans = max(ans , self.SignalChannelArr[choosenGraphIndex][channedlIndex].time[pointsPlotted-1])
-            return ans      
+      def getLongestSignal(self, choosenGraphIndex, pointsPlotted):
+          ans = -1
+          for channelIndex in range(len(self.SignalChannelArr[choosenGraphIndex])):
+               if self.SignalChannelArr[choosenGraphIndex][channelIndex].path != "null":
+                    if len(self.SignalChannelArr[choosenGraphIndex][channelIndex].time) > pointsPlotted:
+                         ans = max(ans, self.SignalChannelArr[choosenGraphIndex][channelIndex].time[pointsPlotted - 1])
+                    elif ans == -1:
+    
+                         ans = self.SignalChannelArr[choosenGraphIndex][channelIndex].time[-1]
+          return ans
+
                   
              
       def speedSlider(self,choosenGraphIndex):
@@ -1137,7 +1147,11 @@ class MainWindow(QtWidgets.QMainWindow):
           # Save the PDF file
           pdf.save()
 
-
+          msg = QMessageBox()
+          msg.setIcon(QMessageBox.Information)
+          msg.setText("PDF is successfully generated.")
+          msg.setWindowTitle("Information")
+          msg.exec_()
 
 
 
