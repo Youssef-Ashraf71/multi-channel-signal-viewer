@@ -25,7 +25,7 @@ Welcome to the Multi-Port, Multi-Channel Signal Viewer project! This desktop app
 
 ## Live Demo
 
-https://github.com/Youssef-Ashraf71/DSP-task1/assets/83988379/b47c3518-ccf8-4633-b10d-4d4af63f082e
+https://github.com/Youssef-Ashraf71/multi-channel-signal-viewer/assets/83988379/7929cf4f-f5a2-4ca7-aae2-c9b4ad21babe
 
 ## Project Description
 
