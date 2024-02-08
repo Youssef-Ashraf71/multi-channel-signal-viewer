@@ -12,13 +12,6 @@
 
 ---
 
-## Team: 11
-
-- Mariam Ahmed
-- Mourad Magdy
-- Ziad Meligy
-- Youssef Ashraf
-
 ## Introduction
 
 Welcome to the Multi-Port, Multi-Channel Signal Viewer project! This desktop application, developed using Python and Qt, is designed to help you visualize and analyze multiple medical signal types simultaneously. The application allows you to view various signals, such as ECG, EMG, EEG, and more, both in normal and abnormal conditions.
